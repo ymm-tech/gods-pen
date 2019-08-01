@@ -28,20 +28,7 @@ npm run client:build
 
 ### 组件系统的核心逻辑
 
-                 数据库组件信息                  生成node添加到组件树
-组件添加 addone -------------------> getBaseNode -----------------------
-                                                                       |    
-                                                                       ↓    
-递归渲染 <--------------------------------------------------------- 组件树 <--------------------- 已有组件树数据
-|
-↓
-节点渲染  node-css
-         node-fun
-         node-move                   fire('load.end')                  迭代组合，实例化动态组件
-         node-load && cLoader.load -------------------> registerNode ---------------------------|
-                                                        |
-                                                        |
-          style  version label  数据劫持 <--------------|
+![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/access/ymm_1564657535536.jpg)
 
 组件数据流动
 
