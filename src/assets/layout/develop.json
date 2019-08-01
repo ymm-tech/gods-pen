@@ -1,0 +1,130 @@
+{
+  "layout": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "name": "组件树",
+                "component": "widgetComponentTree",
+                "close": true,
+                "pop": true
+              }
+            ],
+            "type": "panel",
+            "flex": 0.5371845949535192
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "name": "脚本",
+                    "component": "widgetScriptEditor",
+                    "style": {
+                      "width": "300px",
+                      "height": "400px",
+                      "left": "300px",
+                      "top": "300px"
+                    },
+                    "close": false,
+                    "pop": true
+                  },
+                  {
+                    "name": "组件列表",
+                    "component": "widgetComponent",
+                    "close": true,
+                    "pop": true
+                  },
+                  {
+                    "name": "组合组件",
+                    "component": "widgetCombinedComponents",
+                    "close": true,
+                    "pop": true,
+                    "style": {
+                      "width": "472.75px",
+                      "height": "378.5px",
+                      "left": "377px",
+                      "top": "472px"
+                    }
+                  }
+                ],
+                "type": "panel",
+                "flex": 1
+              }
+            ],
+            "type": "column",
+            "flex": 0.4628154050464807
+          }
+        ],
+        "type": "column",
+        "flex": 0.2351640648382981
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "name": "脚本编辑",
+                "component": "widgetCodePanel",
+                "close": false,
+                "pop": false
+              },
+              {
+                "name": "场景",
+                "component": "widgetScene",
+                "close": false,
+                "pop": false
+              }
+            ],
+            "type": "panel",
+            "flex": 1
+          }
+        ],
+        "type": "column",
+        "flex": 0.5016249900988153
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "name": "属性",
+                "component": "widgetAttribute",
+                "close": false,
+                "pop": true
+              },
+              {
+                "name": "样式",
+                "component": "widgetStyleEditor",
+                "close": false,
+                "pop": true
+              },
+              {
+                "name": "动画",
+                "component": "widgetAnimate",
+                "close": true,
+                "pop": true
+              },
+              {
+                "name": "页面设置",
+                "component": "widgetPageInfo",
+                "close": true,
+                "pop": true
+              }
+            ],
+            "type": "panel",
+            "flex": 1
+          }
+        ],
+        "type": "column",
+        "flex": 0.2632109450628866
+      }
+    ],
+    "type": "row"
+  },
+  "dialogs": [],
+  "version": 1.2,
+  "name": "develop"
+}

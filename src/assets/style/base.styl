@@ -1,0 +1,25 @@
+@require('~rider/lib/rider/index.styl')
+
+// 基础配置信息
+$-base-font-size = 12
+$-bg-color = #262626
+$-bg-scend-color = #262626
+
+
+$-font-color = #fafafa
+$-grey-color-1 = #333
+$-grey-color-2 = #666
+$-grey-color-3 = #999
+
+
+
+// 设置背景图片
+mbg($src, $size = 100% 100%, $position = 0 0, $repeat = no-repeat)
+
+  if not file-exists($src)
+    error('$src 必须为本地已存在的图片路径：' + $src)
+
+  background-image: url($src)
+  background-size: $size
+  background-position: $position
+  background-repeat: $repeat

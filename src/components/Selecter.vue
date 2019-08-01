@@ -1,0 +1,694 @@
+<template>
+  <div class="eqc-select ng-isolate-scope" :class="{'root-node': isRoot}" v-if="visible" @mousedown="mousedown($event,'m')">
+    <template v-if='isRoot'>
+      <div class="line-s line resizable">
+        <div class="circle" @mousedown.stop="mousedown($event,'s')" v-show="show.s" style="cursor: ns-resize;"></div>
+      </div>
+    </template>
+    <template v-else>
+      <div class="rotate-circle" @mousedown="mousedown($event,'r')" v-show="show.r && !accessResizeRotate"></div>
+      <div class="rotate-line" v-show="show.r && !accessResizeRotate"></div>
+      <div class="bar bar-m-line"></div>
+      <div class="line-n line resizable">
+        <div class="circle" @mousedown.stop="mousedown($event,'n')" v-show="show.n" style="cursor: ns-resize;"></div>
+      </div>
+      <div class="line-e line resizable">
+        <div class="circle" @mousedown.stop="mousedown($event,'e')" v-show="show.e" style="cursor: ew-resize;"></div>
+      </div>
+      <div class="line-s line resizable">
+        <div class="circle" @mousedown.stop="mousedown($event,'s')" v-show="show.s" style="cursor: ns-resize;"></div>
+      </div>
+      <div class="line-w line resizable">
+        <div class="circle" @mousedown.stop="mousedown($event,'w')" v-show="show.w" style="cursor: ew-resize;"></div>
+      </div>
+      <div class="circle-nw circle resizable" @mousedown="mousedown($event,'nw')" v-show="show.nw" style="cursor: nwse-resize;"></div>
+      <div class="circle-ne circle resizable" @mousedown="mousedown($event,'ne')" v-show="show.ne" style="cursor: nesw-resize;"></div>
+      <div class="circle-se circle resizable" @mousedown="mousedown($event,'se')" v-show="show.se" style="cursor: nwse-resize;"></div>
+      <div class="circle-sw circle resizable" @mousedown="mousedown($event,'sw')" v-show="show.sw" style="cursor: nesw-resize;"></div>
+      <div class="circle-center resizable" v-if="movable" :class="{canDraged:canDraged}" @mousedown="mousedown($event,'m')"></div>
+    </template>
+  </div>
+</template>
+<style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
+  .eqc-select {
+    // z-index: 103;
+    position: absolute;
+    pointer-events: none;
+    height: 100%;
+    width: 100%;
+    cursor: move;
+    top: 0;
+    left: 0;
+    &.root-node {
+      cursor: auto;
+    }
+  }
+
+  .eqc-select>div {
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  .eqc-select .line {
+    z-index: 2;
+  }
+
+  .eqc-select .circle {
+    z-index: 4;
+  }
+
+  .eqc-select .line-n {
+    width: 100%;
+    height: 5px;
+    top: -4px;
+  }
+
+  .eqc-select .line-n div {
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    margin-left: -6px;
+  }
+
+  .eqc-select .line-s {
+    width: 100%;
+    height: 5px;
+    bottom: -4px;
+  }
+
+  .eqc-select .line-s div {
+    position: absolute;
+    left: 50%;
+    bottom: -2px;
+    margin-left: -6px;
+  }
+
+  .eqc-select .line-e {
+    width: 5px;
+    height: 100%;
+    top: 0;
+    right: -4px;
+  }
+
+  .eqc-select .line-e div {
+    position: absolute;
+    top: 50%;
+    right: -2px;
+    margin-top: -5px;
+  }
+
+  .eqc-select .line-w {
+    width: 5px;
+    height: 100%;
+    top: 0;
+    left: -4px;
+  }
+
+  .eqc-select .line-w div {
+    position: absolute;
+    top: 50%;
+    left: -1px;
+    margin-top: -5px;
+  }
+
+  .eqc-select .circle {
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border: 1px solid #59c7f9;
+    border-radius: 12px;
+    display: block;
+  }
+
+  .eqc-select .circle-center {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    // width: 24px;
+    // height: 24px;
+    margin: auto;
+    cursor: move;
+
+    // background-color #f0f
+    .circle-center-point {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      // cursor: pointer;
+      position: absolute;
+    }
+
+    &.canDraged {
+      .circle-center-point {
+        // cursor: pointer;
+        background-color: red;
+      }
+    }
+  }
+
+  .eqc-select .circle-ne {
+    top: -5px;
+    right: -6px;
+  }
+
+  .eqc-select .circle-nw {
+    top: -5px;
+    left: -5px;
+  }
+
+  .eqc-select .circle-se {
+    bottom: -5px;
+    right: -6px;
+  }
+
+  .eqc-select .circle-sw {
+    bottom: -5px;
+    left: -5px;
+  }
+
+  .eqc-select .rotate-circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    top: -28px;
+    left: 50%;
+    margin-left: -6px;
+    background-color: #44cb83;
+    border: none;
+    cursor: move;
+    cursor: -webkit-grabbing;
+  }
+
+  .eqc-select .rotate-line {
+    width: 1px;
+    height: 18px;
+    top: -18px;
+    left: 50%;
+    margin-left: -0.5px;
+    background-color: #44cb83;
+  }
+
+  .eqc-select .bar-m-line {
+    height: 100%;
+    border-left: 1px dashed #44cb83;
+    top: 0;
+    left: 50%;
+    margin-left: -0.5px;
+    display: none;
+  }
+</style>
+
+<script type="text/ecmascript-6">
+  /**
+   * 元素选择后出现的选择框，方便控制拖拽，旋转等
+   */
+  import BaseComponent from 'src/extend/BaseComponent'
+  import {dimensionAnyTopx, isUnset} from '../assets/js/common'
+
+  export default {
+    mixins: [BaseComponent],
+    name: 'Selecter',
+    props: {
+      warpStyle: {
+        type: Object
+      },
+      visible: {
+        type: Boolean,
+        default: false
+      },
+      canDraged: {
+        type: Boolean,
+        default: false
+      },
+      movable: {
+        type: Boolean,
+        default: true
+      },
+      isRoot: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data: function () {
+      return {
+        rectangles: null, // 页面元素参考线集合
+        sorbRectangles: {}, // 页面元素参考线集合
+        isMoved: false,
+        keyShifted: false,
+        startPos: {
+          x: 0, y: 0, initx: 0, inity: 0
+        },
+        doType: '', // 操作类型
+        show: {
+          n: true,
+          e: true,
+          s: true,
+          w: true,
+          nw: true,
+          ne: true,
+          se: true,
+          sw: true,
+          r: true
+        },
+        accessResizeRotate: false
+      }
+    },
+    watch: {
+      'warpStyle.position': function (newVal) {
+        this.changeStatus(newVal)
+      },
+      'visible': function (params) {
+        if (!params && this.EditorValue) {
+          this.ema.fire('dock.onceDialogClose', this.EditorValue)
+        }
+      }
+    },
+    mounted: function () {
+      // shift
+      this.ema.bind('shift.down', ev => {
+        this.keyShifted = true
+      })
+      this.ema.bind('shift.up', ev => {
+        this.keyShifted = false
+      })
+      this.ema.bind('ui.mouseup', ev => {
+        if (!this.visible) {
+          return
+        }
+        this.rectangles = null
+        this.doType = ''
+        this.ema.fire('AssistLines.hide')
+      })
+      this.ema.bind('ui.mousemove', ev => {
+        if (!this.visible) {
+          return
+        }
+        this.isMoved = true
+        if (!this.doType) {
+          return
+        }
+        // 如果开启智能参考线或者吸附效果。需要初始化计算现在已有元素的位置信息
+        if (this.Setting.line || this.Setting.sorb) {
+          this.initAllSorbLine()
+        }
+        if (this.Setting.line) {
+          this.updateLine()
+        }
+        this.dealMove(ev)
+      })
+      this.bindArrowMove()
+      this.changeStatus(this.warpStyle ? this.warpStyle.position : '')
+    },
+    methods: {
+      /**
+       * 计算现在已有元素的位置信息
+       */
+      initAllSorbLine: function () {
+        if (!this.rectangles) {
+          var array = []
+          for (const key in window.$_nodecomponents) {
+            if (window.$_nodecomponents.hasOwnProperty(key)) {
+              if (key == this.$parent.nodeInfo.id) {
+                continue
+              }
+              const element = window.$_nodecomponents[key]
+              var rect = element.$el.getBoundingClientRect()
+              array.push(rect)
+            }
+          }
+          this.rectangles = array
+        }
+        return array
+      },
+      /**
+       * 更新参考线信息
+       */
+      updateLine: function (ev) {
+        var baseOffset = 15 // 基础偏差
+        var current = this.$el.getBoundingClientRect()
+        var array = {x1: [], x2: [], x3: [], y1: [], y2: [], y3: []}
+        for (const key in this.rectangles) {
+          if (this.rectangles.hasOwnProperty(key)) {
+            const rect = this.rectangles[key]
+            // 左线
+            if (Math.abs(current.left - rect.left) < baseOffset) {
+              array.x1.push(parseInt(rect.left))
+            }
+            if (Math.abs(current.left - (rect.left + rect.width / 2)) < baseOffset) {
+              array.x1.push(parseInt(rect.left + rect.width / 2))
+            }
+            if (Math.abs(current.left - rect.right) < baseOffset) {
+              array.x1.push(parseInt(rect.right))
+            }
+            // 横向中线
+            if (Math.abs((current.left + current.width / 2) - rect.left) < baseOffset) {
+              array.x2.push(parseInt(rect.left))
+            }
+            if (Math.abs((current.left + current.width / 2) - (rect.left + rect.width / 2)) < baseOffset) {
+              array.x2.push(parseInt(rect.left + rect.width / 2))
+            }
+            if (Math.abs((current.left + current.width / 2) - rect.right) < baseOffset) {
+              array.x2.push(parseInt(rect.right))
+            }
+            // 右线
+            if (Math.abs(current.right - rect.left) < baseOffset) {
+              array.x3.push(parseInt(rect.left))
+            }
+            if (Math.abs(current.right - (rect.left + rect.width / 2)) < baseOffset) {
+              array.x1.push(parseInt(rect.left + rect.width / 2))
+            }
+            if (Math.abs(current.right - rect.right) < baseOffset) {
+              array.x3.push(parseInt(rect.right))
+            }
+
+            if (Math.abs(current.top - rect.top) < baseOffset) {
+              array.y1.push(parseInt(rect.top))
+            }
+            if (Math.abs(current.top - (rect.top + rect.height / 2)) < baseOffset) {
+              array.y1.push(parseInt(rect.top + rect.height / 2))
+            }
+            if (Math.abs(current.top - rect.bottom) < baseOffset) {
+              array.y1.push(parseInt(rect.bottom))
+            }
+
+            if (Math.abs((current.top + current.height / 2) - rect.top) < baseOffset) {
+              array.y2.push(parseInt(rect.top))
+            }
+            if (Math.abs((current.top + current.height / 2) - (rect.top + rect.height / 2)) < baseOffset) {
+              array.y2.push(parseInt(rect.top + rect.height / 2))
+            }
+            if (Math.abs((current.top + current.height / 2) - rect.bottom) < baseOffset) {
+              array.y2.push(parseInt(rect.bottom))
+            }
+            if (Math.abs(current.bottom - rect.top) < baseOffset) {
+              array.y3.push(parseInt(rect.top))
+            }
+            if (Math.abs(current.bottom - (rect.top + rect.height / 2)) < baseOffset) {
+              array.y3.push(parseInt(rect.top + rect.height / 2))
+            }
+            if (Math.abs(current.bottom - rect.bottom) < baseOffset) {
+              array.y3.push(parseInt(rect.bottom))
+            }
+          }
+        }
+        for (const key in array) {
+          array[key].sort()
+        }
+        this.ema.fire('AssistLines.update', array)
+        this.sorbRectangles = array
+      },
+      /**
+       * 获取吸附处理后的位置信息
+       */
+      getSorbPos: function (ev) {
+        var sorbLenght = 8
+        var top = !this.startPos.bottomControl ? this.startPos.top : this.startPos.parentSize.height - this.startPos.bottom - this.startPos.h
+        var left = !this.startPos.rightControl ? this.startPos.left : this.startPos.parentSize.width - this.startPos.right - this.startPos.w
+        var pos = {
+          top: top + (ev.pageY - this.startPos.y),
+          left: left + (ev.pageX - this.startPos.x)
+        }
+        // 通过鼠标焦点计算元素当前拖动位置
+        var tempRect = {
+          width: this.startPos.w,
+          height: this.startPos.h,
+          top: this.startPos.size.top + (ev.pageY - this.startPos.y),
+          left: this.startPos.size.left + (ev.pageX - this.startPos.x),
+        }
+        if (this.Setting.sorb) {
+          // 对元素位置进行处理，计算 坐标 x1,x2,x3,y1,y2,y3
+          var currPosX = {
+            x1: tempRect.left,
+            x2: tempRect.left + this.startPos.w / 2,
+            x3: tempRect.left + this.startPos.w
+          }
+          var currPosY = {
+            y1: tempRect.top,
+            y2: tempRect.top + this.startPos.h / 2,
+            y3: tempRect.top + this.startPos.h,
+          }
+          // 对元素和横向坐标。纵向左边做差值计算，取做小的吸附坐标为参考
+          var xarray = []
+          for (let key in currPosX) {
+            xarray.push(currPosX[key] - this.sorbRectangles[key][0])
+          }
+          var xindex = this.getMiniNumberIndex(xarray)
+          if (xindex >= 0 && this.sorbRectangles[`x${xindex + 1}`].length > 0 && Math.abs(xarray[xindex]) < sorbLenght) {
+            pos.left = pos.left - xarray[xindex]
+          }
+
+          var yarray = []
+          for (let key in currPosY) {
+            yarray.push(currPosY[key] - this.sorbRectangles[key][0])
+          }
+          var yindex = this.getMiniNumberIndex(yarray)
+          if (yindex >= 0 && this.sorbRectangles[`y${yindex + 1}`].length > 0 && Math.abs(yarray[yindex]) < sorbLenght) {
+            pos.top = pos.top - yarray[yindex]
+          }
+        }
+        return pos
+      },
+      getMiniNumberIndex: function (array) {
+        var min = 1000000000
+        var index = -1
+        array.forEach((element, i) => {
+          element = Math.abs(element)
+          if (element) {
+            if (Math.min(min, element) == element) {
+              index = i
+            }
+            min = Math.min(min, element)
+          }
+        })
+        return index
+      },
+      dealMove: function (ev) {
+        var style = this.$parent.nodeInfo.style
+        var type = this.doType
+        var height
+        var width
+        var left
+        var top
+        var right
+        var bottom
+        var rightControl = this.startPos.rightControl
+        var bottomControl = this.startPos.bottomControl
+        if (type.includes('s')) {
+          height = ev.pageY - this.startPos.y + this.startPos.h
+          if (bottomControl) bottom = this.startPos.bottom - (ev.pageY - this.startPos.y)
+        }
+        if (type.includes('e')) {
+          width = ev.pageX - this.startPos.x + this.startPos.w
+          if (rightControl) right = this.startPos.right - (ev.pageX - this.startPos.x)
+        }
+        if (type.includes('w')) {
+          width = this.startPos.x - ev.pageX + this.startPos.w
+          if (!rightControl) left = this.startPos.left + (ev.pageX - this.startPos.x)
+        }
+        if (type.includes('n')) {
+          height = this.startPos.y - ev.pageY + this.startPos.h
+          if (!bottomControl) top = this.startPos.top + (ev.pageY - this.startPos.y)
+        }
+        switch (type) {
+          case 'se':
+            if (this.keyShifted) {
+              [width, height] = ratioWH(width, height, this.startPos.aspect)
+              if (bottomControl) bottom = this.startPos.bottom + (this.startPos.h - height)
+              if (rightControl) right = this.startPos.right + (this.startPos.w - width)
+            }
+            break
+          case 'sw':
+            if (this.keyShifted) {
+              [width, height] = ratioWH(width, height, this.startPos.aspect)
+              if (!rightControl) left = this.startPos.left + (this.startPos.w - width)
+              if (bottomControl) bottom = this.startPos.bottom + (this.startPos.h - height)
+            }
+            break
+          case 'nw':
+            if (this.keyShifted) {
+              [width, height] = ratioWH(width, height, this.startPos.aspect)
+              if (!bottomControl) top = this.startPos.top + (this.startPos.h - height)
+              if (!rightControl) left = this.startPos.left + (this.startPos.w - width)
+            }
+            break
+          case 'ne':
+            if (this.keyShifted) {
+              [width, height] = ratioWH(width, height, this.startPos.aspect)
+              if (!bottomControl) top = this.startPos.top + (this.startPos.h - height)
+              if (rightControl) right = this.startPos.right + (this.startPos.w - width)
+            }
+            break
+          case 'm':
+            var pos = this.getSorbPos(ev)
+            if (rightControl) {
+              right = this.startPos.parentSize.width - this.startPos.w - pos.left
+            } else {
+              left = pos.left
+            }
+            if (bottomControl) {
+              bottom = this.startPos.parentSize.height - this.startPos.h - pos.top
+            } else {
+              top = pos.top
+            }
+            break
+          case 'r':
+            var rotate = 10
+            // 计算锚点
+            var ancher = {
+              left: this.startPos.size.left + this.startPos.size.width / 2,
+              top: this.startPos.size.top + this.startPos.size.height / 2,
+            }
+            // 计算单位向量
+            var unit = {
+              x: ev.pageX - ancher.left,
+              y: ev.pageY - ancher.top
+            }
+            // 可吸附的角度
+            var step = 30
+            // 计算角度
+            rotate = 180 / Math.PI * Math.atan(unit.y / unit.x) + 90
+            var cha = rotate % step
+            var baseRote = Math.round(rotate / step)
+            // 角度容错率
+            if (cha < 6) {
+              rotate = baseRote * step
+            }
+            if (unit.x < 0) {
+              rotate = rotate - 180
+            }
+            rotate = rotate.toFixed(2)
+            this.$set(style, 'transform', `rotateZ(${rotate}deg)`)
+            break
+        }
+        if (!isUnset(top)) style.top = top + 'px'
+        if (!isUnset(left)) style.left = left + 'px'
+        if (!isUnset(bottom)) style.bottom = bottom + 'px'
+        if (!isUnset(right)) style.right = right + 'px'
+        if (!isUnset(width)) style.width = width + 'px'
+        if (!isUnset(height)) style.height = height + 'px'
+        function ratioWH (w, h, r) {
+          var wh = w / r // 宽对应的高
+          var hw = h * r // 高对应的宽
+          return [hw > w ? w : hw, wh > h ? h : wh] // width height
+        }
+      },
+      changeDraged: function () {
+        // 移除小红点
+        // if (!this.isMoved) {
+        //   this.$emit('update:canDraged', !this.canDraged)
+        // }
+      },
+      keydown: function (e) {
+        console.log('keydown', e, e.keyCode)
+      },
+      changeStatus: function (newVal) {
+        if (newVal == 'absolute' || newVal == 'fixed') {
+          this.show.n = true
+          this.show.w = true
+          this.show.nw = true
+          this.show.ne = true
+          this.show.sw = true
+          this.show.r = true
+        } else {
+          this.show.n = false
+          this.show.w = false
+          this.show.nw = false
+          this.show.ne = false
+          this.show.sw = false
+          this.show.r = false
+        }
+      },
+      mousedown: function (ev, type) {
+        this.isMoved = false
+        this.doType = type
+        var thisNode = this.$parent
+        var parentNode = this.$parent.$parent || {}
+        var size = dimensionAnyTopx(thisNode.$el, parentNode.$el)
+        this.startPos = {
+          size: size.rect,
+          parentSize: size.parentRect,
+          x: ev.pageX,
+          y: ev.pageY,
+          w: size.width,
+          h: size.height,
+          aspect: size.width / size.height,
+          left: size.left,
+          top: size.top,
+          bottom: size.bottom,
+          right: size.right,
+          initx: ev.offsetX,
+          inity: ev.offsetY,
+          rightControl: size.rightControl,
+          bottomControl: size.bottomControl,
+        }
+        ;['left', 'top', 'height', 'width', 'right', 'bottom'].map(dis => {
+          let val = size[dis]
+          if (dis == 'left' && size.rightControl) this.$set(thisNode.nodeInfo.style, 'left', null)
+          else if (dis == 'top' && size.bottomControl) this.$set(thisNode.nodeInfo.style, 'top', null)
+          else if (!isUnset(val)) this.$set(thisNode.nodeInfo.style, dis, val + 'px')
+        })
+        ev.stopPropagation()
+      },
+      bindArrowMove () {
+        var that = this
+        this.ema.bind('arrowdown.down', (e) => onArrowMove('down', e))
+        this.ema.bind('arrowup.down', (e) => onArrowMove('up', e))
+        this.ema.bind('arrowleft.down', (e) => onArrowMove('left', e))
+        this.ema.bind('arrowright.down', (e) => onArrowMove('right', e))
+        function onArrowMove (direction, e) {
+          var $selectedNode = window.$vue
+          if (e.panelName != 'widgetScene') {
+            return
+          }
+          if (!that.visible) return
+          if (!$selectedNode.stacked && direction == 'down') return that.moveLayer(1)
+          if (!$selectedNode.stacked && direction == 'up') return that.moveLayer(-1)
+          // 模拟mousedown 计算位置信息
+          that.mousedown({stopPropagation: () => {}}, '')
+          var style = that.$parent.nodeInfo.style
+          var top = that.startPos.top
+          var left = that.startPos.left
+          var right = that.startPos.right
+          var bottom = that.startPos.bottom
+          var rightControl = that.startPos.rightControl
+          var bottomControl = that.startPos.bottomControl
+          switch (direction) {
+            case 'down':
+              bottomControl ? (bottom -= 1) : (top += 1)
+              break
+            case 'up':
+              bottomControl ? (bottom += 1) : (top -= 1)
+              break
+            case 'left':
+              rightControl ? (right += 1) : (left -= 1)
+              left -= 1
+              break
+            case 'right':
+              rightControl ? (right -= 1) : (left += 1)
+              break
+          }
+          if (rightControl) {
+            style.right = right + 'px'
+          } else {
+            style.left = left + 'px'
+          }
+          if (bottomControl) {
+            style.bottom = bottom + 'px'
+          } else {
+            style.top = top + 'px'
+          }
+        }
+      },
+      moveLayer: function (number) {
+        var $node = window.$vue
+        if ($node && $node.$parent) {
+          $node.$parent.moveLayer($node.nodeInfo, number)
+        }
+      },
+    }
+  }
+</script>
+

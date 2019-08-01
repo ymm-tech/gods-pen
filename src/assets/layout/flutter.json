@@ -1,0 +1,88 @@
+{
+  "layout": {
+    "children": [{
+      "children": [{
+        "children": [{
+          "name": "组件列表",
+          "component": "widgetComponent",
+          "close": true,
+          "pop": true
+        }, {
+          "name": "合成组件",
+          "component": "widgetCombinedComponents",
+          "close": true,
+          "pop": true
+        }],
+        "type": "panel",
+        "flex": 0.5
+      }, {
+        "children": [{
+          "name": "组件树",
+          "component": "widgetComponentTree",
+          "close": true,
+          "pop": true
+        }],
+        "type": "panel",
+        "flex": 0.5
+      }],
+      "type": "column",
+      "flex": 0.20626959247648904
+    }, {
+      "children": [{
+        "children": [{
+          "name": "组场景",
+          "component": "widgetScene",
+          "close": false,
+          "pop": false
+        }, {
+          "name": "组件详情",
+          "component": "widgetComponentInfo",
+          "close": true,
+          "pop": true
+        }, {
+          "name": "页面设置",
+          "component": "widgetPageInfo",
+          "close": true,
+          "pop": true
+        }],
+        "type": "panel",
+        "flex": 1
+      }],
+      "type": "column",
+      "flex": 0.5512481056767048
+    }, {
+      "children": [{
+        "children": [{
+          "name": "属性",
+          "component": "widgetAttribute",
+          "close": false,
+          "pop": true
+        }, {
+          "name": "样式",
+          "component": "widgetStyleEditor",
+          "close": false,
+          "pop": true
+        }, {
+          "name": "脚本",
+          "component": "widgetScriptEditor",
+          "style": {
+            "width": "300px",
+            "height": "400px",
+            "left": "300px",
+            "top": "300px"
+          },
+          "close": true,
+          "pop": true
+        }],
+        "type": "panel",
+        "flex": 1
+      }],
+      "type": "column",
+      "flex": 0.2424823018468062
+    }],
+    "type": "row"
+  },
+  "dialogs": [],
+  "version": 1,
+  "name": "default"
+}

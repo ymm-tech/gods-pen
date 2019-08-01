@@ -1,0 +1,336 @@
+/* sass-ified from npm-website */
+.markdown {
+  margin: 0;
+  color: #d8d8d8;
+}
+.markdown ol {
+  list-style-position: outside;
+  font-weight: 600;
+  margin-bottom: 20px;
+  margin-left: 16px;
+}
+.markdown ol li {
+  margin-bottom: 2px;
+}
+.markdown li {
+  font-weight: 400;
+}
+.markdown > h1 {
+  margin: 24px 0 16px 0;
+  padding: 0;
+  padding-bottom: 7px;
+  text-align: left;
+  line-height: 1.2;
+  white-space: normal;
+  text-transform: none;
+  letter-spacing: -0.8px;
+}
+.markdown > h1 a {
+  color: text-color;
+  text-decoration: none;
+}
+.markdown >h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  font-weight: 600;
+}
+.markdown >h2 a,
+.markdown h3 a,
+.markdown h4 a,
+.markdown h5 a,
+.markdown h6 a {
+  font-weight: 700;
+  text-decoration: none;
+}
+.markdown >h2 a:hover,
+.markdown h3 a:hover,
+.markdown h4 a:hover,
+.markdown h5 a:hover,
+.markdown h6 a:hover {
+  text-decoration: underline;
+}
+.markdown >h1,
+.markdown h2 {
+  border-bottom: 1px solid greigh6;
+  margin: 24px 0 16px 0;
+}
+.markdown h2 {
+  letter-spacing: -0.3px;
+}
+.markdown h3 {
+  margin: 16px 0 4px 0;
+}
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  margin: 16px 0 4px 0;
+}
+.markdown ol ol,
+.markdown ul ol,
+.markdown ol ul,
+.markdown ul ul {
+  margin: 0 0 0 20px;
+}
+.markdown p,
+.markdown li {
+  color: #d8d8d8;
+}
+.markdown p a,
+.markdown li a {
+  font-weight: 600;
+}
+.markdown th {
+  font-weight: bold;
+  text-align: center;
+}
+.markdown td,
+.markdown th {
+  background: #d8d8d8;
+  border: 1px solid greigh6;
+  text-align: left;
+}
+.markdown img {
+  max-width: 100%;
+}
+.markdown h1:hover .deep-link .deep-link-icon,
+.markdown h2:hover .deep-link .deep-link-icon,
+.markdown h3:hover .deep-link .deep-link-icon,
+.markdown h4:hover .deep-link .deep-link-icon,
+.markdown h5:hover .deep-link .deep-link-icon,
+.markdown h6:hover .deep-link .deep-link-icon,
+.markdown .deep-link:hover .deep-link-icon,
+.markdown .deep-link-icon:hover {
+  visibility: visible;
+}
+.markdown .deep-link {
+  float: left;
+  margin-left: -20px;
+  padding-right: 4px;
+}
+.markdown .deep-link .deep-link-icon {
+  visibility: hidden;
+}
+.markdown blockquote {
+  background: #efefef;
+  padding: 1px 16px;
+  margin-left: 0;
+  margin-right: 0;
+  border-left: #cecece solid 10px;
+  border-radius: 3px;
+}
+
+.markdown table {
+  display: block;
+  white-space: nowrap;
+  overflow-x: auto;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.markdown td, .markdown th {
+  padding: 9px 13px;
+  border: 1px solid #d8d8d8;
+}
+
+.markdown tr:nth-child(2n) td {
+  background-color: #f4f4f4;
+}
+
+.markdown blockquote p {
+}
+/* syntax highlighting */
+.markdown .highlight {
+  background-color: #f0f0f0;
+  color: #000;
+  margin-bottom: 16px;
+  border-radius: 3px;
+}
+.markdown .highlight .invisible-character {
+  color: rgba(85,85,85,0.2);
+}
+.markdown .highlight .indent-guide {
+  color: rgba(85,85,85,0.2);
+}
+.markdown .highlight .wrap-guide {
+  background-color: rgba(85,85,85,0.2);
+}
+.markdown .highlight .gutter {
+  color: #000;
+  background: #fff;
+}
+.markdown .highlight .gutter .line-number.folded,
+.markdown .highlight .gutter .line-number:after,
+.markdown .highlight .fold-marker:after {
+  color: #e87b00;
+}
+.markdown .highlight .invisible {
+  color: #555;
+}
+.markdown .highlight .selection .region {
+  background-color: #e1e1e1;
+}
+.markdown .highlight.is-focused .cursor {
+  border-color: #000;
+}
+.markdown .highlight.is-focused .selection .region {
+  background-color: #afc4da;
+}
+.markdown .highlight.is-focused .line-number.cursor-line-no-selection,
+.markdown .highlight.is-focused .line.cursor-line {
+  background-color: rgba(255,255,134,0.34);
+}
+.markdown .highlight .source.gfm {
+  color: #444;
+}
+.markdown .highlight .gfm .markup.heading {
+  color: #111;
+}
+.markdown .highlight .gfm .link {
+  color: #888;
+}
+.markdown .highlight .gfm .variable.list {
+  color: #888;
+}
+.markdown .highlight .markdown .paragraph {
+  color: #444;
+}
+.markdown .highlight .markdown .heading {
+  color: #111;
+}
+.markdown .highlight .markdown .link {
+  color: #888;
+}
+.markdown .highlight .markdown .link .string {
+  color: #888;
+}
+.markdown .highlight(.is-focused) .cursor {
+  border-color: #000;
+}
+.markdown .highlight(.is-focused) .selection .region {
+  background-color: #afc4da;
+}
+.markdown .highlight(.is-focused) .line-number.cursor-line-no-selection,
+.markdown .highlight(.is-focused) .line.cursor-line {
+  background-color: rgba(255,255,134,0.34);
+}
+.markdown .comment {
+  color: #998;
+  font-style: italic;
+}
+.markdown .string {
+  color: #d14;
+}
+.markdown .string .source,
+.markdown .string .meta.embedded.line {
+  color: #5a5a5a;
+}
+.markdown .string .punctuation.section.embedded {
+  color: #920b2d;
+}
+.markdown .string .punctuation.section.embedded .source {
+  color: #920b2d;
+}
+.markdown .constant.numeric {
+  color: #d14;
+}
+.markdown .constant.language {
+  color: #606aa1;
+}
+.markdown .constant.character,
+.markdown .constant.other {
+  color: #606aa1;
+}
+.markdown .constant.symbol {
+  color: #990073;
+}
+.markdown .constant.numeric.line-number.find-in-files .match {
+  color: rgba(143,190,0,0.63);
+}
+.markdown .variable {
+  color: #008080;
+}
+.markdown .variable.parameter {
+  color: #606aa1;
+}
+.markdown .keyword {
+  color: #222;
+  font-weight: bold;
+}
+.markdown .keyword.unit {
+  color: #458;
+}
+.markdown .keyword.special-method {
+  color: #0086b3;
+}
+.markdown .storage {
+  color: #222;
+}
+.markdown .storage.type {
+  color: #222;
+}
+.markdown .entity.name.class {
+  text-decoration: underline;
+  color: #606aa1;
+}
+.markdown .entity.other.inherited-class {
+  text-decoration: underline;
+  color: #606aa1;
+}
+.markdown .entity.name.function {
+  color: #900;
+}
+.markdown .entity.name.tag {
+  color: #008080;
+}
+.markdown .entity.other.attribute-name {
+  color: #458;
+  font-weight: bold;
+}
+.markdown .entity.name.filename.find-in-files {
+  color: #e6db74;
+}
+.markdown .support.constant,
+.markdown .support.function,
+.markdown .support.type {
+  color: #458;
+}
+.markdown .support.class {
+  color: #008080;
+}
+.markdown .invalid {
+  color: #f8f8f0;
+  background-color: #00a8c6;
+}
+.markdown .invalid.deprecated {
+  color: #f8f8f0;
+  background-color: #8fbe00;
+}
+.markdown .meta.structure.dictionary.json > .string.quoted.double.json,
+.markdown .meta.structure.dictionary.json > .string.quoted.double.json .punctuation.string {
+  color: #000080;
+}
+.markdown .meta.structure.dictionary.value.json > .string.quoted.double.json {
+  color: #d14;
+}
+.markdown .meta.diff,
+.markdown .meta.diff.header {
+  color: #75715e;
+}
+.markdown .css.support.property-name {
+  font-weight: bold;
+  color: #d8d8d8;
+}
+.markdown .css.constant {
+  color: #099;
+}
+.markdown .bracket-matcher .region {
+  background-color: #c9c9c9;
+  opacity: 0.7;
+  border-bottom: 0 none;
+}
+.markdown a {
+  color: #faad14;
+}

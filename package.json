@@ -1,0 +1,73 @@
+{
+  "name": "gods-pen",
+  "version": "1.0.0",
+  "description": "gods-pen",
+  "Copyright": "",
+  "private": false,
+  "keywords": [],
+  "scripts": {
+    "start": "npm run editor:dev & npm run client:dev",
+    "editor:dev": "cross-env CODE_ENV=local PAGE=EDITOR vue-cli-service serve",
+    "client:dev": "cross-env CODE_ENV=local PAGE=CLIENT vue-cli-service serve",
+    "editor:build": "cross-env CODE_ENV=production PAGE=EDITOR vue-cli-service build",
+    "client:build": "cross-env CODE_ENV=production PAGE=CLIENT vue-cli-service build",
+    "editor:build-docker": "cross-env CODE_ENV=docker PAGE=EDITOR vue-cli-service build",
+    "client:build-docker": "cross-env CODE_ENV=docker PAGE=CLIENT vue-cli-service build"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.12.3",
+    "axios": "^0.18.0",
+    "babel-polyfill": "*",
+    "clipboard": "^2.0.0",
+    "element-ui": "^2.4.0",
+    "inversify": "^5.0.1",
+    "js-cookie": "^2.2.0",
+    "loader-utils": "^1.1.0",
+    "lodash": "^4.17.4",
+    "marked": "^0.4.0",
+    "mint-ui": "2.2.0",
+    "monaco-editor": "0.15.2",
+    "monaco-editor-webpack-plugin": "1.5.3",
+    "onigasm": "^2.2.1",
+    "oniguruma": "7.0.1",
+    "rider": "^2.0.0",
+    "vscode-textmate": "^4.0.1",
+    "vue": "2.5.9",
+    "vue-router": "2.4.0",
+    "vuex": "^2.0.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-plugin-eslint": "^3.1.1",
+    "@vue/cli-service": "^3.1.1",
+    "babel-eslint": "^10.0.1",
+    "cross-env": "^5.2.0",
+    "babel-plugin-import": "1.11.0",
+    "dotenv-webpack": "^1.5.7",
+    "eslint": "5.8.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^5.0.0-0",
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.1.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "ts-loader": "^5.3.0",
+    "typescript": "^3.1.6",
+    "vue-template-compiler": "2.5.9"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

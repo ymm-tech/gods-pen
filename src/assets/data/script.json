@@ -1,0 +1,4 @@
+[{
+  "name": "内部页面跳转",
+  "content": "var node = {\n    editorMethods: {\n      projectJump: {\n        label: '内部跳转',\n        params: [{\n          label: '跳转地址',\n          desc: '项目相对地址',\n          type: 'string',\n          default: ''\n        },{\n          label: '参数',\n          desc: 'query形式参数',\n          type: 'object',\n          default: {}\n        }]\n      }\n    },\n    methods:{\n        projectJump:function(path,query){\n            console.log(path,query)\n            this.$router.push({\n                path:path,\n                query:query\n            })\n        }\n    }\n}\nreturn node"
+}]

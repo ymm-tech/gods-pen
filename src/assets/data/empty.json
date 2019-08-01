@@ -1,0 +1,44 @@
+{
+    "id": "root",
+    "type": "truck/emptyContainer",
+    "visible": true,
+    "style": {
+      "background-color": "rgba(255,255,255,1)",
+      "min-height": "100%",
+      "height": "auto",
+      "width": "100%",
+      "position": "absolute"
+    },
+    "props": {},
+    "child": [{
+      "id": "truck/richtextj0n4g65h",
+      "type": "truck/richtext",
+      "label": "初次见面，请移除我",
+      "visible": true,
+      "path": "https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/truck/richtext/1.1.5/index.js",
+      "style": {
+        "position": "absolute",
+        "width": "219px",
+        "height": "80px",
+        "left": "62.203125px",
+        "top": "201.5px",
+        "background-image": "",
+        "right": "",
+        "bottom": ""
+      },
+      "animate": [],
+      "props": {
+        "text": "<p><span style=\"font-size: 54px; color: #ff0000;\">Hi, <span style=\"color: #666699;\">t</span></span><span style=\"font-size: 54px; color: #666699;\">here</span></p>"
+      },
+      "script": [],
+      "version": "1.1.5",
+      "events": [],
+      "url": "https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/truck/richtext/1.1.5/index.js"
+    }],
+    "script": [],
+    "animate": [],
+    "version": "1.0.2",
+    "path": "https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/truck/emptyContainer/1.0.2/index.js",
+    "events": [],
+    "label": "root"
+  }
