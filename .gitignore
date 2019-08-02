@@ -1,0 +1,17 @@
+*.log
+.cache
+.DS_Store
+.vscode/
+.idea/
+node_modules/
+dist/
+npm-debug.log
+npm-debug.log.*
+selenium-debug.log
+test/unit/coverage
+test/e2e/reports
+converage/
+ymm_build/
+yarn-error.log
+distzip/
+src/config/docker.js
