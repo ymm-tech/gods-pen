@@ -19,7 +19,21 @@
       "es6",
       "dom"
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    /**
+     * #6: fix Intellisense and go to definition for absolute path
+     * here you can learn more those links:
+     * 1. https://code.visualstudio.com/docs/languages/jsconfig
+     * 2. https://github.com/vuejs/vetur/blob/master/docs/setup.md#path-mapping
+     * 3. https://github.com/vuejs/vetur/issues/423#issuecomment-340235722
+     */
+    // see more: https://github.com/vuejs/vetur/blob/master/docs/setup.md#path-mapping
+    // This must be specified if "paths" is set
+    "baseUrl": ".",
+    // Relative to "baseUrl"
+    "paths": {
+      "src/*": ["./src/*"],
+    }
   },
   "plugins": [{
     "name": "tslint-language-service"
