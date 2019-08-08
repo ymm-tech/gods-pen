@@ -82,7 +82,7 @@ npm run client:build
 <img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564716741064.jpeg" width="350px">
 
 ### 微信
-<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564660273471.jpeg" width="350px">
+<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg" width="350px">
 
 
 
