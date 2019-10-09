@@ -10,7 +10,7 @@
 
 ##  :house: 官网
   
- 官网： https://godspen.ymm56.com/
+  官网： https://godspen.ymm56.com/
 
   使用手册： https://godspen.ymm56.com/doc/cookbook/introduce.html
 
@@ -35,7 +35,7 @@
 
 ## 码良现状
 
-码良发布于2018年3月初，截止2019年10月目前已经支撑运满满 2500多个活动页面。其间也得到了很多反馈、建议，以及bug报告，基于此，我们持续迭代，致力于提升操作效率，打磨用户体验。道阻且长，仍需努力。并在
+码良发布于2018年3月初，截止2019年10月目前已经支撑运满满 2500多个活动页面。其间也得到了很多反馈、建议，以及bug报告，基于此，我们持续迭代，致力于提升操作效率，打磨用户体验。道阻且长，仍需努力。 目前开源了编辑器相关的代码。预计在12月份开源后台相关代码。
 
 
 ## 组件功能扩展
@@ -98,10 +98,12 @@ npm run client:build
 |<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564716741064.jpeg" width="350px">|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=2" width="349px"><br>如果上面微信二维码过期。[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg)|
 
 
+## 支持我们
+ <p style="font-size:18px;" align="center">:point_right: `来都来了，加个关注再走吧` :point_left:</p>
+
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
-
-
 
 
