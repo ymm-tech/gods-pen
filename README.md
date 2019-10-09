@@ -22,7 +22,7 @@
 ![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/access/ymm_1539588655850.png)
 
 
- :point_right: 喜欢记得加star支持我们 :point_left:
+ <p style="font-size:18px;" align="center">:point_right: `喜欢别忘了加star支持我们` :point_left:</p>
 
 
 ## 码良是什么
@@ -35,12 +35,12 @@
 
 ## 码良现状
 
-码良发布于2018年3月初，截止2019年4月目前已经支撑运满满 1600多个活动页面。其间也得到了很多反馈、建议，以及bug报告，基于此，我们持续迭代，致力于提升操作效率，打磨用户体验。道阻且长，仍需努力。
+码良发布于2018年3月初，截止2019年10月目前已经支撑运满满 2500多个活动页面。其间也得到了很多反馈、建议，以及bug报告，基于此，我们持续迭代，致力于提升操作效率，打磨用户体验。道阻且长，仍需努力。并在
 
 
 ## 组件功能扩展
 每个特定功能的组件可以通过组合各种功能脚本来达到对组件功能的扩展。完成特定的功能，并友好的提供参数给到组件的使用者。
-![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/access/ymm_1570586704529.png)
+![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1570591673129.png)
 
 ## 组件动画展示
 运营活动对一些简单的动画提供支持，方便做一些入场和出场的动画，提升活动的交互感，我们使用了 animate.css 提供的一套css动画。下面提供简单的展示
@@ -93,11 +93,9 @@ npm run client:build
 
 ## 交流群
 
-### 钉钉
-<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564716741064.jpeg" width="350px">
-
-### 微信
-<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=1" width="349px">
+|钉钉 | 微信  |
+| ------------- | ----------- |
+|<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564716741064.jpeg" width="350px">|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=2" width="349px"><br>如果上面微信二维码过期。[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg)|
 
 
 ## License
