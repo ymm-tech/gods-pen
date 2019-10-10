@@ -95,7 +95,7 @@ npm run client:build
 
 |钉钉 | 微信  |
 | ------------- | ----------- |
-|<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564716741064.jpeg" width="350px">|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=2" width="349px"><br>如果上面微信二维码过期。[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg)|
+|<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1564716741064.jpeg" width="350px">|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=3" width="349px"><br>如果上面微信二维码过期。[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg) 添加的时候备注上 `码良`|
 
 
 ## 支持我们
