@@ -83,6 +83,18 @@ npm run editor:build
 npm run client:build
 ```
 
+### troubleshooting
+
+在 windows 系统上安装依赖时，如果缺少c++编译环境会报错
+
+![](https://cos.56qq.com/fis/201910121010326537220190b4d0131b.png)
+
+可以尝试全局安装 [windows-build-tools](https://www.npmjs.com/package/windows-build-tools)
+
+windows-build-tools 是一个 npm 包，可以一键安装 c++ 编译所需的 python27、Visual Studio、C++ Build Tool 等。
+
+>Both installations are conflict-free, meaning that they do not mess with existing installations of Visual Studio, C++ Build Tools, or Python
+
 ### 组件系统的核心逻辑
 
 ![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/access/ymm_1564657535536.jpg)
