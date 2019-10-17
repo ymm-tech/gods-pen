@@ -607,6 +607,17 @@
         var thisNode = this.$parent
         var parentNode = this.$parent.$parent || {}
         var size = dimensionAnyTopx(thisNode.$el, parentNode.$el)
+        var thisNodeStyle = thisNode.$el.style || window.getComputedStyle(thisNode.$el)
+        var hasTransform = (thisNodeStyle.getPropertyValue('transform') || 'none') !== 'none'
+        // 若此节点发生选择 会导致通过 getBoundingClientRect 获取的值发生变化  致使旋转后点击变大
+        // issue: https://github.com/ymm-tech/gods-pen/issues/18
+        if (hasTransform) {
+          // 发生了旋转
+          var properties = ['width', 'height', 'left', 'top', 'right', 'bottom']
+          properties.forEach(prop => {
+            size[prop] = parseFloat(thisNodeStyle.getPropertyValue(prop))
+          })
+        }
         this.startPos = {
           size: size.rect,
           parentSize: size.parentRect,
