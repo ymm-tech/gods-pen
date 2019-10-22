@@ -8,7 +8,7 @@
       <code-editor ctype='javascript' :ctrls='true' @ctrls='save' :options="{}" :contents.sync='content'></code-editor>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click.stop="close">取 消</el-button>
+      <el-button @click.stop="close">关 闭</el-button>
       <el-button @click.stop="saveTemp(content)">保存到脚本库</el-button>
       <el-button type="primary" @click.stop="save(content)">确 定</el-button>
     </span>
