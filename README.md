@@ -100,7 +100,7 @@ npm run client:build
 
 * [开篇: 码良的正确打开方式](https://github.com/ymm-tech/gods-pen/wiki/%E5%BC%80%E7%AF%87:-%E7%A0%81%E8%89%AF%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F)
 * [码良是如何设计高扩展的在线网页制作平台的](https://github.com/ymm-tech/gods-pen/wiki/%E7%A0%81%E8%89%AF%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF)
-* [神笔已开，我该如何使用](https://github.com/ymm-tech/gods-pen/wiki/%E7%A0%81%E8%89%AF%E6%88%91%E5%B7%B2%E7%BB%8F%E6%89%93%E5%BC%80%E4%BA%86%EF%BC%8C%E5%8F%AF%E6%98%AF%E5%88%B0%E5%BA%95%E6%80%8E%E4%B9%88%E7%94%A8)
+* [神笔已开，我该如何使用](https://github.com/ymm-tech/gods-pen/wiki/%E7%A5%9E%E7%AC%94%E5%B7%B2%E5%BC%80%EF%BC%8C%E6%88%91%E8%AF%A5%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8)
 
 
 ## 支持我们
