@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^10.12.3",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "babel-polyfill": "*",
     "clipboard": "^2.0.0",
     "element-ui": "2.4.11",
