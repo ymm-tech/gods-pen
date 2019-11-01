@@ -57,7 +57,7 @@ function trackPVTime (from) {
   console.log(from)
   var end = Date.now()
   var start = window.loadingStartTime
-  var route = window.location.pathname.match(new RegExp(`(?:/${config.VIEW_NAME || 'NA'})?/(\\w+)`))
+  var route = window.location.pathname.match(new RegExp(`(?:/${config.VIEW_NAME || 'view'})?/(\\w+)`))
   if (route && route[1]) {
     window.localStorage.setItem('ML_VIEW_TIME', route[1] + '|' + ((end - start) / 1000 | 0))
   }
