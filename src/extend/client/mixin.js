@@ -104,7 +104,9 @@ const mixin = {
       return text || this.$options.props[prop]['default']
 
       function baseGet(target = {}, path = '') {
-        path = String(path).trim().replace(/^\$scope\./, '')
+        path = String(path).trim()
+          .replace(/^\$scope\./, '')
+          .replace(/\[(\d+)\]/g, (m, p) => `.${p}`) // 适配Array取值 https://github.com/ymm-tech/gods-pen/issues/22
         var val
         try {
           val = path.split('.').reduce((a, b) => a && a[b], target)
