@@ -103,8 +103,7 @@ npm run client:build
 * [神笔已开，我该如何使用](https://github.com/ymm-tech/gods-pen/wiki/%E7%A5%9E%E7%AC%94%E5%B7%B2%E5%BC%80%EF%BC%8C%E6%88%91%E8%AF%A5%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8)
 
 
-## 支持我们
- 开源项目需要的是持续的坚持，而我们坚持的动力当然也来自于你们的支持，希望你  :point_right: `来都来了，加个关注再走吧` :point_left:
+
 
 
 ## 常见问题
@@ -132,5 +131,16 @@ npm run client:build
 |钉钉 | 微信  |
 | ------------- | ----------- |
 |<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1570850399387.JPG" width="350px"><div align="center"> 优先加钉钉群</div>|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=3" width="300px"><div align="center">如果上面微信二维码过期。[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg) 添加的时候备注上 `码良`我再邀请你进入群聊</div>|
+
+
+## 支持我们
+
+### 你可以打赏我们 来杯咖啡
+
+<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1572852703575.jpeg" width="350px">
+
+### 也可以加 star
+ 开源项目需要的是持续的坚持，而我们坚持的动力当然也来自于你们的支持，希望你  :point_right: `来都来了，加个关注再走吧` :point_left:
+
 
 
