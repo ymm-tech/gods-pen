@@ -146,4 +146,28 @@ if (window.EDIT_TYPE === undefined || window.EDIT_TYPE === null) {
       window.toast && window.toast.apply(window, arguments)
     },
     $confirm: function () {
-      window.confirm && window.confirm
+      window.confirm && window.confirm.apply(window, arguments)
+    },
+    $alert: function () {
+      window.alert && window.alert.apply(window, arguments)
+    },
+    $msgBox: function () {
+      window.msgBox && window.msgBox.apply(window, arguments)
+    },
+    $prompt: function () {
+      window.prompt && window.prompt.apply(window, arguments)
+    },
+    $loading: function () {
+      window.loading && window.loading()
+    },
+    $hideLoading: function () {
+      window.hideLoading ? window.hideLoading() : window.loading && window.loading(1)
+    },
+    $viewImg: function () {
+      window.viewImg && window.viewImg.apply(window, arguments)
+    }
+  }
+  Object.assign(mixin.methods, services)
+}
+
+export default mixin
