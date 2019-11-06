@@ -1,5 +1,10 @@
 import filters from './filters'
 
+// steal from 'ramda'
+function defaultTo(d, v) {
+  return v == null || v !== v ? d : v;
+}
+
 const mixin = {
   props: [],
   data: function () {
@@ -84,10 +89,10 @@ const mixin = {
           if (!isValue) {
             if (/^\$scope\./.test(val)) {
               // 由父节点传入数据 如列表容器
-              val = (this.scope && baseGet(this.scope, val)) || ''
+              val = this.scope && defaultTo('', baseGet(this.scope, val))
             } else {
               // 由数据总线获取数据
-              val = this.dataHubGet && this.dataHubGet(val) || ''
+              val = this.dataHubGet && defaultTo('', this.dataHubGet(val))
             }
           }
           // 过滤器
@@ -141,28 +146,4 @@ if (window.EDIT_TYPE === undefined || window.EDIT_TYPE === null) {
       window.toast && window.toast.apply(window, arguments)
     },
     $confirm: function () {
-      window.confirm && window.confirm.apply(window, arguments)
-    },
-    $alert: function () {
-      window.alert && window.alert.apply(window, arguments)
-    },
-    $msgBox: function () {
-      window.msgBox && window.msgBox.apply(window, arguments)
-    },
-    $prompt: function () {
-      window.prompt && window.prompt.apply(window, arguments)
-    },
-    $loading: function () {
-      window.loading && window.loading()
-    },
-    $hideLoading: function () {
-      window.hideLoading ? window.hideLoading() : window.loading && window.loading(1)
-    },
-    $viewImg: function () {
-      window.viewImg && window.viewImg.apply(window, arguments)
-    }
-  }
-  Object.assign(mixin.methods, services)
-}
-
-export default mixin
+      window.confirm && window.confirm
