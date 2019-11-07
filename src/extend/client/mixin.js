@@ -1,5 +1,10 @@
 import filters from './filters'
 
+// steal from 'ramda'
+function defaultTo(d, v) {
+  return v == null || v !== v ? d : v;
+}
+
 const mixin = {
   props: [],
   data: function () {
@@ -84,10 +89,10 @@ const mixin = {
           if (!isValue) {
             if (/^\$scope\./.test(val)) {
               // 由父节点传入数据 如列表容器
-              val = (this.scope && baseGet(this.scope, val)) || ''
+              val = this.scope && defaultTo('', baseGet(this.scope, val))
             } else {
               // 由数据总线获取数据
-              val = this.dataHubGet && this.dataHubGet(val) || ''
+              val = this.dataHubGet && defaultTo('', this.dataHubGet(val))
             }
           }
           // 过滤器
