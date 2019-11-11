@@ -2,7 +2,7 @@ import filters from './filters'
 
 // steal from 'ramda'
 function defaultTo(d, v) {
-  return v == null || v !== v ? d : v;
+  return v == null ? d : v
 }
 
 const mixin = {
