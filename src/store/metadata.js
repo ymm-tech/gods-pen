@@ -139,49 +139,58 @@ const map = {
       }
     ],
     borderStyle: [{
-        value: 'none',
-        desc: '定义无边框。'
-      },
+      label: '--无--',
+      value: 'none',
+      desc: '定义无边框。'
+    },
       {
-        value: 'hidden',
-        desc: '与 "none" 相同。不过应用于表时除外，对于表，hidden 用于解决边框冲突。'
-      },
-      {
-        value: 'dotted',
-        desc: '定义点状边框。在大多数浏览器中呈现为实线。'
-      },
-      {
-        value: 'dashed',
-        desc: '定义虚线。在大多数浏览器中呈现为实线。'
-      },
-      {
+        label: '实线',
         value: 'solid',
         desc: '定义实线。'
       },
       {
+        label: '虚线',
+        value: 'dashed',
+        desc: '定义虚线。在大多数浏览器中呈现为实线。'
+      },
+      // {
+      //   value: 'hidden',
+      //   desc: '与 "none" 相同。不过应用于表时除外，对于表，hidden 用于解决边框冲突。'
+      // },
+      {
+        label: '点状线',
+        value: 'dotted',
+        desc: '定义点状边框。在大多数浏览器中呈现为实线。'
+      },
+      {
+        label: '双划线',
         value: 'double',
         desc: '定义双线。双线的宽度等于 border-width 的值。'
       },
       {
+        label: '3D凹槽',
         value: 'groove',
         desc: '定义 3D 凹槽边框。其效果取决于 border-color 的值。'
       },
       {
+        label: '3D垄状',
         value: 'ridge',
         desc: '定义 3D 垄状边框。其效果取决于 border-color 的值。'
       },
       {
+        label: '3D内嵌',
         value: 'inset',
         desc: '定义 3D inset 边框。其效果取决于 border-color 的值。'
       },
       {
+        label: '3D外嵌',
         value: 'outset',
         desc: '定义 3D outset 边框。其效果取决于 border-color 的值。'
       },
-      {
-        value: 'inherit',
-        desc: '规定应该从父元素继承边框样式。'
-      }
+      // {
+      //   value: 'inherit',
+      //   desc: '规定应该从父元素继承边框样式。'
+      // }
     ],
     fontWeight: [{
         value: 'normal',
