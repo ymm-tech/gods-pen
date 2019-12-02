@@ -26,11 +26,16 @@
   .sliderWarp {
     display: flex;
 
+    >>> .el-form-item__content {
+      display: block;
+    }
+
     .nuit {
       width: 80px;
       display: inline-block;
       margin-right: 10px;
     }
+
     .input {
       display: inline-block;
       width: 100px;
@@ -39,9 +44,10 @@
     }
 
     .style-lock {
-      cursor pointer
+      cursor: pointer;
+
       .icon-lock {
-        opacity 0.5
+        opacity: 0.5;
       }
     }
 
@@ -54,7 +60,7 @@
 
 <script type="text/ecmascript-6">
   import BaseComponent from 'src/extend/BaseComponent'
-  import { isNullOrUndefined } from '../../assets/js/common'
+  import {isNullOrUndefined} from '../../assets/js/common'
   export default {
     mixins: [BaseComponent],
     name: 'num',

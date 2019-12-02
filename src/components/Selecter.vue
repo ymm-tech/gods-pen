@@ -39,6 +39,8 @@
     cursor: move;
     top: 0;
     left: 0;
+    border: 1px dashed #faad14;
+
     &.root-node {
       cursor: auto;
     }
@@ -107,7 +109,7 @@
   .eqc-select .line-w div {
     position: absolute;
     top: 50%;
-    left: -1px;
+    left: -2px;
     margin-top: -5px;
   }
 
@@ -118,6 +120,11 @@
     border: 1px solid #59c7f9;
     border-radius: 12px;
     display: block;
+    opacity: 0.2;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   .eqc-select .circle-center {
@@ -125,48 +132,43 @@
     right: 0;
     bottom: 0;
     left: 0;
-    // width: 24px;
-    // height: 24px;
     margin: auto;
     cursor: move;
 
-    // background-color #f0f
     .circle-center-point {
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
       margin: auto;
-      // cursor: pointer;
       position: absolute;
     }
 
     &.canDraged {
       .circle-center-point {
-        // cursor: pointer;
         background-color: red;
       }
     }
   }
 
   .eqc-select .circle-ne {
-    top: -5px;
+    top: -6px;
     right: -6px;
   }
 
   .eqc-select .circle-nw {
-    top: -5px;
-    left: -5px;
+    top: -6px;
+    left: -6px;
   }
 
   .eqc-select .circle-se {
-    bottom: -5px;
+    bottom: -6px;
     right: -6px;
   }
 
   .eqc-select .circle-sw {
-    bottom: -5px;
-    left: -5px;
+    bottom: -6px;
+    left: -6px;
   }
 
   .eqc-select .rotate-circle {
@@ -206,7 +208,7 @@
    * 元素选择后出现的选择框，方便控制拖拽，旋转等
    */
   import BaseComponent from 'src/extend/BaseComponent'
-  import {dimensionAnyTopx, isUnset} from '../assets/js/common'
+  import {dimensionAnyTopx, isUnset, getNoRotateBoundingClientRect} from '../assets/js/common'
 
   export default {
     mixins: [BaseComponent],
@@ -234,6 +236,9 @@
     },
     data: function () {
       return {
+        allRectProps: ['top', 'left', 'bottom', 'right', 'width', 'height'],
+        isSetArray: [],
+        isUnSetArray: [],
         rectangles: null, // 页面元素参考线集合
         sorbRectangles: {}, // 页面元素参考线集合
         isMoved: false,
@@ -280,6 +285,9 @@
         }
         this.rectangles = null
         this.doType = ''
+        if (!this.isRoot) {
+          this.setRectInfo(this.isSetArray, this.isUnSetArray)
+        }
         this.ema.fire('AssistLines.hide')
       })
       this.ema.bind('ui.mousemove', ev => {
@@ -563,17 +571,45 @@
             this.$set(style, 'transform', `rotateZ(${rotate}deg)`)
             break
         }
+        // 记录位置的6个属性，有那些属性是设置过值的。
+
         if (!isUnset(top)) style.top = top + 'px'
         if (!isUnset(left)) style.left = left + 'px'
         if (!isUnset(bottom)) style.bottom = bottom + 'px'
         if (!isUnset(right)) style.right = right + 'px'
         if (!isUnset(width)) style.width = width + 'px'
         if (!isUnset(height)) style.height = height + 'px'
+
+
         function ratioWH (w, h, r) {
           var wh = w / r // 宽对应的高
           var hw = h * r // 高对应的宽
           return [hw > w ? w : hw, wh > h ? h : wh] // width height
         }
+      },
+      setRectInfo (directions, isUnSetArray) {
+        var style = this.$parent.nodeInfo.style
+        let selfRect = getNoRotateBoundingClientRect(window.$vue.$el)
+        let parentRect = null
+        if (style.position == 'fixed') {
+          parentRect = getNoRotateBoundingClientRect(document.querySelector('#stage'))
+        } else {
+          if (window.$vue.$parent.nodeInfo) {
+            parentRect = getNoRotateBoundingClientRect(window.$vue.$parent.$el)
+          }
+        }
+        directions.forEach(direction => {
+          if (direction == 'height' || direction == 'width') {
+            this.$set(style, direction, `${Math.abs(selfRect[direction]).toFixed(2)}px`)
+          } else {
+            let dist = 0
+            dist = selfRect[direction] - parentRect[direction]
+            this.$set(style, direction, `${dist.toFixed(2)}px`)
+          }
+        })
+        isUnSetArray.forEach(direction => {
+          this.$delete(style, direction)
+        })
       },
       changeDraged: function () {
         // 移除小红点
@@ -603,21 +639,24 @@
       },
       mousedown: function (ev, type) {
         this.isMoved = false
+        // 记录定位信息那些属性设置过。那些没设置过
+        if (!this.isRoot) {
+          this.isSetArray = []
+          this.isUnSetArray = []
+          this.allRectProps.forEach(element => {
+            var style = this.$parent.nodeInfo.style
+            if (!isUnset(style[element])) {
+              this.isSetArray.push(element)
+            } else {
+              this.isUnSetArray.push(element)
+            }
+          })
+        }
         this.doType = type
         var thisNode = this.$parent
         var parentNode = this.$parent.$parent || {}
         var size = dimensionAnyTopx(thisNode.$el, parentNode.$el)
-        var thisNodeStyle = thisNode.$el.style || window.getComputedStyle(thisNode.$el)
-        var hasTransform = (thisNodeStyle.getPropertyValue('transform') || 'none') !== 'none'
-        // 若此节点发生选择 会导致通过 getBoundingClientRect 获取的值发生变化  致使旋转后点击变大
-        // issue: https://github.com/ymm-tech/gods-pen/issues/18
-        if (hasTransform) {
-          // 发生了旋转
-          var properties = ['width', 'height', 'left', 'top', 'right', 'bottom']
-          properties.forEach(prop => {
-            size[prop] = parseFloat(thisNodeStyle.getPropertyValue(prop))
-          })
-        }
+
         this.startPos = {
           size: size.rect,
           parentSize: size.parentRect,
@@ -635,7 +674,7 @@
           rightControl: size.rightControl,
           bottomControl: size.bottomControl,
         }
-        ;['left', 'top', 'height', 'width', 'right', 'bottom'].map(dis => {
+        this.allRectProps.map(dis => {
           let val = size[dis]
           if (dis == 'left' && size.rightControl) this.$set(thisNode.nodeInfo.style, 'left', null)
           else if (dis == 'top' && size.bottomControl) this.$set(thisNode.nodeInfo.style, 'top', null)

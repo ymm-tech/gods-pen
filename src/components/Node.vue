@@ -20,20 +20,20 @@
     position: relative;
     cursor: pointer;
     user-select: none;
-    font-size 16px;
+    font-size: 16px;
 
     &.active {
-      outline: 2px dashed #ff3c3c;
+      // outline: 1px dashed #faad14;
       // box-shadow: inset rgba(102, 88, 88, 0.43) 0px 0px 10px 0px;
     }
 
     &.dragentered {
-      outline: 2px dashed #ff3c3c;
+      outline: 1px dashed #faad14;
       box-shadow: rgba(102, 88, 88, 0.43) 0px 0px 10px 3px;
     }
 
     &.mouseovered {
-      // outline: 1px dotted red;
+      outline: 1px dotted #faad14;
       // box-shadow: rgba(102, 88, 88, 0.43) 0px 0px 10px 3px;
     }
 
@@ -44,17 +44,20 @@
       font-size: 12px;
       color: #dddddd;
     }
+
     > .node-divider {
       height: 10px;
-      position absolute;
+      position: absolute;
       left: 0;
       top: -5px;
+
       &.hover {
-        background rgba(255,0,0,0.5);
+        background: rgba(255, 0, 0, 0.5);
       }
     }
+
     > .type-icon {
-      position absolute;
+      position: absolute;
       right: 2px;
       top: 2px;
       width: 10px;
@@ -432,7 +435,7 @@
         // 通知所有节点被选中的是谁
         console.log('actived....', keepContextMenu, this.nodeInfo)
         if (this.nodeInfo.lock) {
-           this.$message({type: 'warning', message: '已被锁定，请先解锁'})
+          this.$message({type: 'warning', message: '已被锁定，请先解锁'})
         } else {
           this.ema.fire('select.one', this.nodeInfo.id, keepContextMenu)
         }

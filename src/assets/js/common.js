@@ -1,4 +1,4 @@
-function parseURL (url) {
+function parseURL(url) {
   var a = window.document.createElement('a')
   a.href = url
   return {
@@ -30,7 +30,7 @@ function parseURL (url) {
   }
 }
 
-function objectSetByPath (obj = {}, path = '', val) {
+function objectSetByPath(obj = {}, path = '', val) {
   path = path.split('.')
   let key = path.pop()
   let preObj = obj
@@ -47,7 +47,7 @@ function objectSetByPath (obj = {}, path = '', val) {
   return obj
 }
 
-function objectGetByPath (obj = {}, path = '') {
+function objectGetByPath(obj = {}, path = '') {
   var val
   try {
     val = path.split('.').reduce((a, b) => a && a[b], obj)
@@ -57,10 +57,10 @@ function objectGetByPath (obj = {}, path = '') {
   return val
 }
 
-function modifyNodeId (tree, idCache = [], exclude = [], key = 'id', childKey = 'child') {
+function modifyNodeId(tree, idCache = [], exclude = [], key = 'id', childKey = 'child') {
   var localIdCache = []
 
-  function random (node) {
+  function random(node) {
     var child = node[childKey]
     if (child && child.length) {
       child = child.map(child => random(child))
@@ -73,11 +73,11 @@ function modifyNodeId (tree, idCache = [], exclude = [], key = 'id', childKey = 
     return node
   }
 
-  function isInclude (arr, el) {
+  function isInclude(arr, el) {
     return arr.indexOf(el) > -1
   }
 
-  function genKey (base) {
+  function genKey(base) {
     var key
     while (!(key && !isInclude(localIdCache, key))) {
       key = `${base || ''}${(Math.random() * 1296 | 0).toString(32)}` // 两位32进制数
@@ -87,7 +87,71 @@ function modifyNodeId (tree, idCache = [], exclude = [], key = 'id', childKey = 
   return random(tree)
 }
 
-function dimensionAnyTopx (el, parent) {
+/**
+ * 获取Dom节点相对于页面的位置 TOP LEFT
+ * @param {DOM}} node 
+ */
+function getNodePosition(node) {
+  var _node = node
+  var top = 0
+  var left = 0
+  var elPosition = node.style.position || window.getComputedStyle(node).position
+  if (elPosition === 'fixed') {
+    var stageRect = getNoRotateBoundingClientRect(document.getElementById('stage'))
+    top = stageRect.top
+    left = stageRect.left
+  }
+
+  while (node) {
+    if (node.tagName) {
+      top = top + node.offsetTop + node.clientTop
+      left = left + node.offsetLeft + node.clientLeft
+      node = node.offsetParent
+    } else {
+      node = node.parentNode
+    }
+  }
+  return {
+    top: top - _node.clientTop,
+    left: left - _node.clientLeft
+  }
+}
+/**
+ * 获取一个元素在忽略旋转后的相对页面的位置信息
+ * @param {DOM}} el 
+ */
+function getNoRotateBoundingClientRect(el) {
+  let innerWidth = window.innerWidth
+  let innerHeight = window.innerHeight
+  let topAndLeft = getNodePosition(el)
+  var margins = getMargins(el)
+  if (el.id == 'stage') {
+    margins = {
+      marginTop: 0,
+      marginRight: 0,
+      marginBottom: 0,
+      marginLeft: 0
+    }
+  }
+  var pos = {
+    bottom: innerHeight - el.offsetHeight - topAndLeft.top - margins.marginBottom,
+    height: el.offsetHeight,
+    left: topAndLeft.left - margins.marginLeft,
+    right: innerWidth - topAndLeft.left - el.offsetWidth - margins.marginRight,
+    top: topAndLeft.top - margins.marginTop,
+    width: el.offsetWidth,
+    x: topAndLeft.left,
+    y: topAndLeft.top
+  }
+  return pos
+}
+
+/**
+ * 获取一个元素相对父元素的定位信息。如果该元素是fixed定位。获取的就是相对舞台的定位信息
+ * @param {DOM} el 
+ * @param {DOM} parent 
+ */
+function dimensionAnyTopx(el, parent) {
   if (!el || !parent) {
     return {
       width: 0,
@@ -96,11 +160,13 @@ function dimensionAnyTopx (el, parent) {
       top: 0
     }
   }
+  // 若此节点发生选择 会导致通过 getBoundingClientRect 获取的值发生变化  致使旋转后点击变大
+  // issue: https://github.com/ymm-tech/gods-pen/issues/18
   var elPosition = el.style.position || window.getComputedStyle(el).position
-  var margins = getMargins(el)
   var isRoot = parent.getAttribute('id') == 'appWarp'
   if (isRoot || elPosition === 'fixed') parent = document.getElementById('stage')
-  var [parentRect, rect] = [parent, el].map(el => el.getBoundingClientRect())
+  var [parentRect, rect] = [parent, el].map(el => getNoRotateBoundingClientRect(el))
+  console.log(parentRect, rect)
   var dimension = {
     left: null,
     top: null,
@@ -118,32 +184,32 @@ function dimensionAnyTopx (el, parent) {
       dimension.top = pos.top
       break
     case 'absolute':
-      dimension.left = rect.left - parentRect.left - margins.marginLeft 
-      dimension.top = rect.top - parentRect.top - margins.marginTop
+      dimension.left = rect.left - parentRect.left
+      dimension.top = rect.top - parentRect.top
       break
     case 'fixed':
-      dimension.left = rect.left - parentRect.left - margins.marginLeft 
-      dimension.top = rect.top - parentRect.top - margins.marginTop  
+      dimension.left = rect.left - parentRect.left
+      dimension.top = rect.top - parentRect.top
+      dimension.right = rect.right - parentRect.right
+      dimension.bottom = rect.bottom - parentRect.bottom
+
       if (!isUnset(el.style.right)) {
-        dimension.right = parentRect.right - rect.right - margins.marginRight
-        dimension.left = null
         dimension.rightControl = true
       }
       if (!isUnset(el.style.bottom)) {
-        dimension.bottom = parentRect.bottom - rect.bottom - margins.marginBottom
-        dimension.top = null
         dimension.bottomControl = true
       }
       break
   }
+  console.log(dimension)
   return dimension
 }
 
-function isUnset (val) {
+function isUnset(val) {
   return val === 'unset' || val === 'initial' || isNaN(parseFloat(val)) || isNullOrUndefined(val)
 }
 
-function calcRelativePos (el, parent) {
+function calcRelativePos(el, parent) {
   var style = window.getComputedStyle(el)
   var parentSize = parent.getBoundingClientRect()
   var pos = {
@@ -160,7 +226,7 @@ function calcRelativePos (el, parent) {
   }
   return pos
 
-  function toPx (val, bounding) {
+  function toPx(val, bounding) {
     bounding = parseInt(bounding)
     if (val == 'auto' || !val) return 0
     if (/%$/.test(val)) return (bounding * parseFloat(val) / 100) | 0
@@ -168,7 +234,7 @@ function calcRelativePos (el, parent) {
   }
 }
 
-function getMargins (el) {
+function getMargins(el) {
   return ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'].reduce((o, v) => {
     var val = window.getComputedStyle(el)[v]
     o[v] = parseFloat(val) || 0
@@ -176,23 +242,25 @@ function getMargins (el) {
   }, {})
 }
 
-function isNullOrUndefined (arg) {
+function isNullOrUndefined(arg) {
   return arg === null || arg === undefined
 }
 
-function isFalsy (arg) {
+function isFalsy(arg) {
   return isNullOrUndefined(arg) || arg === ''
 }
 
-function toSafeNumber (a, e = Number.MAX_VALUE) {
+function toSafeNumber(a, e = Number.MAX_VALUE) {
   return a === 0 || a === '0' ? 0 : !a || isNaN(Number(a)) ? e : Number(a)
 }
 
-function sleep (ts) {
+function sleep(ts) {
   return new Promise(resolve => setTimeout(resolve, ts))
 }
 
-function fetch (url, {method='get'} = {}) {
+function fetch(url, {
+  method = 'get'
+} = {}) {
   return new Promise((resolve, reject) => {
     var req = new XMLHttpRequest()
     req.onload = () => {
@@ -222,6 +290,7 @@ export {
   sleep,
   modifyNodeId,
   toSafeNumber,
+  getNoRotateBoundingClientRect,
   fetch
 }
 
@@ -236,5 +305,6 @@ export default {
   objectGetByPath,
   modifyNodeId,
   toSafeNumber,
+  getNoRotateBoundingClientRect,
   fetch
 }

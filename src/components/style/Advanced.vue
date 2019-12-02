@@ -1,43 +1,50 @@
 <template>
   <div class="styleEditor">
-    <el-tabs class='style-tab tab' v-model="activeName">
+    <div class="style-tab tab">
       <template v-if="flutter">
-        <el-tab-pane  label="flutter 模式" name="flutter">
+        <div  label="flutter 模式" name="flutter">
           <editor-flutter :node-id='nodeId' :info="info"></editor-flutter>
-        </el-tab-pane>
+        </div>
       </template>
       <template v-if="!flutter">
-        <el-tab-pane label="基础模式" name="base">
+        <div v-if="styleType=='editer'" label="设计模式" name="base">
           <editor-base :node-id='nodeId' :info="info"></editor-base>
-        </el-tab-pane>
-        <el-tab-pane label="高级模式" name="first">
-          <el-collapse v-model="activeNames">
-            <el-collapse-item class='collapseItem' v-for="(item,key) in lists" :key='key' :name="key">
-              <template slot="title" class=''>
-                {{item.label}}
-              </template>
-              <component :is="item.component" :info="info"></component>
-            </el-collapse-item>
-          </el-collapse>
-        </el-tab-pane>
-        <el-tab-pane label="代码" name="second" lazy>
+        </div>
+        <div class="cssEditorWarp" v-if="styleType=='code'" label="代码模式" name="second" lazy>
           <code-editor class='cssEditor' ctype='css' :contents.sync='cssCode'></code-editor>
           <el-button type="primary" class="save" @click="saveCss">保存</el-button>
-        </el-tab-pane>
+        </div>
+        <a class="codeBtn" @click="changeStyleType"> 打开{{styleType=='editer'?'代码模式':'设计模式'}} </a>
       </template>
-    </el-tabs>
+    </div>
   </div>
 </template>
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
   .styleEditor {
-    height 100%
+    height: 100%;
     padding: 0 10px;
 
-    .style-tab {
-      height 100%
-      display flex
-      flex-direction column
+    >>> .el-collapse-item__content {
+      padding-bottom: 10px;
     }
+
+    >>> .el-collapse-item__header {
+      height: 40px;
+    }
+
+    .codeBtn {
+      padding: 30px 20px;
+      text-align: center;
+      color: #faad14;
+      font-size: 12px;
+    }
+
+    .style-tab {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
     .save {
       width: 50%;
       margin: 10px auto;
@@ -54,9 +61,15 @@
       top: 18px;
     }
 
-    .cssEditor {
-      height: 300px;
-      width: 100%;
+    .cssEditorWarp {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      .cssEditor {
+        width: 100%;
+        flex: 1;
+      }
     }
   }
 </style>
@@ -92,6 +105,7 @@
     data: function () {
       return {
         activeName: 'base',
+        styleType: 'editer',
         cssCode: '',
         lists: [{
           label: '对齐',
@@ -150,9 +164,18 @@
       }
     },
     mounted: function () {
+      this.styleType = window.localStorage.getItem('styleEditerType') || 'editer'
       this.makeCssCode()
     },
     methods: {
+      changeStyleType: function () {
+        if (this.styleType == 'editer') {
+          this.styleType = 'code'
+        } else {
+          this.styleType = 'editer'
+        }
+        window.localStorage.setItem('styleEditerType', this.styleType)
+      },
       makeCssCode: function () {
         var style = []
         if (this.info) {
