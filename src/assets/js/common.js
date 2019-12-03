@@ -92,28 +92,15 @@ function modifyNodeId(tree, idCache = [], exclude = [], key = 'id', childKey = '
  * @param {DOM}} node 
  */
 function getNodePosition(node) {
-  var _node = node
-  var top = 0
-  var left = 0
-  var elPosition = node.style.position || window.getComputedStyle(node).position
-  if (elPosition === 'fixed') {
-    var stageRect = getNoRotateBoundingClientRect(document.getElementById('stage'))
-    top = stageRect.top
-    left = stageRect.left
-  }
-
-  while (node) {
-    if (node.tagName) {
-      top = top + node.offsetTop + node.clientTop
-      left = left + node.offsetLeft + node.clientLeft
-      node = node.offsetParent
-    } else {
-      node = node.parentNode
-    }
+  var pos = node.getBoundingClientRect()
+  //变换简单处理，计算一个元素在旋转之前相对根节点的top left
+  var centerPoint = {
+    x: pos.left + pos.width / 2,
+    y: pos.top + pos.height / 2
   }
   return {
-    top: top - _node.clientTop,
-    left: left - _node.clientLeft
+    top: centerPoint.y - node.offsetHeight / 2,
+    left: centerPoint.x - node.offsetWidth / 2,
   }
 }
 /**
