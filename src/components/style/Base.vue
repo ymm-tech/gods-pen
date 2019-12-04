@@ -9,7 +9,7 @@
           <el-form-item label="高">
             <num :styleAttr.sync="info.height"></num>
           </el-form-item>
-          <editor-position v-show="!isRootNode" :info="info"></editor-position>
+            <editor-position v-if="isShowPosiition" :info="info"></editor-position>
           <el-form-item label="透明度">
             <div class="sliderWarp">
             <el-slider class="slider" size="mini" :min="0" :max="1" v-model.number="info.opacity" :step="0.1"></el-slider>
@@ -85,7 +85,7 @@
             <el-input class="input" type='number' :min="0" :max="25" :step='1' size="mini" v-model.number="style.padding" placeholder="0-25"></el-input>
             </div>
           </el-form-item>
-          <el-form-item label="外边距" v-if="hasShowMargin">
+          <el-form-item label="外边距" v-if="!fixedOrAbsolute">
             <div class="sliderWarp">
             <el-slider class="slider" size="mini" :min="0" :max="25" v-model.number="style.margin" :step="1"></el-slider>
             <el-input class="input" type='number' :min="0" :max="25" :step='1' size="mini" v-model.number="style.margin" placeholder="0-25"></el-input>
@@ -143,7 +143,7 @@
     },
     data: function () {
       return {
-        isRootNode: true,
+        isShowPosiition: false,
         activeNames: ['size', 'border', 'align', 'background', 'border', 'boxShadow', 'margin', 'text'],
         style: {
           borderStyle: 'none',
@@ -161,11 +161,11 @@
       }
     },
     computed: {
-      hasShowMargin () {
+      fixedOrAbsolute () {
         if (this.info.position && (this.info.position == 'fixed' || this.info.position == 'absolute')) {
-          return false
-        } else {
           return true
+        } else {
+          return false
         }
       }
     },
@@ -229,14 +229,14 @@
         deep: true,
         handler: function (newVal, oldVal) {
           if (newVal.opacity === '') newVal.opacity = 0
-          this.isRootNode = window.$vue && window.$vue.isRootNode
+          this.isShowPosiition = window.$vue && !window.$vue.isRootNode && this.fixedOrAbsolute
           this.makeCssCode()
         },
         immediate: true
       },
     },
     mounted: function () {
-      this.isRootNode = window.$vue && window.$vue.isRootNode
+      this.isShowPosiition = window.$vue && !window.$vue.isRootNode && this.fixedOrAbsolute
       this.style = {
         borderWidth: this.info['border-width'] ? parseFloat(this.info['border-width']) : 0,
         borderRadius: this.info['border-radius'] ? parseFloat(this.info['border-radius']) : 0,

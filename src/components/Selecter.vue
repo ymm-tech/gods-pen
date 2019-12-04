@@ -120,7 +120,7 @@
     border: 1px solid #59c7f9;
     border-radius: 12px;
     display: block;
-    opacity: 0.2;
+    opacity: 0.5;
 
     &:hover {
       opacity: 1;
@@ -573,12 +573,13 @@
         }
         // 记录位置的6个属性，有那些属性是设置过值的。
 
-        if (!isUnset(top)) style.top = top + 'px'
-        if (!isUnset(left)) style.left = left + 'px'
-        if (!isUnset(bottom)) style.bottom = bottom + 'px'
-        if (!isUnset(right)) style.right = right + 'px'
-        if (!isUnset(width)) style.width = width + 'px'
-        if (!isUnset(height)) style.height = height + 'px'
+        if (!isUnset(top)) this.$set(style, 'top', top + 'px')
+        if (!isUnset(left)) this.$set(style, 'left', left + 'px')
+        if (!isUnset(bottom)) this.$set(style, 'bottom', bottom + 'px')
+        if (!isUnset(right)) this.$set(style, 'right', right + 'px')
+        if (!isUnset(width)) this.$set(style, 'width', width + 'px')
+        if (!isUnset(height)) this.$set(style, 'height', height + 'px')
+
 
 
         function ratioWH (w, h, r) {
@@ -589,6 +590,9 @@
       },
       setRectInfo (directions, isUnSetArray) {
         var style = this.$parent.nodeInfo.style
+        if (style.position == 'relative') {
+          return
+        }
         let selfRect = getNoRotateBoundingClientRect(window.$vue.$el)
         let parentRect = null
         if (style.position == 'fixed') {

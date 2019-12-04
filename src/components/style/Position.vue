@@ -14,7 +14,7 @@
             class="input top-input small"
             size="mini"
             tabindex="-1"
-            :value="info.top"
+            v-model="info.top"
             v-show="notEmpty(info.top)"
             title="本节点顶边和父节点顶边的距离，可输入负值，默认单位为像素（px），也可以输入百分比，根据父节点 height 和百分比数值计算出距离"
           ></el-input>
@@ -31,7 +31,7 @@
             >左</el-checkbox>
             <el-input
               v-show="notEmpty(info.left)"
-              :value="info.left"
+              v-model="info.left"
               class="input bottom-input small"
               tabindex="-1"
               size="mini"
@@ -83,7 +83,7 @@
               tabindex="-1"
               size="mini"
               v-show="notEmpty(info.right)"
-              :value="info.right"
+              v-model="info.right"
               title="本节点右边和父节点右边的距离，可输入负值，默认单位为像素（px），也可以输入百分比，根据父节点 width 和百分比数值计算出距离"
               style=""
             ></el-input>
@@ -103,7 +103,7 @@
             size="mini"
             tabindex="-1"
             v-show="notEmpty(info.bottom)"
-            :value="info.bottom"
+            v-model="info.bottom"
             title="本节点底边和父节点底边的距离，可输入负值，默认单位为像素（px），也可以输入百分比，根据父节点 height 和百分比数值计算出距离"
           ></el-input>
         </div>
