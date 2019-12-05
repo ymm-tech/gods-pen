@@ -1,5 +1,8 @@
 import plupload from 'plupload'
-import {getBlobBydataURI, readAsDataURL} from './Util'
+import {
+  getBlobBydataURI,
+  readAsDataURL
+} from './Util'
 import Server from '../extend/Server'
 var getUploadConfig = function (callback) {
   Server({
@@ -50,8 +53,8 @@ var UploadImage = function ({
     prevent_duplicates: true,
     max_file_size: '100mb',
     init: {
-      PostInit () {},
-      FilesAdded (up, files) {
+      PostInit() {},
+      FilesAdded(up, files) {
         if (uploadControll) {
           return false
         }
@@ -73,25 +76,25 @@ var UploadImage = function ({
           })
         }
       },
-      BeforeUpload (up, file) {},
-      UploadProgress (up, file) {},
-      FileUploaded (up, file, info) {
+      BeforeUpload(up, file) {},
+      UploadProgress(up, file) {},
+      FileUploaded(up, file, info) {
         if (info.status === 200) {
           me.imgSrc = me.imgSrc.replace('ymm.oss-cn-hangzhou.aliyuncs.com', 'imagecdn.ymm56.com')
           callback(me.imgSrc)
         } else {}
         uploadControll = false
       },
-      Error (up, err) {}
+      Error(up, err) {}
     }
   })
   this.uploader.init()
 }
 
 UploadImage.prototype.send = function (name) {
-  name = name || 'ymm' + new Date().getTime() + '.png'
+  var fileName = name || 'ymm' + new Date().getTime() + '.png'
   getUploadConfig((configUplaod) => {
-    configUplaod.key = configUplaod.dir + 'resource/' + name
+    configUplaod.key = configUplaod.dir + 'resource/' + fileName
     this.imgSrc = configUplaod.host + '/' + configUplaod.key
     let newMultipartParams = {
       'key': configUplaod.key,

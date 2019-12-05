@@ -28,6 +28,8 @@
     width: 100%;
     text-align: center;
     border: 1px solid #dddddd;
+    height: 400px;
+    overflow: auto;
 
     img {
       max-width: 320px;
