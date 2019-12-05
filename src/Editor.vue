@@ -366,23 +366,23 @@
         this.ema.fire('pageInfo.save')
       },
       savePage () {
-        // if (this.demoMode) return this.$alert('您处在demo模式下，不能保存数据哦')
-        // var info = Object.assign({}, this.pageInfo)
-        // info.content = window.localStorage.getItem(this.STORAGE_KEY)
-        // console.log(info)
-        // Server({
-        //   url: 'editor/pages/save',
-        //   method: 'post', // default
-        //   needLoading: true,
-        //   data: info
-        // }).then(({data}) => {
-        //   let code = data.code
-        //   let msg = data.msg
-        //   if (code == 500) return this.$alert(msg)
-        //   this.$message({type: 'success', message: '保存成功'})
-        // }).catch((respond) => {
-        //   this.$message({type: 'success', message: '保存失败'})
-        // })
+        if (this.demoMode) return this.$alert('您处在demo模式下，不能保存数据哦')
+        var info = Object.assign({}, this.pageInfo)
+        info.content = window.localStorage.getItem(this.STORAGE_KEY)
+        console.log(info)
+        Server({
+          url: 'editor/pages/save',
+          method: 'post', // default
+          needLoading: true,
+          data: info
+        }).then(({data}) => {
+          let code = data.code
+          let msg = data.msg
+          if (code == 500) return this.$alert(msg)
+          this.$message({type: 'success', message: '保存成功'})
+        }).catch((respond) => {
+          this.$message({type: 'success', message: '保存失败'})
+        })
         this.savePagePreviewImage()
       },
       savePagePreviewImage () {
