@@ -9,7 +9,7 @@
     <!-- 弹出框 -->
     <c-dialogs></c-dialogs>
     <div :data-clipboard-text="clipboardContent" style="width:0;height:0;" ref="clipboard"></div>
-    <upload-image ref="screenshot"></upload-image>
+    <upload-image :h2c="{scale:1}" ref="screenshot" :key="screenshotKey" v-if="screenshotKey!=null" ></upload-image>
     <bughd></bughd>
   </div>
 </template>
@@ -30,7 +30,7 @@
   import Clipboard from 'clipboard'
   import Tips from './components/Tips'
   import myheader from './components/Header'
-  import { mapState } from 'vuex'
+  import {mapState} from 'vuex'
   require('src/extend/filter')
   let config = require('./config/index.js')
 
@@ -164,19 +164,7 @@
           console.log('save---------', this.nodeInfo)
           this.doSave(this.nodeInfo, true)
           if (this.demoMode) return this.$alert('您处在 demo 模式下，不能保存数据哦')
-          if (fast) {
-            this.savePage()
-          } else {
-            this.openDialog({
-              name: 'd-savePageOrTemplate',
-              data: {
-                title: '页面保存',
-                saveType: 1,
-                pageInfo: Object.assign({}, this.pageInfo)
-              },
-              methods: {}
-            })
-          }
+          this.savePage()
         })
         // 绑定组件点击添加组件到根元素
         this.ema.bind('commponent.addOne', menu => {
@@ -202,17 +190,6 @@
           }
           selectNode.child.push(nodeInfo)
         })
-        // 保存模板
-        this.ema.bind('pageInfo.saveTemp', () => {
-          this.openDialog({
-            name: 'd-savePageOrTemplate',
-            data: {
-              title: '模板保存',
-              saveType: 2,
-            },
-            methods: {}
-          })
-        })
         // 复制事件
         window.Clipboard = Clipboard
         new Clipboard(this.$refs['clipboard'])
@@ -228,6 +205,7 @@
         })
         // 截图服务
         this.ema.bind('screenshot', (el, options, callback, needLoading = true) => {
+          this.screenshotKey = Math.random().toFixed(10)
           let loading = needLoading && this.$loading({
             lock: true,
             text: '稍等片刻',
@@ -236,6 +214,7 @@
             this.$refs['screenshot'].upload(el, options, function () {
               loading && loading.close()
               callback.apply(null, arguments)
+              this.screenshotKey = null
             })
           }, 100) // 不加延时加载,loading效果不能立即触发
         })
@@ -403,6 +382,23 @@
         }).catch((respond) => {
           this.$message({type: 'success', message: '保存失败'})
         })
+       this.savePagePreviewImage()
+      },
+      savePagePreviewImage () {
+        var urlInfo = common.parseURL(window.location.href)
+        this.ema.fire('screenshot', document.querySelector('#stage'), {height: 486, fileName: urlInfo.params.key + '.jpg'}, (src) => {
+          console.log('screenshot', src)
+          var info = Object.assign({}, this.pageInfo)
+          info.image = src
+          Server({
+            url: 'editor/pages/save',
+            method: 'post', // default
+            needLoading: true,
+            data: info
+          }).then(({data}) => {
+          }).catch((respond) => {
+          })
+        }, false)
       },
       async publish () {
         if (this.demoMode) return this.$alert('您处在 demo 模式下，不能保存数据哦')
@@ -481,9 +477,8 @@
   }
 
   // .el-tabs__item {
-  //   float: left;
+  // float: left;
   // }
-
   .editorWarp {
     width: 100%;
     height: 100%;
@@ -574,54 +569,65 @@
       margin: 5px;
     }
   }
+
   .el-tabs__header {
     .el-tabs__nav-wrap {
       .el-tabs__nav-next, .el-tabs__nav-prev {
-        line-height 29px;
+        line-height: 29px;
       }
+
       &.is-scrollable {
-        padding 0 16px;
+        padding: 0 16px;
       }
     }
   }
+
   .ui-dock-panel > div > .el-tabs__header {
     padding-right: 22px;
-    box-shadow inset 0 -1px 1px 0px #000
+    box-shadow: inset 0 -1px 1px 0px #000;
   }
+
   .ui-dock-panel {
     .el-tabs--border-card > .el-tabs__header {
-      border-bottom none
+      border-bottom: none;
     }
+
     .el-tabs--border-card > .el-tabs__header .el-tabs__item {
-    border none
+      border: none;
     }
+
     .el-tabs__nav-wrap {
-      margin-bottom 0
+      margin-bottom: 0;
     }
   }
+
   .editorWarp {
     .el-collapse-item__wrap {
       border-bottom: 1px solid #000000;
       box-shadow: 0 2px 1px -2px #fff;
     }
+
     .el-collapse-item__header {
       border-bottom: 1px solid #000000;
       box-shadow: 0 2px 1px -2px #fff;
+
       &.is-active {
-        border-bottom-color: transparent
-        box-shadow: none
+        border-bottom-color: transparent;
+        box-shadow: none;
       }
     }
+
     .el-collapse {
-      border: none
+      border: none;
     }
+
     .el-input__inner {
-      box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.6);
+      box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6);
     }
+
     .el-tabs__nav-wrap::after {
       background-color: #000000;
       box-shadow: inset 1px -3px 0px -2px #656565;
     }
   }
-
 </style>

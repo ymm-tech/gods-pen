@@ -1,15 +1,14 @@
 <template>
-  <el-button :size="size" id="virtualUpload" v-show="showBtn" type="primary">上传
+  <el-button :size="size" id="virtualUpload"  v-show="showBtn" type="primary">上传
     <i class="el-icon-upload el-icon--right"></i>
   </el-button>
 </template>
-<style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
-</style>
+<style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus"></style>
 <script type="text/ecmascript-6">
   /**
    * 选择图片上传组件
    */
-  import {html2canvas, getBlobBydataURI} from 'src/extend/Util'
+  import Util from 'src/extend/Util'
   import UploadImg from 'src/extend/UploadImg'
   import BaseComponent from 'src/extend/BaseComponent'
 
@@ -43,7 +42,7 @@
        */
       accept: {
         type: String,
-        default: ''
+        default: 'image'
       },
       /**
        * 是否选择图片否自动上传
@@ -111,26 +110,34 @@
       upload: function (dom, options, callback) {
         this.options = options || null
         this.onUploaded = callback || null
+        var fileName = this.options['fileName']
         dom = dom || document.querySelector(this.templateElement)
         this.getImageDataByDom(dom, (dataUrl) => {
-          this.uploadImg(dataUrl)
+          this.uploadImg(dataUrl, fileName)
         })
       },
       /**
        * 上传图片
        * @augments dataUrl String 图片的base64字符串
        */
-      uploadImg (dataUrl) {
-        let name = 'ymm' + new Date().getTime() + '.png'
+      uploadImg (dataUrl, fileName) {
+        let name = fileName || ('ymm' + new Date().getTime() + '.png')
         let me = this
-        var files = new window.File([getBlobBydataURI(dataUrl, 'image/png')], name, {
+        var files = new window.File([Util.getBlobBydataURI(dataUrl, 'image/png')], name, {
           type: 'image/png',
         })
         me.uploadObject.uploader.addFile(files)
-        me.uploadObject.send()
+        me.uploadObject.send(name)
       },
       getImageDataByDom (dom, callback) {
-        html2canvas(dom, this.h2c).then(canvas => {
+        this.h2c.ignoreElements = function (element) {
+          if (element.hasAttribute('ignorehtml2canvas')) {
+            return true
+          } else {
+            return false
+          }
+        }
+        Util.html2canvas(dom, this.h2c).then(canvas => {
           var dataUrl = canvas.toDataURL()
           callback && callback(dataUrl)
         })

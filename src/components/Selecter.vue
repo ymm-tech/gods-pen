@@ -1,5 +1,5 @@
 <template>
-  <div class="eqc-select ng-isolate-scope" :class="{'root-node': isRoot}" v-if="visible" @mousedown="mousedown($event,'m')">
+  <div ignorehtml2canvas class="eqc-select ng-isolate-scope" :class="{'root-node': isRoot}" v-if="visible" @mousedown="mousedown($event,'m')">
     <template v-if='isRoot'>
       <div class="line-s line resizable">
         <div class="circle" @mousedown.stop="mousedown($event,'s')" v-show="show.s" style="cursor: ns-resize;"></div>
