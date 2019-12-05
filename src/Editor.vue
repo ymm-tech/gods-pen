@@ -40,6 +40,7 @@
     components: {CDialogs, UploadImage, ContextMenu, UiDock, Tips, myheader, Bughd},
     data: function () {
       return {
+        screenshotKey: null,
         layoutData: null,
         nodeInfo: null,
         pageInfo: null,
@@ -163,7 +164,7 @@
         this.ema.bind('pageInfo.save', (fast) => {
           console.log('save---------', this.nodeInfo)
           this.doSave(this.nodeInfo, true)
-          if (this.demoMode) return this.$alert('您处在 demo 模式下，不能保存数据哦')
+          // if (this.demoMode) return this.$alert('您处在 demo 模式下，不能保存数据哦')
           this.savePage()
         })
         // 绑定组件点击添加组件到根元素
@@ -365,24 +366,24 @@
         this.ema.fire('pageInfo.save')
       },
       savePage () {
-        if (this.demoMode) return this.$alert('您处在demo模式下，不能保存数据哦')
-        var info = Object.assign({}, this.pageInfo)
-        info.content = window.localStorage.getItem(this.STORAGE_KEY)
-        console.log(info)
-        Server({
-          url: 'editor/pages/save',
-          method: 'post', // default
-          needLoading: true,
-          data: info
-        }).then(({data}) => {
-          let code = data.code
-          let msg = data.msg
-          if (code == 500) return this.$alert(msg)
-          this.$message({type: 'success', message: '保存成功'})
-        }).catch((respond) => {
-          this.$message({type: 'success', message: '保存失败'})
-        })
-       this.savePagePreviewImage()
+        // if (this.demoMode) return this.$alert('您处在demo模式下，不能保存数据哦')
+        // var info = Object.assign({}, this.pageInfo)
+        // info.content = window.localStorage.getItem(this.STORAGE_KEY)
+        // console.log(info)
+        // Server({
+        //   url: 'editor/pages/save',
+        //   method: 'post', // default
+        //   needLoading: true,
+        //   data: info
+        // }).then(({data}) => {
+        //   let code = data.code
+        //   let msg = data.msg
+        //   if (code == 500) return this.$alert(msg)
+        //   this.$message({type: 'success', message: '保存成功'})
+        // }).catch((respond) => {
+        //   this.$message({type: 'success', message: '保存失败'})
+        // })
+        this.savePagePreviewImage()
       },
       savePagePreviewImage () {
         var urlInfo = common.parseURL(window.location.href)
