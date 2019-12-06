@@ -390,6 +390,7 @@
         this.ema.fire('screenshot', document.querySelector('#stage'), {height: 486, fileName: urlInfo.params.key + '.jpg'}, (src) => {
           console.log('screenshot', src)
           var info = Object.assign({}, this.pageInfo)
+          info.content = window.localStorage.getItem(this.STORAGE_KEY)
           info.image = src
           Server({
             url: 'editor/pages/save',
