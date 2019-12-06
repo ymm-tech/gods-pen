@@ -1,33 +1,32 @@
 <template>
-  <div :class='{"img-attr": type=="image"}'>
+  <div class="resourceEditor">
     <el-input placeholder="选择资源" size="mini" v-model="inUrl">
       <el-button slot="append" icon="el-icon-upload" @click="selectImage">选择</el-button>
+      <el-button size="mini" slot="append" icon="el-icon-picture" @click="cropper">裁剪</el-button>
     </el-input>
-    <img :src='inUrl' v-if='type=="image"' class='img-show'/>
+    <div class="preview" >
+      <div class="in" :style="previewBg"></div>
+    </div>
   </div>
 </template>
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
-  .richTextEditor {
+  .resourceEditor {
     padding: 0 10px;
 
-    .collapseItem {
-      position: relative;
-    }
+    .preview {
+      width: 100%;
+      height: 150px;
+      margin-top: 10px;
+      background-color: #dddddd;
+      background-image: url('../../assets/image/bgblank.svg');
 
-    .header-icon {
-      position: absolute;
-      right: 30px;
-      top: 18px;
-    }
-  }
-  .img-attr{
-    position relative
-    display flex
-    align-items: center
-    .img-show{
-      margin 0 20px
-      max-width 50px
-      max-height 50px
+      .in {
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
     }
   }
 </style>
@@ -60,6 +59,13 @@
         inUrl: this.url
       }
     },
+    computed: {
+      previewBg () {
+        return {
+          'background-image': `url(${this.inUrl})`
+        }
+      }
+    },
     mounted: function () {
     },
     methods: {
@@ -73,6 +79,29 @@
           methods: {
             onSelectImage: function (url) {
               me.inUrl = url
+            }
+          }
+        })
+      },
+      cropper: function () {
+        // this.crop = true
+        var me = this
+        this.openDialog({
+          name: 'd-crop',
+          data: {
+            name: '图片裁剪',
+            url: me.url.split('?')[0]
+          },
+          methods: {
+            done: function (e, type) {
+              console.log('pos', e)
+              let cUrl = me.url.split('?')[0]
+              if (type == 'circle') {
+                me.inUrl = cUrl + `?x-oss-process=image/rotate,${e.rotate}/crop,x_${parseInt(e.x)},y_${parseInt(e.y)},w_${parseInt(e.width)},h_${parseInt(e.height)}/circle,r_${parseInt(e.width / 2)}`
+                return
+              }
+              me.inUrl = cUrl + `?x-oss-process=image/rotate,${e.rotate}/crop,x_${parseInt(e.x)},y_${parseInt(e.y)},w_${parseInt(e.width)},h_${parseInt(e.height)}`
+              // this.$emit('update:url', this.inUrl)
             }
           }
         })

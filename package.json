@@ -20,6 +20,7 @@
     "axios": "^0.18.0",
     "babel-polyfill": "*",
     "clipboard": "^2.0.0",
+    "cropperjs": "^1.5.6",
     "element-ui": "2.4.11",
     "inversify": "^5.0.1",
     "js-cookie": "^2.2.0",
