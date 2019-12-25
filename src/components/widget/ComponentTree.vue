@@ -228,6 +228,9 @@
       this.ema.bind('select.noOne', () => {
         this.currentNode = {}
       })
+      this.ema.bind('nodeInfo.change', () => {
+        this.info = window.Editer.nodeInfo
+      })
     }
   }
 </script>

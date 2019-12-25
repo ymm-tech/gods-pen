@@ -191,6 +191,40 @@
           }
           selectNode.child.push(nodeInfo)
         })
+         // psd解析
+        this.ema.bind('pageInfo.psd', (fast) => {
+          console.log('pageInfo.psd', this.nodeInfo)
+          this.openDialog({
+            name: 'd-psd',
+            data: {
+              title: 'psd上传'
+            },
+            methods: {
+              changeNode: function (content, psdString) {
+                console.log('changeNode')
+                var node = null
+                try {
+                  node = JSON.parse(content)
+                } catch (error) {
+                  console.log('error', error)
+                }
+                if (node) {
+                  let tempNode = me.nodeInfo
+                  let psdList = tempNode.psdList || []
+                  psdList.push(JSON.parse(psdString))
+                  tempNode.psdList = psdList
+                  tempNode.child = tempNode.child.concat(node)
+                  console.log('tempNode', tempNode)
+                  let n = common.modifyNodeId(tempNode, Object.keys(window.$_nodecomponents || {}), [])
+                  me.nodeInfo = JSON.parse(JSON.stringify(n))
+                  console.log(me.nodeInfo)
+                  window.Editer = me
+                  me.ema.fire('nodeInfo.change')
+                } else {}
+              }
+            }
+          })
+        })
         // 复制事件
         window.Clipboard = Clipboard
         new Clipboard(this.$refs['clipboard'])

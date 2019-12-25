@@ -37,6 +37,9 @@
             <el-button type="text" style="margin-left: 20px;" v-popover:popover4>
               <i class="menu-text iconfont icon-grid"> 参考线</i>
             </el-button>
+             <el-button type="text" style="margin-left: 20px;" @click="psd">
+              <i class="menu-text el-icon-picture-outline"> psd</i>
+            </el-button>
             <el-dropdown style="margin-left: 20px;" @command="onToolCommand" trigger="click">
               <el-button type="text">
                 工具<i class="el-icon-arrow-down el-icon--right"></i>
@@ -342,6 +345,9 @@
       save: function () {
         this.ema.fire('pageInfo.save', true)
       },
+      psd: function () {
+        this.ema.fire('pageInfo.psd')
+      }
     }
   }
 </script>

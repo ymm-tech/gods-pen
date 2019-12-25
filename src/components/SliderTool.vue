@@ -46,6 +46,12 @@
         <i class="iconfont icon-grid"></i>
       </a>
     </el-tooltip>
+    <el-tooltip class="item" effect="dark" :enterable="false" content="psd" placement="right-start">
+      <a class="item" @click.stop="psd">
+        <i class="iconfont el-icon-picture-outline"></i>
+      </a>
+    </el-tooltip>
+
     <!-- <el-tooltip class="item" effect="dark" :enterable="false" content="手机框" placement="right-start">
       <a class="item" @click.stop="phoneDisplay">
         <i class="iconfont icon-phone"></i>
@@ -169,6 +175,12 @@
       },
       phoneDisplay: function () {
 
+      },
+      /**
+       * psd 操作
+       */
+      psd: function () {
+        this.ema.fire('pageInfo.psd')
       }
     }
   }
