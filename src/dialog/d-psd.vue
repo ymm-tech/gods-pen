@@ -122,25 +122,18 @@
                 this.$alert('未发现图层,请检查通道模式')
                 return
             }
+            this.loading = false
             for (let m = 0; m < descendants.length; m++) {
-                let data = await this.uploadOss(descendants[m].path, false)
-                let result = data.data
-                if (result.code == 1 && (result.data instanceof Array)) {
-                    let config = JSON.parse(JSON.stringify(this.nodeTree))
-                    let random = parseInt(Math.random() * 10000)
-                    config.id = config.id + random
-                    config.label = config.label + random
-                    config.style.width = (descendants[m].width) * rate + 'px'
-                    config.style.height = (descendants[m].height) * rate + 'px'
-                    config.style.left = (descendants[m].left) * rate + 'px'
-                    config.style.top = (descendants[m].top) * rate + 'px'
-                    config.props.url = result.data[0].path
-                    nodeJson.push(config)
-                // document.getElementById('ImageContainer').appendChild(imgDom);
-                } else {
-                    this.loading = false
-                    return this.$message.error('oss文件上传出现异常!')
-                }
+                let config = JSON.parse(JSON.stringify(this.nodeTree))
+                let random = parseInt(Math.random() * 10000)
+                config.id = config.id + random
+                config.label = config.label + random
+                config.style.width = (descendants[m].width) * rate + 'px'
+                config.style.height = (descendants[m].height) * rate + 'px'
+                config.style.left = (descendants[m].left) * rate + 'px'
+                config.style.top = (descendants[m].top) * rate + 'px'
+                config.props.url = descendants[m].src
+                nodeJson.push(config)
             }
             this.content = nodeJson
             let data = await this.uploadOss(this.psdFile, true)
