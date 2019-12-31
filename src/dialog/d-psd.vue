@@ -52,7 +52,7 @@
               'id': 'truck/imageid',
               'type': 'truck/image',
               'label': '图片id',
-              'version': '0.1.10',
+              'version': '0.1.10', // 可配置为自己的truck/image的版本
               'url': 'https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/truck/image/0.1.10/index.js',
               'visible': true,
               'style': {
@@ -165,7 +165,7 @@
             if (!isFile) {
                 file = this.dataURLtoFile(file)
             }
-            const url =  this.env == 'production' ? 'https://godspen.ymm56.com/api/editor/pages/psd-to-page/ossupload/uploadFile' : 'https://dev-boss.ymmoa.com/truck-editor-server/ossupload/uploadFile'
+            const url =  '/ossupload/uploadFile'
             var form = new window.FormData()
             form.append('files', file)
             console.log('form', form)
