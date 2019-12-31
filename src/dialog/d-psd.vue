@@ -136,11 +136,11 @@
                 nodeJson.push(config)
             }
             this.content = nodeJson
-            let data = await this.uploadOss(this.psdFile, true)
-            let resu = data.data
-            if (resu.code == 1 && (resu.data instanceof Array)) {
-                this.psdUrl = resu.data[0].path
-            }
+            // let data = await this.uploadOss(this.psdFile, true)
+            // let resu = data.data
+            // if (resu.code == 1 && (resu.data instanceof Array)) {
+            //     this.psdUrl = resu.data[0].path
+            // }
             this.loading = false
             this.open()
         },
@@ -165,7 +165,7 @@
             if (!isFile) {
                 file = this.dataURLtoFile(file)
             }
-            const url =  this.env == 'production' ? 'https://boss.ymmoa.com/truck-editor-server/ossupload/uploadFile' : 'https://dev-boss.ymmoa.com/truck-editor-server/ossupload/uploadFile'
+            const url =  this.env == 'production' ? 'https://godspen.ymm56.com/api/editor/pages/psd-to-page/ossupload/uploadFile' : 'https://dev-boss.ymmoa.com/truck-editor-server/ossupload/uploadFile'
             var form = new window.FormData()
             form.append('files', file)
             console.log('form', form)
@@ -189,7 +189,7 @@
                 const psdJson = {
                     size: this.psdSize,
                     name: this.psdName,
-                    url: this.psdUrl
+                    // url: this.psdUrl
                 }
                 console.log('this.content', this.content)
                 this.changeNode(JSON.stringify(this.content), JSON.stringify(psdJson))
