@@ -230,6 +230,9 @@
         if (!yes) return
         this.allToPx()
       })
+      this.ema.bind('nodeInfo.change', () => {
+        this.info = window.Editer.nodeInfo
+      })
       this.bindMove()
       this.bindLock()
       window.$app = this
