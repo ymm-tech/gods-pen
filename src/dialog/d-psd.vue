@@ -97,6 +97,7 @@
             })
         },
         async change(e) {
+            const phoneSize = Number(this.$store.state.setting.phoneSize.width.split('px')[0])
             let file = this.$refs.input.files
             console.log('file', file)
             if (!file[0]) return
@@ -110,7 +111,7 @@
             try {
                 var res = result.data.data
                 var docWidth = res.document.width
-                var rate = (320 / docWidth).toFixed(2)
+                var rate = (phoneSize / docWidth).toFixed(2)
                 var descendants = res.elements || []
                 var nodeJson = []
             } catch (error) {
@@ -122,7 +123,6 @@
                 this.$alert('未发现图层,请检查通道模式')
                 return
             }
-            this.loading = false
             for (let m = 0; m < descendants.length; m++) {
                 let config = JSON.parse(JSON.stringify(this.nodeTree))
                 let random = parseInt(Math.random() * 10000)
@@ -141,6 +141,7 @@
             if (resu.code == 1 && (resu.data instanceof Array)) {
                 this.psdUrl = resu.data[0].path
             }
+            this.loading = false
             this.open()
         },
         dataURLtoFile(dataurl, filename) {
@@ -179,7 +180,6 @@
             })
         },
         open() {
-            this.loading = false
             this.$confirm('文件解析成功, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
