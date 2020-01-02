@@ -17,6 +17,7 @@ module.exports = {
     'vue'
   ],
   'rules': {
+    "eol-last": 0,
     "vue/no-async-in-computed-properties": 0,
     "vue/no-side-effects-in-computed-properties": 0,
     "vue/no-side-effects-in-computed-properties": 0,

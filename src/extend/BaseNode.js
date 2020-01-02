@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import cLoader from 'src/extend/componentLoader'
 import common from '../assets/js/common'
-import {mapState} from 'vuex'
+import {
+  mapState
+} from 'vuex'
 export default {
   name: 'node',
   props: {
@@ -25,16 +27,18 @@ export default {
     fixed: function () {
       return this.nodeInfo && this.nodeInfo.style.position == 'fixed'
     },
-    isRootNode () {
+    isRootNode() {
       return this.nodeInfo.id === 'root' || this.nodeInfo.type === 'node'
     },
-    computedStyle () {
+    computedStyle() {
       return this.nodeInfo.style
     }
   },
   mounted: function () {},
   methods: {
-    async runAnimate ({clearFirst} = {}) {
+    async runAnimate({
+      clearFirst
+    } = {}) {
       if (clearFirst && this.oldStyle) {
         this.$el.style.cssText = this.styleChangeStr(this.oldStyle)
         await this.$nextTick()
@@ -50,20 +54,22 @@ export default {
       let me = this
       animateEndEvent()
 
-      function animateEndEvent () {
+      function animateEndEvent() {
         const oldStyle = me.styleChangeStr(me.oldStyle)
+        let animate = me.nodeInfo.animate[initAnimateIndex]
         if (initAnimateIndex < animateLength) {
-          let countNum = me.nodeInfo.animate[initAnimateIndex].infinite ? 'infinite' : me.nodeInfo.animate[initAnimateIndex].countNum
+          let countNum = animate.infinite ? 'infinite' : animate.countNum
           let style = `
-          -webkit-animation-name:${me.nodeInfo.animate[initAnimateIndex].type};
-          -webkit-animation-duration:${me.nodeInfo.animate[initAnimateIndex].duration}s;
+          -webkit-animation-name:${animate.type};
+          -webkit-animation-duration:${animate.duration}s;
           -webkit-animation-iteration-count:${countNum};
-          -webkit-animation-delay:${me.nodeInfo.animate[initAnimateIndex].delay}s;
+          -webkit-animation-delay:${animate.delay}s;
           -webkit-animation-fill-mode:both;
+          -webkit-animation-timing-function:${animate.timingFunction || 'ease'};
           `
           style += oldStyle + (!me.visible ? 'display:none;' : '')
           parentNode.style.cssText = style
-          ++initAnimateIndex
+            ++initAnimateIndex
         }
         // else {
         //   parentNode.style.cssText = oldStyle
@@ -71,7 +77,7 @@ export default {
       }
       parentNode.addEventListener('animationend', animateEndEvent, false)
     },
-    styleChangeStr (style) {
+    styleChangeStr(style) {
       let styleStr = ''
       for (var attr in style) {
         styleStr += `${attr.replace(/[A-Z]+/g, m => `-${m.toLowerCase()}`)}:${style[attr]};`
@@ -137,7 +143,7 @@ export default {
         return []
       }
       // 脚本包装
-      function wrapper (script) {
+      function wrapper(script) {
         return `function(vm){
           ${script}
         }`
@@ -148,19 +154,38 @@ export default {
      * @param {object|string} path 路径可为多级 `a.b.c`
      * @param {undefined|*} val 值
      */
-    dataHubSet (path, val) {
+    dataHubSet(path, val) {
       if (val === undefined || val === null) {
         val = path.val
         path = path.path
       }
-      this.$store.dispatch('dataHubSet', {path, val})
+      this.$store.dispatch('dataHubSet', {
+        path,
+        val
+      })
     },
     /**
      * @desc 从数据总线获取数据
      * @param {*} path 路径可为多级 `a.b.c`
      */
-    dataHubGet (path) {
+    dataHubGet(path) {
       return common.objectGetByPath(this.DataHub, path)
+    },
+    /**
+     * 循环递归判断一个元素是否是显示状态，如果父元素有隐藏，则为隐藏状态
+     * @param {node} node
+     */
+    isVisible(node) {
+      var parentNode = node
+      var flag = true
+      while (parentNode && parentNode.nodeInfo) {
+        if (parentNode.nodeInfo.visible == false) {
+          flag = false
+          break
+        }
+        parentNode = parentNode.$parent
+      }
+      return flag
     }
   }
 }

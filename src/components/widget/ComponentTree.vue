@@ -229,7 +229,7 @@
         this.currentNode = {}
       })
       this.ema.bind('nodeInfo.change', () => {
-        this.info = window.Editer.nodeInfo
+        this.info = window.Editor.nodeInfo
       })
     }
   }
@@ -237,12 +237,13 @@
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   .component-tree {
-     .box-search {
+    .box-search {
       .el-input__suffix {
         transform: translateX(-55px) !important;
       }
     }
   }
+
   .component-tree {
     position: relative;
     min-height: 100%;

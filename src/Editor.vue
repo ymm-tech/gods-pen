@@ -218,7 +218,6 @@
                   let n = common.modifyNodeId(tempNode, Object.keys(window.$_nodecomponents || {}), [])
                   me.nodeInfo = JSON.parse(JSON.stringify(n))
                   console.log(me.nodeInfo)
-                  window.Editer = me
                   me.ema.fire('nodeInfo.change')
                 } else {}
               }

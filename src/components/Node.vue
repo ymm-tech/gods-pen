@@ -241,10 +241,54 @@
        * 绑定选中节点运行动画
        */
       bindRunAnimation: function () {
-        this.ema.bind('select.runAnimation', id => {
-          if (id != this.nodeInfo.id) {
+        this.ema.bind('animate.timeline.move', (time, alltime) => {
+          if (this.nodeInfo.animate.length > 0 && this.isVisible(this)) {
+            this.setAnimationFrame(time, alltime)
           }
         })
+        this.ema.bind('animate.timeline.move.end', ev => {
+          if (this.nodeInfo.animate.length > 0) {
+            this.$el.style.animation = ''
+          }
+        })
+      },
+      setAnimationFrame (time, alltime) {
+        let animates = this.nodeInfo.animate
+        let currentAnimation = null
+        let timeLine = 0
+        let infinitePreTimeLine = 0
+        for (let index = 0; index < animates.length; index++) {
+          const val = animates[index]
+          if (val.infinite) {
+            infinitePreTimeLine = timeLine
+            timeLine = alltime
+            currentAnimation = val
+            break
+          }
+          timeLine += val.duration * val.countNum + val.delay
+          if (timeLine >= time) {
+            currentAnimation = val
+            break
+          }
+        }
+
+        if (!currentAnimation) {
+          return
+        }
+        let duration = currentAnimation.duration
+        let timingFunction = currentAnimation.timingFunction || 'ease'
+        let delay = ((timeLine - time) - currentAnimation.duration * currentAnimation.countNum) % currentAnimation.duration
+        let count = 1
+        if (currentAnimation.infinite) {
+          delay = -((time - infinitePreTimeLine - currentAnimation.delay)) % currentAnimation.duration
+        }
+        let name = currentAnimation.type
+        let animation = `${duration}s ${timingFunction} ${delay}s ${count} normal none paused ${name}`
+        if (name) {
+          this.$el.style.animation = animation
+        } else {
+          this.$el.style.animation = ''
+        }
       },
       /**
        * 绑定选中一个节点事件
