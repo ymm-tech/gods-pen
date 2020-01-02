@@ -60,6 +60,7 @@
       z-index: 10000;
       top: 60px;
       position: fixed;
+
       .el-radio-group {
         box-shadow: 0px 8px 24px 1px #000000bd;
       }
@@ -71,7 +72,7 @@
       font-size: 12px;
       color: #000000;
       background-color: #ffffff;
-      transform: translate(0,0);
+      transform: translate(0, 0);
     }
 
     .phoneSize {
@@ -80,12 +81,13 @@
       height: 20px;
       top: -12px;
       margin: 0 auto;
-      background-color rgba(16, 16, 16, 0.8196078431372549)
+      background-color: rgba(16, 16, 16, 0.8196078431372549);
+
       &:hover {
         .phoneItem.active {
-          color: transparent
-          background-color transparent
-          box-shadow: none
+          color: transparent;
+          background-color: transparent;
+          box-shadow: none;
         }
       }
 
@@ -94,24 +96,26 @@
         top: 0;
         left: 50%;
         height: 100%;
-        line-height 20px;
-        transform translate(-50%, 0)
-        border: solid #000
+        line-height: 20px;
+        transform: translate(-50%, 0);
+        border: solid #000;
         border-width: 0 3px;
-        box-sizing content-box;
-        cursor pointer
-        text-align center
-        font-size 12px;
-        color: transparent
+        box-sizing: content-box;
+        cursor: pointer;
+        text-align: center;
+        font-size: 12px;
+        color: transparent;
+
         &.active {
-          color: #fff
+          color: #fff;
           background-color: rgba(39, 39, 39, 0.81);
-          box-shadow: 0 2px 7px 1px #000
+          box-shadow: 0 2px 7px 1px #000;
         }
+
         &:hover {
-          color: #fff !important
+          color: #fff !important;
           background-color: rgba(39, 39, 39, 0.81) !important;
-          box-shadow: 0 2px 7px 1px #000 !important
+          box-shadow: 0 2px 7px 1px #000 !important;
         }
       }
 
@@ -231,7 +235,7 @@
         this.allToPx()
       })
       this.ema.bind('nodeInfo.change', () => {
-        this.info = window.Editer.nodeInfo
+        this.info = window.Editor.nodeInfo
       })
       this.bindMove()
       this.bindLock()
@@ -240,10 +244,10 @@
     methods: {
       changePhoneSize (item) {
         this.$confirm(`确定要将画布切换为 ${parseInt(item.width)} x ${parseInt(item.height)} 吗？`)
-        .then(() => {
-          this.$store.dispatch('SettingChange', {phoneSize: item})
-        })
-        .catch((e) => console.log(e))
+          .then(() => {
+            this.$store.dispatch('SettingChange', {phoneSize: item})
+          })
+          .catch((e) => console.log(e))
       },
       scrollChange: function (params) {
         var appWarp = this.$refs['appWarp']
@@ -264,7 +268,7 @@
         await eachToPx($nodes)
         loading.close()
         console.log('完成')
-        async function eachToPx($nodes) {
+        async function eachToPx ($nodes) {
           for (let $node of $nodes) await toPx($node)
         }
         async function toPx ($node) {

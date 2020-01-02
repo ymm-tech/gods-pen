@@ -53,8 +53,8 @@
 ![](https://cos.56qq.com/fis/20191011171531762de15ff82e88a338.png)
 
 ## 组件动画展示
-运营活动对一些简单的动画提供支持，方便做一些入场和出场的动画，提升活动的交互感，我们使用了 animate.css 提供的一套css动画。下面提供简单的展示
-![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/access/ymm_1539761082989.gif)
+运营活动对一些简单的动画提供支持，方便做一些入场和出场的动画，提升活动的交互感，我们使用了 animate.css 提供的一套css动画。 并提供安帧试试预览，方便使用。 下面提供简单的展示
+![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1577935881750.gif)
 
 ## 合成组件展示
 合成组件就是选择已有的节点保存为一个通用的组件，方便下次直接使用
@@ -108,6 +108,8 @@ npm run client:build
 
 ## 常见问题
 
+#### nodejs版本用 10.x的，不要用12.x的
+
 #### 项目依赖一定使用  yarn 安装依赖。不要用 npm 
 
 #### 在windows 系统上安装依赖时，如果缺少c++编译环境会报错
@@ -119,7 +121,6 @@ npm run client:build
 
 ####  如果碰到安装 sass模块失败，当独安装一下 
 
-#### 后端代码和管理系统开源计划  2019年12月份之前
 
 ## License
 
