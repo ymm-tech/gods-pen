@@ -311,6 +311,11 @@
         }
       }
     },
+    created: function () {
+      if (this.info.animate == null) {
+        this.info.animate = []
+      }
+    },
     mounted: function () {
       this.ema.bind('edit-type.change', type => {
         this.forbidEdit = type !== 'EDITER'

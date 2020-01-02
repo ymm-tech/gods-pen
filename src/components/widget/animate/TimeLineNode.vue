@@ -1,11 +1,11 @@
 <template>
   <div class="timeLineNode">
     <div v-if="level!=0" class="cellItem"   @click="selectOne" @contextmenu.prevent.stop="showContextMenu(info,$event)" :class="{active:isActive}">
-      <div class="cellItemWarp">
-        <cell v-for="(animate,i) in info.animate" :key="i" :animates="info.animate" :info="animate" :time-space="timeSpace"></cell>
+      <div class="cellItemWarp" >
+        <cell  v-for="(animate,i) in info.animate" :key="i" :animates="info.animate" :info="animate" :time-space="timeSpace"></cell>
       </div>
         <el-tooltip class="item" effect="dark" content="插入动画" placement="top">
-          <i class="addFrame el-icon-circle-plus" v-if="info.animate.length==0"  @click="addFrame($event,info)" />
+          <i class="addFrame el-icon-circle-plus" v-if="info.animate==null||info.animate.length==0"  @click="addFrame($event,info)" />
         </el-tooltip>
     </div>
     <div class="ced">
@@ -132,6 +132,7 @@
     },
     beforeDestroy: function () {
     },
+
     mounted () {
       this.isActive = window.$vue && window.$vue.nodeInfo.id == this.info.id
       this.ema.bind('select.one', (id, keepContextMenu) => {

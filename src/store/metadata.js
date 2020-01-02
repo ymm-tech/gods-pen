@@ -259,7 +259,7 @@ const map = {
     fontFamily: []
   },
   Animate: [{
-      label: '弹跳进入',
+      label: '进入',
       value: 'Bouncing Entrances',
       options: [{
           label: '弹跳进入',
@@ -455,7 +455,7 @@ const map = {
       ]
     },
     {
-      label: '弹跳退出',
+      label: '退出',
       value: 'Bouncing Exits',
       options: [{
           label: '弹跳退出',
@@ -579,6 +579,33 @@ const map = {
         }
       ]
     }
+  ],
+  AnimationTimingFunction: [{
+      value: 'linear',
+      desc: '动画从头到尾的速度是相同的',
+      label: ''
+    },
+    {
+      value: 'ease',
+      desc: '默认。动画以低速开始，然后加快，在结束前变慢',
+      label: ''
+    },
+    {
+      value: 'ease-in',
+      desc: '动画以低速开始',
+      label: ''
+    },
+    {
+      value: 'ease-out',
+      desc: '动画以低速结束',
+      label: ''
+    },
+    {
+      value: 'ease-in-out',
+      desc: '动画以低速开始和结束',
+      label: ''
+    },
+
   ]
 }
 export default map
