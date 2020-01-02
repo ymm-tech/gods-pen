@@ -318,7 +318,7 @@
     },
     mounted: function () {
       this.ema.bind('edit-type.change', type => {
-        this.forbidEdit = type !== 'EDITER'
+        this.forbidEdit = type !== 'EDITOR'
       })
     },
     watch: {
