@@ -30,21 +30,24 @@
             <i class="iconfont icon-download"></i> {{com.useNumber || 0}}</p>
         </div>
       </div>
+
+      <a target="_blank" href="https://godspen.ymm56.com/doc/develop/component.html" class="addComponent">添加组件</a>
     </div>
   </div>
 </template>
 
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus">
-.mycomponents {
-  .box-search {
-    .el-input__suffix {
-      transform: translateX(-55px) !important;
+  .mycomponents {
+    .box-search {
+      .el-input__suffix {
+        transform: translateX(-55px) !important;
+      }
+    }
+
+    .type-select .el-input__suffix {
+      transform: none !important;
     }
   }
-  .type-select .el-input__suffix {
-    transform: none !important;
-  }
-}
 </style>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
@@ -81,11 +84,22 @@
       padding-bottom: 5px;
       padding-top: 5px;
 
+      .addComponent {
+        text-align: center;
+        padding: 10px;
+        clear: both;
+        float: none;
+        display: block;
+        color: #faad14;
+        font-size: 12px;
+      }
+
       .com-item {
         position: relative;
         height: 50px;
         padding: 0 10px;
         display: flex;
+
         &:hover {
           background-color: #6081bd33;
           cursor: pointer;
@@ -131,7 +145,7 @@
             overflow: hidden;
 
             &:hover {
-              color #3899ec
+              color: #3899ec;
             }
           }
 
@@ -156,7 +170,7 @@
           height: 100px;
           overflow: hidden;
           display: block;
-          border 1px solid #505152
+          border: 1px solid #505152;
           box-shadow: 0 0 6px 0 rgba(22, 45, 61, 0.27);
           float: left;
           margin-left: 5px;
@@ -212,7 +226,7 @@
     name: 'Components',
     components: {AssetsTags},
 
-props: {
+    props: {
     },
     filters: {
       componentIcon: function (path) {
