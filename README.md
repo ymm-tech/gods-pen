@@ -107,9 +107,9 @@ npm run client:build
 
 ## 常见问题
 
-#### Node.js 版本用 10.x 的，不要用 12.x 的
+#### Node.js 版本须控制在 10.x ，使用诸如 11.x、12.x 的版本会导致在安装依赖时报错
 
-#### 项目依赖一定使用 yarn 安装依赖，不要用 npm
+#### 项目依赖须使用 yarn 安装，不推荐使用 npm ，否则会产生依赖版本上的问题
 
 #### 在 Windows 系统上安装依赖时，如果缺少 C++ 编译环境会报错
 
@@ -118,12 +118,12 @@ npm run client:build
 >windows-build-tools 是一个 npm 包，可以一键安装 c++ 编译所需的 python27、Visual Studio、C++ Build Tool 等。
 >Both installations are conflict-free, meaning that they do not mess with existing installations of Visual Studio, C++ Build Tools, or Python
 
-####  如果碰到安装 Sass 模块失败，单独安装一下
+####  如果碰到安装 Sass 模块失败，单独安装一下即可
 
 
 ## License
 
-[MIT](http://opensource.org/lScenses/MIT)
+[MIT](http://opensource.org/licenses/MIT)
 
 
 ## 交流群
