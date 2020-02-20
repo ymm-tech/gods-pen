@@ -127,6 +127,19 @@
       canDrag: function () {
       },
       bindEvent: function () {
+        // loading
+        let $loading
+        this.ema.bind('loading.show', () => {
+          $loading = this.$loading({
+            lock: true,
+            text: '处理中，请稍等',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
+        })
+        this.ema.bind('loading.hide', () => {
+          $loading && $loading.close()
+        })
         var me = this
         // 监控内容变化。做持久化
         this.$watch('nodeInfo', (content) => {

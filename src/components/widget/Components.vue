@@ -268,6 +268,7 @@
     },
     mounted () {
       this.search()
+      this.ema.bind('components.refresh', this.search)
     },
     methods: {
       onTagSelect (tags) {
