@@ -1,6 +1,6 @@
 <template>
   <div class="shop">
-    <iframe class="shop-frame" :src="url" frameborder="0"></iframe>
+    <iframe class="shop-frame" :src="shopUrl" frameborder="0"></iframe>
   </div>
 </template>
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
@@ -26,13 +26,15 @@
     props: {
     },
     data: function () {
-      return {
-        url: 'http://192.168.1.5:8567/#/home' // @todo
-        // url: 'http://devstatic.ymm56.com/gods-pen-shop/#/home'
-      }
+      return {}
     },
     created () {
       this.onMessage()
+    },
+    computed: {
+      shopUrl () {
+        return this.Config.SHOP
+      }
     },
     methods: {
       onMessage () {
