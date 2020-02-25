@@ -1,12 +1,30 @@
 <template>
   <div class="mycomponents">
     <div class="box-search">
-      <el-input size="mini" placeholder="输入搜索关键字..." @keyup.enter.native="search()" v-model="searchKey" style="width: 98%;">
-        <el-select class="type-select" size="mini" style="width: 74px;" v-model="searchType" slot="prepend" placeholder="请选择">
+      <el-input
+        size="mini"
+        placeholder="输入搜索关键字..."
+        @keyup.enter.native="search()"
+        v-model="searchKey"
+        style="width: 98%;"
+      >
+        <el-select
+          class="type-select"
+          size="mini"
+          style="width: 74px;"
+          v-model="searchType"
+          slot="prepend"
+          placeholder="请选择"
+        >
           <el-option label="全部" :value="1"></el-option>
           <el-option label="自建" :value="2"></el-option>
         </el-select>
-        <i class="el-icon-close el-input__icon" style="color:#999;cursor: pointer;" slot="suffix" @click="searchKey = ''"></i>
+        <i
+          class="el-icon-close el-input__icon"
+          style="color:#999;cursor: pointer;"
+          slot="suffix"
+          @click="searchKey = ''"
+        ></i>
         <el-button slot="append" @click.stop="search()" icon="el-icon-search"></el-button>
       </el-input>
       <el-dropdown class="component-menu" @command="handlePointMenu">
@@ -16,22 +34,31 @@
           <el-dropdown-item command="card">卡片</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <assets-tags @selectchange="onTagSelect" :assets-id='categoryId'></assets-tags>
+      <assets-tags @selectchange="onTagSelect" :assets-id="categoryId"></assets-tags>
     </div>
     <div class="components" :class="[comListsStyle]">
-      <div class="com-item" v-for="com in comLists" :key="com.id" @dragstart="dragstart($event,com)" draggable="true" @click="addOne(com)">
+      <div
+        class="com-item"
+        v-for="com in comLists"
+        :key="com.id"
+        @dragstart="dragstart($event,com)"
+        draggable="true"
+        @click="addOne(com)"
+      >
         <div class="com-item-avatar">
-          <img :src="com.path | componentIcon" class="icon-img">
+          <img :src="com.path | componentIcon" class="icon-img" />
         </div>
         <div class="com-item-content">
           <p class="com-item-name">{{com.name}}</p>
           <p class="com-item-desc" @click.stop="readme(com)">{{com.desc}}</p>
           <p class="com-item-count">
-            <i class="iconfont icon-download"></i> {{com.useNumber || 0}}</p>
+            <i class="iconfont icon-download"></i>
+            {{com.useNumber || 0}}
+          </p>
         </div>
       </div>
 
-      <a target="_blank" href="https://godspen.ymm56.com/doc/develop/component.html" class="addComponent">添加组件</a>
+      <a @click="goShop" class="addComponent">添加组件</a>
     </div>
   </div>
 </template>
@@ -92,6 +119,7 @@
         display: block;
         color: #faad14;
         font-size: 12px;
+        cursor: pointer;
       }
 
       .com-item {
@@ -308,6 +336,9 @@
       },
       readme (com) {
         this.ema.fire('widgetComponentInfo.selectOne', com)
+      },
+      goShop () {
+        this.ema.fire('dock.panelActive', 'widgetShop')
       },
       handlePointMenu (type) {
         this.comListsStyle = type
