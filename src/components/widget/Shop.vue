@@ -1,6 +1,6 @@
 <template>
   <div class="shop">
-    <iframe class="shop-frame" :src="shopUrl" frameborder="0"></iframe>
+    <iframe ref="shop" class="shop-frame" :src="shopUrl" frameborder="0"></iframe>
   </div>
 </template>
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
@@ -37,14 +37,37 @@
       }
     },
     methods: {
+      async getSelfComponents () {
+        const list = await Server({
+          url: 'component/searchByName',
+          method: 'post',
+          needLoading: false,
+          data: {
+            tags: [],
+            type: 0,
+            name: '',
+            onlyMine: true
+          }
+        })
+        .then(({data}) => data.data && data.data.list || null)
+        .catch(e => (console.error(e), null)) // eslint-disable-line
+        if (!list || !list.length) return null
+        return list.reduce((o, v = {}) => {
+          const name = (v.name || 'noop').replace(/^.+\//, '')
+          o[name] = {name, version: v.version}
+          return o
+        }, {})
+      },
       onMessage () {
         window.addEventListener('message', (event = {}) => {
-          const {data, origin} = event
-          console.log(data, origin)
+          const {data} = event
           const {action, payload} = data || {}
           switch (action) {
             case 'component.import':
               this.resourcesImport(payload)
+              break
+            case 'shop.loaded':
+              this.onShopLoaded()
               break
           }
         }, false)
@@ -64,9 +87,19 @@
             else {
               this.$alert('导入成功')
               this.ema.fire('components.refresh')
+              this.onShopLoaded()
             }
           })
           .catch(console.error)
+      },
+      async onShopLoaded () {
+        const selfComponents = await this.getSelfComponents()
+        if (!selfComponents) return
+        const $shop = this.$refs.shop.contentWindow
+        $shop && $shop.postMessage({
+          action: 'mycomponent.sync',
+          payload: selfComponents
+        }, '*')
       }
     }
   }
