@@ -24,7 +24,7 @@ window.Truck = window.$GP = {
 }
 window.Truck.Maliang = clientlib
 window.$GP.VueExtend = clientlib
-
+window.Vue = Vue
 Vue.use(ElementUI)
 Vue.use(Widget)
 Vue.use(AttrComponent)
