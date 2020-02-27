@@ -46,7 +46,7 @@
         @click="addOne(com)"
       >
         <div class="com-item-avatar">
-          <img :src="com.path | componentIcon" class="icon-img" />
+          <img @error="imgError($event)" :src="com.path | componentIcon" class="icon-img" />
         </div>
         <div class="com-item-content">
           <p class="com-item-name">{{com.name}}</p>
@@ -258,7 +258,7 @@
     },
     filters: {
       componentIcon: function (path) {
-        return !path ? 'https://imagecdn.ymm56.com/ymmfile/explore-biz/ymm_1527843621175.png' : path.replace(/index.js$/, 'icon.png')
+        return !path ? 'https://imagecdn.ymm56.com/ymmfile/explore-biz/ymm_1527843621175.png' : path.replace(/index.js$/, 'cover.png')
       }
     },
     data: function () {
@@ -299,6 +299,11 @@
       this.ema.bind('components.refresh', this.search)
     },
     methods: {
+      imgError (ev = {}) {
+        const target = ev.target || {}
+        const src = target.src
+        if (/cover.png$/.test(src)) target.src = src.replace(/cover.png$/, 'icon.png')
+      },
       onTagSelect (tags) {
         this.selectedTags = tags
         this.search()
