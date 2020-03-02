@@ -29,7 +29,10 @@
       return {}
     },
     created () {
-      this.onMessage()
+      window.addEventListener('message', this.onMessage, false)
+    },
+    beforeDestroy () {
+      window.removeEventListener('message', this.onMessage)
     },
     computed: {
       shopUrl () {
@@ -58,19 +61,17 @@
           return o
         }, {})
       },
-      onMessage () {
-        window.addEventListener('message', (event = {}) => {
-          const {data} = event
-          const {action, payload} = data || {}
-          switch (action) {
-            case 'component.import':
-              this.resourcesImport(payload)
-              break
-            case 'shop.loaded':
-              this.onShopLoaded()
-              break
-          }
-        }, false)
+      onMessage (event = {}) {
+        const {data} = event
+        const {action, payload} = data || {}
+        switch (action) {
+          case 'component.import':
+            this.resourcesImport(payload)
+            break
+          case 'shop.loaded':
+            this.onShopLoaded()
+            break
+        }
       },
       resourcesImport (payload) {
         Server({
