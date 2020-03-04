@@ -71,7 +71,8 @@ const state = {
       'widgetStyleEditor': '样式',
       'widgetScriptEditor': '脚本',
       'widgetAnimate': '动画',
-      'widgetCodePanel': '脚本编辑'
+      'widgetCodePanel': '脚本编辑',
+      'widgetShop': '商城'
     }
   }
 }

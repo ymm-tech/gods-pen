@@ -200,6 +200,8 @@
   import Vue from 'vue'
   import cLoader from 'src/extend/componentLoader'
 
+  const VERSION_CACHE = {}
+
   export default {
     mixins: [BaseComponent],
     name: 'Attribute',
@@ -271,9 +273,10 @@
         } else {
           this.forbidEdit = false
         }
-        if (newNode) {
-          this.checkNew(newNode)
-        }
+      },
+      id (val) {
+        console.log('id change', val)
+        this.checkNew(this.selectNode)
       }
     },
     mounted: function () {
@@ -321,19 +324,25 @@
         var activeNames = this.activeNames
         return activeNames && (activeNames.length && activeNames.indexOf(attr) > -1 || activeNames == attr)
       },
-      checkNew: function (params) {
+      checkNew: function ({type = ''} = {}) {
+        if (!type) return
+        if (type in VERSION_CACHE) {
+          this.newNodeInfo = VERSION_CACHE[type]
+          return
+        }
         Server({
           url: 'component/find',
           method: 'post',
           needLoading: false,
           data: {
-            name: params.type,
+            name: type,
             version: ''
           }
         }).then(({data}) => {
           var list = data.data.list || []
           list.forEach(element => {
             if (element.isnew == 1) {
+              VERSION_CACHE[type] = element
               this.newNodeInfo = element
             }
           })

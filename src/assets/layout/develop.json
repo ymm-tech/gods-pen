@@ -76,6 +76,12 @@
                 "component": "widgetScene",
                 "close": false,
                 "pop": false
+              },
+              {
+                "name": "商城",
+                "component": "widgetShop",
+                "close": true,
+                "pop": true
               }
             ],
             "type": "panel",
@@ -125,6 +131,6 @@
     "type": "row"
   },
   "dialogs": [],
-  "version": 1.2,
+  "version": 1.3,
   "name": "develop"
 }

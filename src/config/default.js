@@ -1,4 +1,5 @@
 module.exports = {
+  SHOP: 'https://godspen.ymm56.com/shop/',
   VIEW_PATH: 'view',
   ADMIN_PATH: 'admin',
   EDITOR_PATH: 'editor',
