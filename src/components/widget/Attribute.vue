@@ -55,7 +55,8 @@
               <div class="form-item" :key='item.key' v-if="(!item.work || item.work())&&!item.meta.ignore">
                 <template>
                   <span class="label">
-                    <el-tooltip :content="item.desc||'无'" placement="top">
+                    <el-tooltip placement="top">
+                      <div style="max-width:300px" slot="content">{{item.desc||'无'}}</div>
                       <span>{{item.label||item.key}}</span>
                     </el-tooltip>
                   </span>
