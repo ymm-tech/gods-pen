@@ -1,5 +1,5 @@
 <template>
-  <div class="tool" fixed-tool="">
+  <div class="tool" fixed-tool="" @mousedown.stop="" @mouseup.stop="" @mousemove.stop="">
     <el-popover ref="popover4" placement="right" width="180" trigger="click">
       <el-form :model="setting" size="mini" label-width="90px">
         <!-- <el-form-item label="网格开关">

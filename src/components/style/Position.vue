@@ -364,7 +364,7 @@
       },
       positionChange (value) {
         if (window.$vue && window.$vue.isRootNode) return
-        if (!window.$vue) {
+        if (!window.$vue || !window.$vue.nodeInfo.invisible) {
           return
         }
         let selfRect = getNoRotateBoundingClientRect(window.$vue.$el)
