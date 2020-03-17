@@ -102,7 +102,7 @@
           $appFixed.style.webkitTransform = `-webkit-translate3D(0,0,0) scale(${320 / width})`
         } else {
           // 设置画布宽度，并缩放视口至画布等大
-          var i = document.documentElement.clientWidth || 320
+          var i = window.__clientWidth__ = window.__clientWidth__ || document.documentElement.clientWidth || 320
           var e = i / width
           var o = `width=${width}, initial-scale=${e}, maximum-scale=${e}, user-scalable=no`
           document.getElementById('viewport').setAttribute('content', o)
