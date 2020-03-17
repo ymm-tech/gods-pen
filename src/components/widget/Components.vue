@@ -181,7 +181,7 @@
             position: absolute;
             right: 10px;
             top: 3px;
-            color: #1163ad;
+            color: #00a5e0;
             font-size: 12px;
             transform: scale(0.8);
 
@@ -194,23 +194,34 @@
 
       &.card {
         .com-item {
-          width: 80px;
-          height: 100px;
+          width: 118px;
+          height: 118px;
           overflow: hidden;
           display: block;
           border: 1px solid #505152;
           box-shadow: 0 0 6px 0 rgba(22, 45, 61, 0.27);
           float: left;
-          margin-left: 5px;
+          margin-left: 8px;
           margin-bottom: 8px;
-          padding: 0 5px;
+          padding: 0;
           text-align: center;
           border-radius: 5px;
+          display block
+          position relative
 
           .com-item-avatar {
-            margin: 16px auto 5px;
-            width: 40px;
-            height: 40px;
+            margin 0
+            width: 100%;
+            height: 100%;
+            img {
+              width: 100%;
+              height: 100%;
+              max-width 100%;
+              max-height 100%;
+              object-fit contain
+              object-position center center
+              vertical-align top
+            }
           }
 
           .com-item-name {
@@ -223,10 +234,20 @@
             height: auto;
 
             .com-item-desc {
+              position absolute
+              bottom 0
+              left 0
+              right 0
               text-align: center;
               white-space: pre-line;
-              line-height: 14px;
-              height: 29px;
+              line-height: 1.3;
+              padding 10px 10px;
+              background-color: rgba(0,0,0,0.5);
+              margin: 0;
+              color: #fff;
+              &:hover {
+                color: #f9bf4d;
+              }
             }
 
             .com-item-count {
