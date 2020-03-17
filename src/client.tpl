@@ -57,7 +57,7 @@ window.loadingStartTime = new Date()-0;window.AreaData = [];window.html2canvas =
 <script src="<%= BASE_URL %>babel-polyfill.v6_20_0.min.js"></script>
 <script src="<%= BASE_URL %>fastclick.js"></script>
 <% if (process.env.NODE_ENV === 'production') { %>
-<script src="<%= BASE_URL %>vue.runtime.v2_5_9.min.js"></script>
+<script src="<%= BASE_URL %>vue.runtime.v2_6_11.min.js"></script>
 <script src="<%= BASE_URL %>vuex.v2_0_0.min.js"></script>
 <script src="<%= BASE_URL %>vue-router.v2_0_1.min.js"></script>
 <% } %>

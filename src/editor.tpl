@@ -34,7 +34,7 @@
 <script src="<%= BASE_URL %>plupload.full.min.js"></script>
 <script src="<%= BASE_URL %>html2canvas.min.js"></script>
 <% if (process.env.NODE_ENV === 'production') { %>
-  <script src="<%= BASE_URL %>vue.runtime.v2_5_9.min.js"></script>
+  <script src="<%= BASE_URL %>vue.runtime.v2_6_11.min.js"></script>
   <script src="<%= BASE_URL %>vuex.v2_0_0.min.js"></script>
 <% } %>
 </body>
