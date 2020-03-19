@@ -329,11 +329,13 @@
       },
       preview: function () {
         var urlInfo = common.parseURL(window.location.href)
-        this.openDialog({
-          name: 'd-Preview',
-          data: {
-            key: urlInfo.params && urlInfo.params.key
-          }
+        this.ema.fire('pageInfo.save', true, () => {
+          this.openDialog({
+            name: 'd-Preview',
+            data: {
+              key: urlInfo.params && urlInfo.params.key
+            }
+          })
         })
       },
       revocation: function () {
@@ -343,7 +345,7 @@
         this.ema.fire('history.forword')
       },
       save: function () {
-        this.ema.fire('pageInfo.save', true)
+        this.ema.fire('pageInfo.save')
       },
       psd: function () {
         this.ema.fire('pageInfo.psd')

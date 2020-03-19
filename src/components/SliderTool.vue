@@ -142,11 +142,13 @@
        */
       preview: function () {
         var urlInfo = common.parseURL(window.location.href)
-        this.openDialog({
-          name: 'd-Preview',
-          data: {
-            key: urlInfo.params && urlInfo.params.key
-          }
+        this.ema.fire('pageInfo.save', true, () => {
+          this.openDialog({
+            name: 'd-Preview',
+            data: {
+              key: urlInfo.params && urlInfo.params.key
+            }
+          })
         })
       },
       /**
@@ -165,7 +167,7 @@
        * 保存
        **/
       save: function () {
-        this.ema.fire('pageInfo.save', true)
+        this.ema.fire('pageInfo.save')
       },
       /**
        * 保存模板

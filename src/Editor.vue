@@ -121,7 +121,7 @@
       },
       autoSave: function () {
         setInterval(() => {
-          this.ema.fire('pageInfo.save', true)
+          this.ema.fire('pageInfo.save')
         }, 1000 * 60 * 2)
       },
       canDrag: function () {
@@ -174,11 +174,11 @@
           }
         })
         // 保存页面
-        this.ema.bind('pageInfo.save', (fast) => {
+        this.ema.bind('pageInfo.save', (fast, callback) => {
           console.log('save---------', this.nodeInfo)
           this.doSave(this.nodeInfo, true)
           // if (this.demoMode) return this.$alert('您处在 demo 模式下，不能保存数据哦')
-          this.savePage()
+          this.savePage(fast, callback)
         })
         // 绑定组件点击添加组件到根元素
         this.ema.bind('commponent.addOne', menu => {
@@ -355,7 +355,7 @@
           if (process.env.NODE_ENV == 'production') this.$alert('编辑页面缺少key')
           else {
             this.nodeInfo = cloneDeep(emptyPage)
-            this.$store.dispatch('SettingChange', {demoMode: true})
+            this.$store.dispatch('SettingChange', {demoMode: false})
           }
           return
         }
@@ -411,7 +411,7 @@
       saveToServer: function () {
         this.ema.fire('pageInfo.save')
       },
-      savePage () {
+      savePage (fast, callback) {
         if (this.demoMode) return this.$alert('您处在demo模式下，不能保存数据哦')
         var info = Object.assign({}, this.pageInfo)
         info.content = window.localStorage.getItem(this.STORAGE_KEY)
@@ -426,10 +426,14 @@
           let msg = data.msg
           if (code == 500) return this.$alert(msg)
           this.$message({type: 'success', message: '保存成功'})
+          callback && callback()
+          if (!fast) {
+            this.savePagePreviewImage()
+          }
         }).catch((respond) => {
+          debugger
           this.$message({type: 'success', message: '保存失败'})
         })
-        this.savePagePreviewImage()
       },
       savePagePreviewImage () {
         var urlInfo = common.parseURL(window.location.href)
@@ -441,7 +445,7 @@
           Server({
             url: 'editor/pages/save',
             method: 'post', // default
-            needLoading: true,
+            needLoading: false,
             data: info
           }).then(({data}) => {
           }).catch((respond) => {
