@@ -93,6 +93,9 @@
           </el-form-item>
         </el-form>
       </el-collapse-item>
+      <el-collapse-item title="文字样式" name="text">
+        <editor-text :info="info"></editor-text>
+      </el-collapse-item>
     </el-collapse>
   </div>
 </template>
@@ -120,18 +123,20 @@
 </style>
 
 <script type="text/ecmascript-6">
+
   import BaseComponent from 'src/extend/BaseComponent'
   import EditorBackground from './Background'
   import Align from './Align'
   import Num from './Num'
   import EditorPosition from './Position'
+  import EditorText from './Text'
 
   import {isNullOrUndefined} from '../../assets/js/common'
 
   export default {
     mixins: [BaseComponent],
     name: 'BaseStyleEditor',
-    components: {Num, EditorBackground, Align, EditorPosition},
+    components: {Num, EditorBackground, Align, EditorPosition, EditorText},
     props: {
       info: {
         required: true,
