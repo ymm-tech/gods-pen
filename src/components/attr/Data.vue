@@ -1,6 +1,6 @@
 <template>
   <div class="dataEditor">
-    <code-editor ctype='json' :contents.sync='inContent'></code-editor>
+    <code-editor ctype="json" :contents.sync="inContent"></code-editor>
   </div>
 </template>
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
@@ -34,6 +34,7 @@
     },
     watch: {
       inContent: function (newVal) {
+        this.isEditorChange = true
         if (this.type) {
           try {
             newVal = JSON.parse(newVal)
@@ -43,11 +44,29 @@
         }
         this.$emit('update:content', newVal)
         this.$emit('change', newVal)
+        setTimeout(v => {
+          this.isEditorChange = false
+        }, 100)
+      },
+      content: {
+        handler (newVal) {
+          if (!this.isEditorChange) {
+            if (this.type) {
+              try {
+                this.inContent = JSON.stringify(this.content, null, 2)
+              } catch (error) {
+              }
+            }
+          }
+        },
+        deep: true,
+        immediate: true
       }
     },
     data: function () {
       return {
-        inContent: ''
+        inContent: '',
+        isEditorChange: false // 记录是编辑器输入改变了值，而不是重新传入的
       }
     },
     mounted: function () {
