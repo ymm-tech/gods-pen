@@ -16,7 +16,7 @@
             <el-form-item label="唯一id" style="position: relative;">
               <el-input size="mini" v-model="id" :disabled="!canEditId" @change="idChange" style="padding-right: 25px;">
                 <template slot="append">
-                  <el-tooltip content="复制id" effect="light" placement="top">
+                  <el-tooltip content="复制id" placement="top">
                     <a class="iconfont icon-copy" @click='copyId(id)'></a>
                   </el-tooltip>
                 </template>
@@ -27,7 +27,13 @@
               </template>
             </el-form-item>
             <el-form-item label="名称">
-              <el-input size="mini" v-model="selectNode.label" style="padding-right: 25px;"></el-input>
+              <el-input size="mini" v-model="selectNode.label" style="padding-right: 25px;">
+                <template slot="append">
+                  <el-tooltip content="组件当前版本" placement="top">
+                    <a class="">v{{selectNode.version}} </a>
+                  </el-tooltip>
+                </template>
+              </el-input>
             </el-form-item>
             <!-- <el-form-item label="类型">
             <el-select size="mini" @change="onTypeChange" v-model="selectNode.type" placeholder="请选择活动区域">
