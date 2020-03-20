@@ -35,7 +35,8 @@
                 <a style="float: right; font-size: 13px;" class="iconfont icon-info-light" :title="item.desc"></a>
               </el-option>
             </el-select>
-            <el-color-picker v-model="info['border-color']" @active-change="colorChange" show-alpha></el-color-picker>
+            <y-color-picker v-model="info['border-color']" show-alpha></y-color-picker>
+
             </div>
           </el-form-item>
           <el-form-item label="宽度">
@@ -73,7 +74,7 @@
             </div>
           </el-form-item>
           <el-form-item label="阴影颜色">
-            <el-color-picker v-model="boxShadow.color" @active-change="colorChange" show-alpha></el-color-picker>
+            <y-color-picker v-model="boxShadow.color" show-alpha></y-color-picker>
           </el-form-item>
         </el-form>
       </el-collapse-item>
@@ -130,13 +131,14 @@
   import Num from './Num'
   import EditorPosition from './Position'
   import EditorText from './Text'
-
   import {isNullOrUndefined} from '../../assets/js/common'
+  import YColorPicker from './ColorPicker'
+
 
   export default {
     mixins: [BaseComponent],
     name: 'BaseStyleEditor',
-    components: {Num, EditorBackground, Align, EditorPosition, EditorText},
+    components: {Num, EditorBackground, Align, EditorPosition, EditorText, YColorPicker},
     props: {
       info: {
         required: true,

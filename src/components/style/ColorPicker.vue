@@ -1,7 +1,13 @@
 <template>
   <div class="color-picker-wrapper">
     <el-input v-model="rawColor" size="mini">
-      <el-color-picker slot="prefix" size="mini" v-model="rawColor" show-alpha></el-color-picker>
+      <el-color-picker
+        slot="prefix"
+        size="mini"
+        v-model="rawColor"
+        @active-change="changeColor"
+        show-alpha
+      ></el-color-picker>
     </el-input>
   </div>
 </template>
@@ -10,6 +16,7 @@
     .el-input--prefix .el-input__inner {
       padding-left: 36px;
     }
+
     .el-color-picker__trigger {
       border: none;
     }
@@ -18,7 +25,7 @@
 
 <script type="text/ecmascript-6">
   import BaseComponent from 'src/extend/BaseComponent'
-  import { isNullOrUndefined } from '../../assets/js/common'
+  import {isNullOrUndefined} from '../../assets/js/common'
   export default {
     mixins: [BaseComponent],
     name: 'ColorPicker',
@@ -49,6 +56,9 @@
       }
     },
     methods: {
+      changeColor (color) {
+        this.rawColor = color
+      },
       isHex (val) {
         var reg = /^#[0-9A-Fa-f]{6}$|^#[0-9A-Fa-f]{8}$/
         return reg.test((val || '').trim())
