@@ -124,7 +124,7 @@
       qrUrl: function () {
         var temp = new Image()
         temp.src = this.preUrl
-        return 'https://www.kuaizhan.com/common/encode-png?large=true&data=' + encodeURIComponent(temp.src)
+        return 'https://www.liantu.com/api.php?text=' + encodeURIComponent(temp.src)
       },
     },
     methods: {
