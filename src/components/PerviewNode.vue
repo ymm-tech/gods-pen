@@ -7,8 +7,11 @@
       <template v-if="isPageContainer">
         <prenode slot="PageContainer" :scope="scope" :info="item" v-for="item in nodeChild" :key="item.id"></prenode>
       </template>
+      <template v-if="nodeInfo.child && !!slots">
+        <prenode v-for="(item,index) in nodeInfo.child" :slot-style='slots(index) && slots(index).style' :slot="slots(index) && slots(index).name" :key="item.id" :stacked='nodeInfo.stack' :scope="scope" :info="item"></prenode>
+      </template>
     </component>
-    <template v-if="hasChild && !isListContainer && !isPageContainer">
+    <template v-if="hasChild && !isListContainer && !isPageContainer && !slots">
       <prenode v-for="item in nodeInfo.child" :key="item.id" :stacked='nodeInfo.stack' :scope="scope" :info="item"></prenode>
     </template>
   </div>
@@ -17,6 +20,13 @@
   .node {
     position: relative;
     font-size 16px;
+    &::before {
+      content: ''
+      display: block;
+      overflow: hidden;
+      height: 0;
+      width: 1px;
+    }
   }
 </style>
 <script type="text/ecmascript-6">
@@ -40,6 +50,10 @@
       info: {
         required: true,
         type: Object
+      },
+      slotStyle: {
+        type: Object,
+        default: null
       }
     },
     data: function () {
@@ -54,19 +68,11 @@
           } else {
             return this.info
           }
-        })()
+        })(),
+        slots: this.info.hasSlot ? (i) => `slot${i}` : false
       }
     },
     watch: {
-      'nodeInfo.type': function (newVal, oldVal) {
-        if (process.env.PAGE === 'EDITOR') return
-        this.nodeInfo.props = {}
-        if (this.nodeInfo.type !== 'node') {
-          this.doLoad()
-        } else {
-          this.currPage = ''
-        }
-      },
       'nodeInfo.visible': function (val, old) {
         if (old === false && val) {
           this.doAfterMounted()
@@ -163,7 +169,8 @@
       },
       async doLoad () {
         if (this.nodeInfo.type === 'node') return
-        await cLoader.load(this.nodeInfo)
+        const component = await cLoader.load(this.nodeInfo)
+        this.slots = this.calcSlots(component, this.nodeInfo.props)
         if (!this.isNodeRegisted(this.nodeInfo.id)) {
           this.registerNode(this.nodeInfo)
         }

@@ -1,5 +1,7 @@
 <template>
-  <el-dialog v-loading='loading' class='psd_dialog' :title='title' width='50%' :center='true' :visible.sync='Visible' :modal='true' @close='close'>
+  <el-dialog :class="{service: asService}"
+    v-loading='loading' element-loading-text="拼命解析中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+    class='psd_dialog' :title='title' width='50%' :center='true' :visible.sync='Visible' :modal='true' @close='close'>
       <div class='wraper'>
           <span>上传PSD文件</span>
           <input type='file' id='aptitude' accept='.psd' @change='change' ref='input'>
@@ -11,6 +13,9 @@
 </template>
 <style lang='stylus' rel='stylesheet/stylus' scoped type='text/stylus'>
   .psd_dialog {
+    &.service >>> .el-dialog {
+      display: none;
+    }
     .wraper {
       width: 80%;
       height: 80px;
@@ -48,6 +53,7 @@
     components: {},
     data: function () {
       return {
+        asService: false,
         loading: false,
         env: process.env.NODE_ENV,
         nodeTree: {
@@ -74,7 +80,6 @@
           'script': [],
           'stack': true,
           'childLimit': 9999,
-          'leaf': false,
           'animate': [],
           'events': []
         },
@@ -82,39 +87,60 @@
         psdFile: '',
         psdSize: '',
         psdUrl: '',
-        psdName: ''
+        psdName: '',
+        root: '',
       }
     },
-    mounted: function () {},
-    computed: {},
+    mounted: function () {
+      if (this.asService && /https?:\/\//.test(this.psdUrl)) this.change({})
+    },
+    computed: {
+    },
     methods: {
-      uptoServer (file) {
-        console.log('file', file)
-        var form = new window.FormData()
-        form.append('file', file)
+      uptoServer ({ type = 'file', content } = {}) {
+        console.log('type', type, 'content', content)
+        let info
+        if (type === 'file') {
+          info = new window.FormData()
+          info.append('file', content)
+        } else if (type === 'url') {
+          info = { url: content }
+        }
         return Server({
           url: 'editor/pages/psd-to-page',
           method: 'post',
           needLoading: false,
-          data: form
+          data: info
         })
       },
-      async change (e) {
-        const phoneSize = Number(this.$store.state.setting.phoneSize.width.split('px')[0])
-        let file = this.$refs.input.files
-        console.log('file', file)
-        if (!file[0]) return
-        const size = (file[0].size / 1024 / 1024).toFixed(2)
-        if (size > 30) return this.$alert('psd文件不能大于30M')
-        this.psdFile = file[0]
-        this.psdSize = size
-        this.psdName = file[0].name
+      async change () {
+        let payload
+        if (!this.asService) {
+          let file = this.$refs.input.files
+          console.log('file', file)
+          if (!file[0]) return
+          const size = (file[0].size / 1024 / 1024).toFixed(2)
+          if (size > 30) return this.$alert('psd文件不能大于30M')
+          this.psdFile = file[0]
+          this.psdSize = size
+          this.psdName = file[0].name
+          payload = { type: 'file', content: file[0] }
+        } else {
+          payload = { type: 'url', content: this.psdUrl }
+        }
         this.loading = true
-        let result = await this.uptoServer(file[0])
+        let result = await this.uptoServer(payload).catch(e => {
+          this.loading = false
+          this.close()
+          console.log(e && e.message || '解析失败')
+        })
+        if (!result) return
+        let $root = window.$_nodecomponents[this.root || 'root']
+        let rootWidth = $root && $root.$el ? $root.$el.getBoundingClientRect().width : 320
         try {
           var res = result.data.data
           var docWidth = res.document.width
-          var rate = (phoneSize / docWidth).toFixed(2)
+          var rate = rootWidth / docWidth
           var descendants = res.elements || []
           var nodeJson = []
         } catch (error) {
@@ -131,19 +157,14 @@
           let random = parseInt(Math.random() * 10000)
           config.id = config.id + random
           config.label = config.label + random
-          config.style.width = (descendants[m].width) * rate + 'px'
-          config.style.height = (descendants[m].height) * rate + 'px'
-          config.style.left = (descendants[m].left) * rate + 'px'
-          config.style.top = (descendants[m].top) * rate + 'px'
+          config.style.width = Math.floor((descendants[m].width) * rate) + 'px'
+          config.style.height = Math.floor((descendants[m].height) * rate) + 'px'
+          config.style.left = Math.floor((descendants[m].left) * rate) + 'px'
+          config.style.top = Math.floor((descendants[m].top) * rate) + 'px'
           config.props.url = descendants[m].src
           nodeJson.push(config)
         }
         this.content = nodeJson
-        // let data = await this.uploadOss(this.psdFile, true)
-        // let resu = data.data
-        // if (resu.code == 1 && (resu.data instanceof Array)) {
-        //     this.psdUrl = resu.data[0].path
-        // }
         this.loading = false
         this.open()
       },
@@ -168,12 +189,11 @@
         if (!isFile) {
           file = this.dataURLtoFile(file)
         }
-        const url = '/ossupload/uploadFile'
         var form = new window.FormData()
         form.append('files', file)
         console.log('form', form)
         return Server({
-          url: url,
+          url: 'ossupload/uploadFile',
           method: 'post',
           needLoading: false,
           headers: {
@@ -192,7 +212,6 @@
           const psdJson = {
             size: this.psdSize,
             name: this.psdName,
-            // url: this.psdUrl
           }
           console.log('this.content', this.content)
           this.changeNode(JSON.stringify(this.content), JSON.stringify(psdJson))

@@ -14,11 +14,11 @@ const map = {
       width: '414px',
       height: '700px'
     },
-    // {
-    //   name: 'Desktop',
-    //   width: '960px',
-    //   height: '720px'
-    // }
+    {
+      name: 'Desktop',
+      width: '1366px', // '1140px', // bootstrap，12栏布局
+      height: '768px'
+    }
   ],
   style: {
     overflow: [{

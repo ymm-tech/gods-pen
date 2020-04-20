@@ -1,18 +1,15 @@
 <template>
   <div class="tool" fixed-tool="" @mousedown.stop="" @mouseup.stop="" @mousemove.stop="">
     <el-popover ref="popover4" placement="right" width="180" trigger="click">
-      <el-form :model="setting" size="mini" label-width="90px">
-        <!-- <el-form-item label="网格开关">
-          <el-switch v-model="setting.open"></el-switch>
-        </el-form-item> -->
+      <el-form :model="Setting" size="mini" label-width="90px">
         <el-form-item label="参考线颜色">
-          <el-color-picker v-model="setting.color"></el-color-picker>
+          <el-color-picker @change="onSettingChange($event, 'color')" :value="Setting.color"></el-color-picker>
         </el-form-item>
         <el-form-item label="智能参考线">
-          <el-switch v-model="setting.line"></el-switch>
+          <el-switch @change="onSettingChange($event, 'line')" :value="Setting.line"></el-switch>
         </el-form-item>
         <el-form-item label="吸附效果">
-          <el-switch v-model="setting.sorb"></el-switch>
+          <el-switch @change="onSettingChange($event, 'sorb')" :value="Setting.sorb"></el-switch>
         </el-form-item>
       </el-form>
     </el-popover>
@@ -64,13 +61,13 @@
 <style lang="stylus" rel="stylesheet/stylus" scoped type="text/stylus">
   .tool {
     position: fixed;
-    bottom: 50%;
-    right: 50%;
+    top: 35%;
+    top: calc(50% - 125px)
+    right: 0;
     margin: auto;
     z-index: 990;
-    width: 50px;
+    width: 60px;
     text-align: center;
-    transform: translate(257px, 100px);
 
     .item {
       float: left;
@@ -107,6 +104,7 @@
     },
     data: function () {
       return {
+        right: 0,
         setting: {
           open: true, // 网格开关
           line: true, // 智能参考线显示
@@ -116,33 +114,21 @@
         }
       }
     },
-    watch: {
-      setting: {
-        deep: true,
-        handler: function (newVal) {
-          this.$store.dispatch('SettingChange', newVal)
-          window.localStorage.setItem('EditorSetting', JSON.stringify(newVal))
-        }
-      }
-    },
     mounted: function () {
-      /**
- * 读取本地设置信息
- */
-      try {
-        var EditorSetting = JSON.parse(window.localStorage.getItem('EditorSetting'))
-        if (EditorSetting) {
-          Object.assign(this.setting, EditorSetting)
-        }
-      } catch (error) {}
     },
     methods: {
+      onSettingChange (v, k) {
+        this.$store.dispatch('SettingChange', {[k]: v})
+      },
       /**
        * 预览
        */
       preview: function () {
         var urlInfo = common.parseURL(window.location.href)
         this.ema.fire('pageInfo.save', true, () => {
+          if ((/desktop/i).test(this.Setting.phoneSize.name)) {
+            return window.open(`${this.Config.previewHost}` + urlInfo.params.key + '?preview=1')
+          }
           this.openDialog({
             name: 'd-Preview',
             data: {
@@ -183,6 +169,12 @@
        */
       psd: function () {
         this.ema.fire('pageInfo.psd')
+      },
+      computeRight () {
+        const stage = document.querySelector('#appWarp')
+        const rect = stage && stage.getBoundingClientRect()
+        if (!rect) return
+        this.right = (rect.width - parseFloat(this.Setting.phoneSize.width)) / 2 - 80 + 'px'
       }
     }
   }

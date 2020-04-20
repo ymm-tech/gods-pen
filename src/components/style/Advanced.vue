@@ -7,14 +7,14 @@
         </div>
       </template>
       <template v-if="!flutter">
-        <div v-if="styleType=='editer'" label="设计模式" name="base">
+        <div v-if="styleType=='editor'" label="设计模式" name="base">
           <editor-base :node-id='nodeId' :info="info"></editor-base>
         </div>
         <div class="cssEditorWarp" v-if="styleType=='code'" label="代码模式" name="second" lazy>
           <code-editor class='cssEditor' ctype='css' :contents.sync='cssCode'></code-editor>
           <el-button type="primary" class="save" @click="saveCss">保存</el-button>
         </div>
-        <a class="codeBtn" @click="changeStyleType"> 打开{{styleType=='editer'?'代码模式':'设计模式'}} </a>
+        <a class="codeBtn" @click="changeStyleType"> 打开{{styleType=='editor'?'代码模式':'设计模式'}} </a>
       </template>
     </div>
   </div>
@@ -105,7 +105,7 @@
     data: function () {
       return {
         activeName: 'base',
-        styleType: 'editer',
+        styleType: 'editor',
         cssCode: '',
         lists: [{
           label: '对齐',
@@ -164,31 +164,31 @@
       }
     },
     mounted: function () {
-      this.styleType = window.localStorage.getItem('styleEditerType') || 'editer'
+      this.styleType = window.localStorage.getItem('styleEditorType') || 'editor'
       this.makeCssCode()
     },
     methods: {
       changeStyleType: function () {
-        if (this.styleType == 'editer') {
+        if (this.styleType == 'editor') {
           this.styleType = 'code'
         } else {
-          this.styleType = 'editer'
+          this.styleType = 'editor'
         }
-        window.localStorage.setItem('styleEditerType', this.styleType)
+        window.localStorage.setItem('styleEditorType', this.styleType)
       },
       makeCssCode: function () {
         var style = []
         if (this.info) {
           for (const key in this.info) {
-            if (this.info.hasOwnProperty(key)) {
+            if (this.info.hasOwnProperty(key) && key != 'bakedPosition') {
               const element = this.info[key]
-              element && style.push(`${key} : ${element};`)
+              element && style.push([key, element])
             }
           }
           style = style.sort(function (a, b) {
-            return a.key > b.key
+            return (a[0] && a[0].length) > (b[0] && b[0].length) ? 1 : -1
           })
-          style = style.join('\n    ')
+          style = style.map(([k, v] = []) => `${k} : ${v};`).join('\n    ')
         } else {
           style = ''
         }

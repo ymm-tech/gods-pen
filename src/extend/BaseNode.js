@@ -4,6 +4,21 @@ import common from '../assets/js/common'
 import {
   mapState
 } from 'vuex'
+function styleParser (style = {}) {
+  styleParser.$div = styleParser.$div || document.createElement('div')
+  const sortedStyle = Object.keys(style).sort((a = '', b = '') => a.length > b.length ? 1 : -1).reduce((o, k) => {
+    o += `${k}: ${style[k]};`
+    return o
+  }, '')
+  styleParser.$div.style = sortedStyle
+  return styleParser.$div.style.cssText
+    .split(/;\s*/)
+    .reduce((o, v = '') => {
+      const arr = v.match(/^\s*([^:]+):\s*(.+)\s*$/)
+      const info = arr ? {[arr[1]]: arr[2]} : {}
+      return Object.assign(o, info)
+    }, {})
+}
 export default {
   name: 'node',
   props: {
@@ -27,11 +42,18 @@ export default {
     fixed: function () {
       return this.nodeInfo && this.nodeInfo.style.position == 'fixed'
     },
-    isRootNode() {
-      return this.nodeInfo.id === 'root' || this.nodeInfo.type === 'node'
+    isRootNode () {
+      return this.nodeInfo.id === 'root' || this.nodeInfo.type === 'node' || this.$parent.$options.name === 'widgetScene'
     },
-    computedStyle() {
-      return this.nodeInfo.style
+    computedStyle () {
+      const sortedStyle = styleParser(this.nodeInfo.style)
+      const slotStyle = typeof this.slotStyle === 'object' && this.slotStyle ? this.slotStyle : {}
+      return Object.assign({ 'pointer-events': this.packedChild ? 'none' : 'auto' }, sortedStyle, slotStyle)
+    },
+    parentNodeVm () {
+      let $vm = this
+      while (($vm = $vm.$parent, $vm && $vm.$options.name !== 'node'));
+      return $vm
     }
   },
   mounted: function () {},
@@ -108,15 +130,15 @@ export default {
       if (this.nodeInfo.id) {
         var rawScript = []
         // 兼容老的Script位非数组的形式
-        if (toString.call(this.nodeInfo.script) === toString.call([])) {
+        if (this.nodeInfo.script instanceof Array) {
           // 对数组的脚本兼容处理
-          rawScript = this.nodeInfo.script.map(s => typeof s === 'string' ? s : s.content || '')
+          rawScript = this.nodeInfo.script.map(s => typeof s === 'string' ? { content: s } : s)
         } else {
-          rawScript = [this.nodeInfo.script || 'return {}']
+          rawScript = [ this.nodeInfo.script && typeof this.nodeInfo.script === 'string' ? { content: this.nodeInfo.script } : { content: 'return {}' } ]
         }
         // 拼接脚本
         var combinedScript = `window._script['${this.nodeInfo.id}'] = function(vm){
-          return [${rawScript.filter(s => typeof s === 'string' && s.trim().length > 0).map(s => wrapper(s)).join(',')}].map(function(fn) {
+          return [${rawScript.filter(({content} = {}) => typeof content === 'string' && content.trim().length > 0).map(({content, runtimeOnly = false} = {}) => wrapper(content, runtimeOnly)).join(',')}].map(function(fn) {
             return fn(vm)
           })
         }`
@@ -143,9 +165,19 @@ export default {
         return []
       }
       // 脚本包装
-      function wrapper(script) {
+      function wrapper (script, runtimeOnly) {
+        const runtimeOnlyTpl = `
+        if (window.EDIT_TYPE == \'EDITOR\') {
+          ;["beforeCreate", "created", "beforeMount", "mounted", "beforeUpdate", "updated", "activated", "deactivated", "beforeDestroy", "destroyed"].map(v => {
+            delete options[v]
+          })
+        }`
         return `function(vm){
+          var options = function (vm) {
           ${script}
+          }(vm)
+          ${runtimeOnly ? runtimeOnlyTpl : ''}
+          return options
         }`
       }
     },
@@ -186,6 +218,44 @@ export default {
         parentNode = parentNode.$parent
       }
       return flag
+    },
+    /**
+     * slots
+      - false
+      - true, 使用 slot0 slot1 slot2 slot3 ...
+      - ['name1', 'name2'], 设置 childlimit，使用提供的名字
+      - [{ name: 'name1', style: {width: '100%'}}, 'name2'], 同上，但是 slot 接管了子组件的样式
+      - function (props) {}
+      ----
+      返回 slot 信息（闭包，参数为slot index），信息包括 slot名、强制样式 或者false
+     */
+    calcSlots (componentOpts, props) {
+      if (!componentOpts) return false
+      let slots = componentOpts.slots
+      if (typeof slots === 'function') slots = slots(props) || false
+      if (typeof slots === 'boolean' && slots) {
+        this.nodeInfo.stack = false
+        this.$set(this.nodeInfo, 'hasSlot', true)
+        return i => ({name: `slot${i}`, style: null})
+      }
+      if (slots instanceof Array && slots.length > 0) {
+        this.nodeInfo.childLimit = slots.length
+        this.nodeInfo.stack = false
+        slots = slots.map((v, i) => {
+          return {
+            name: typeof v === 'string' ? v : (v && v.name || `slot${i}`),
+            style: typeof v === 'string' ? null : v && v.style,
+          }
+        })
+        this.$set(this.nodeInfo, 'hasSlot', true)
+        return i => slots[i]
+      }
+      if (slots && slots.style) {
+        this.$set(this.nodeInfo, 'hasSlot', true)
+        return i => ({name: `slot${i}`, style: slots.style})
+      }
+      this.$delete(this.nodeInfo, 'hasSlot')
+      return false
     }
   }
 }

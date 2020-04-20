@@ -18,10 +18,10 @@
         <div class="toogle-more" @click="folded = !folded"><i class="el-icon-d-arrow-left"></i></div>
       </div>
       <div class="scriptWarp">
-        <div class="script-item" :name="value.name" v-for="(value,key) in array" :key="value.name" @click="editItem(value)">
+        <div class="script-item" :name="value.name" v-for="(value) in array" :key="value.name" @click="editItem(value)">
           <div class="namewrap">{{value.name}}</div>
           <div class="iconwarp">
-            <!-- <i class="iconfont icon-timer"  :class="{'not-runtime': !value.runtimeOnly}" :title="value.runtimeOnly ? '仅运行时执行' : '始终执行'" @click.stop="toogleRuntimeOnly(value)"></i> -->
+            <i class="iconfont icon-zhihang"  :class="{'runtime': value.runtimeOnly}" :title="value.runtimeOnly ? '仅运行时执行' : '始终执行'" @click.stop="toogleRuntimeOnly(value)"></i>
             <i class="iconfont icon-download" :style="{transform: 'rotate(180deg)'}" title="保存到脚本库" @click.stop="saveTemplate(value)"></i>
             <i class="iconfont icon-rename" title="重命名" @click.stop="renameItem(value)"></i>
             <i class="iconfont el-icon-delete" @click.stop="deleteItem(value)" title="删除"></i>
@@ -140,7 +140,7 @@
           cursor pointer
           margin: 0 5px;
         }
-        .not-runtime {
+        .runtime {
           position relative
           &:after {
             content: '';
@@ -148,9 +148,9 @@
             left: -2px;
             top: 7px;
             width: 20px;
-            height: 3px;
+            height: 2px;
             transform: rotate(-45deg);
-            background-color: #f30606;
+            background-color: #dadada;
           }
         }
       }
@@ -220,6 +220,9 @@
       },
       scriptIds () {
         return (this.array || []).map(i => i.id).reverse()
+      },
+      raw () {
+        return [this.info && this.info.id, JSON.stringify(this.array)]
       }
     },
     mounted: function () {
@@ -402,16 +405,16 @@
           this.initData(newVal)
         }
       },
-      array: {
-        deep: true,
-        handler: function (newVal, old) {
-          // if (this.firstAdded) { // 刚添加
-          //   this.firstAdded = false
-          //   return
-          // }
-          // if (old.length == 0 && newVal.length == 0) return
-          console.log('load')
+      raw: {
+        handler: function (val, old) {
+          // not init
+          if (!val[0]) return
+          // new component
+          if (old[0] !== val[0]) return
+          // same component no change
+          if (val[1] === old[1]) return
           if (this.info) {
+            console.log('script reload')
             this.info.script = this.array
             this.ema.fire('component.reload', this.id)
           }

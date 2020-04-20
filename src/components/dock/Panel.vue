@@ -117,6 +117,9 @@
 
     .tab-panel {
       height: 100%;
+      > * {
+        width 100%
+      }
     }
   }
 </style>
@@ -174,6 +177,9 @@
       currentLayout (val) {
         setTimeout(this.activeFirst, 100)
       },
+      activeIsValid (val) {
+        if (!val) this.activeFirst()
+      }
     },
     computed: {
       canDragIn: function (params) {
@@ -181,6 +187,12 @@
       },
       currentLayout () {
         return this.$store.state.viewOption.currentLayout
+      },
+      childrenComponent () {
+        return this.info.children.map(v => v && v.component)
+      },
+      activeIsValid () {
+        return this.childrenComponent.includes(this.editableTabsValue)
       }
     },
     mounted: function () {
@@ -233,12 +245,13 @@
         if (this.info.children.length > 0) {
           this.editableTabsValue = this.info.children[0].component
         } else {
-          this.$parent.removePanel(this.info)
+          this.$parent && this.$parent.removePanel && this.$parent.removePanel(this.info)
         }
         return value
       },
       jump: function (params) {
         var value = cloneDeep(this.removeOne())
+        if (!value) return
         var box = this.$el.getBoundingClientRect()
         var baseStyle = {
           width: box.width + 'px',

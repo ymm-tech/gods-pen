@@ -17,6 +17,7 @@
    */
   import BaseComponent from 'src/extend/BaseComponent'
   import CodeEditor from '../code/index'
+  let timer
   export default {
     mixins: [BaseComponent],
     name: 'DataEditor',
@@ -44,9 +45,13 @@
         }
         this.$emit('update:content', newVal)
         this.$emit('change', newVal)
-        setTimeout(v => {
-          this.isEditorChange = false
-        }, 100)
+        if (timer === null || timer === undefined) {
+          timer = setTimeout(v => {
+            clearTimeout(timer)
+            timer = null
+            this.isEditorChange = false
+          }, 100)
+        }
       },
       content: {
         handler (newVal) {

@@ -300,6 +300,7 @@
     watch: {
       fixed: {
         handler: function (newVal, oldVal) {
+          if (this.info.position == 'relative') return
           this.positionChange(newVal)
         },
         immediate: true
@@ -352,8 +353,8 @@
         if (this.info.position == 'fixed') {
           parentRect = getNoRotateBoundingClientRect(document.querySelector('#stage'))
         } else {
-          if (window.$vue.$parent.nodeInfo) {
-            parentRect = getNoRotateBoundingClientRect(window.$vue.$parent.$el)
+          if (window.$vue.parentNodeVm.nodeInfo) {
+            parentRect = getNoRotateBoundingClientRect(window.$vue.parentNodeVm.$el)
           }
         }
         if (parentRect) {
@@ -364,12 +365,12 @@
       },
       positionChange (value) {
         if (window.$vue && window.$vue.isRootNode) return
-        if (!window.$vue || !window.$vue.nodeInfo.invisible) {
+        if (!window.$vue || !window.$vue.nodeInfo.visible) {
           return
         }
         let selfRect = getNoRotateBoundingClientRect(window.$vue.$el)
         let stageRect = getNoRotateBoundingClientRect(document.querySelector('#stage'))
-        let parentRect = getNoRotateBoundingClientRect(window.$vue.$parent.$el)
+        let parentRect = getNoRotateBoundingClientRect(window.$vue.parentNodeVm.$el)
 
         let isSetArray = []
 

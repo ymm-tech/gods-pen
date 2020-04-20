@@ -17,15 +17,11 @@
     </el-form>
 
     <el-collapse v-model="activeNames" class="collapse" accordion v-show="methodNames && methodNames.length">
-      <el-collapse-item class="panel" :name="methodName" v-for="(methodName,key) in methodNames" :key="methodName">
+      <el-collapse-item class="panel" :name="methodName" v-for="(methodName) in methodNames" :key="methodName">
         <template slot="title">
-          <div v-if="callName(methodName)">
+          <div v-for="exist in [fnExist(methodName)]" :key="methodName + exist" :style="{color: !exist ? 'red' : 'inherit'}">
             <i class="iconfont icon-function"></i>
-            {{callName(methodName)}}
-            <i @click="delectFunc(methodName)" class="header-icon el-icon-delete"></i>
-          </div>
-          <div v-else style="color:red">
-            不存在该方法 {{methodName}}
+            {{!!exist ? methodName : '不存在该方法 ' + methodName}}
             <i @click="delectFunc(methodName)" class="header-icon el-icon-delete"></i>
           </div>
         </template>
@@ -125,6 +121,10 @@
         default: function () {
           return []
         }
+      },
+      ignoreCheck: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -396,19 +396,13 @@
       /**
        * 判断该方法是否纯在
        */
-      callName: function (methodName) {
-        var tname = false
+      fnExist: function (methodName) {
+        if (this.ignoreCheck) return true
         var nodeid = methodName.split('.')[0]
         var target = window.$_nodecomponents[nodeid]
-        if (!target) return tname
-        var targetmethods = this.getTargetMethod(target)
-        for (let index = 0; index < targetmethods.length; index++) {
-          const element = targetmethods[index]
-          if (element.name == methodName) {
-            tname = methodName
-          }
-        }
-        return tname
+        if (!target) return false
+        var targetmethods = this.getTargetMethod(target) || []
+        return targetmethods.some(v => v && v.name === methodName)
       },
       /**
        * 调用方法说明

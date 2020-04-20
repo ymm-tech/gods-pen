@@ -1,11 +1,16 @@
 <template>
   <div class="tinymce-container editor-container" :class="{fullscreen:fullscreen}">
     <textarea class="tinymce-textarea" :id="tinymceId"></textarea>
+    <el-input style='font-size: 12px;' v-model="filepath" ref="fileInput" class="file-input" size="small" type="file" accept='.doc,.docx'>
+      <template slot="prepend"><span style="margin-left: -12px;margin-right: -12px;">word文档解析</span></template>
+      <template slot="append"><div @click="word2html">开始解析</div></template>
+    </el-input>
   </div>
 </template>
 
 <script>
   import BaseComponent from 'src/extend/BaseComponent'
+  import Server from 'src/extend/Server'
 
   export default {
     mixins: [BaseComponent],
@@ -38,14 +43,25 @@
         hasChange: true,
         hasInit: false,
         tinymceId: 'vue-tinymce-' + +new Date(),
-        fullscreen: false
+        fullscreen: false,
+        filepath: ''
       }
     },
     watch: {
       id () {
+        this.filepath = ''
         if (this.hasInit) {
-          this.$nextTick(() => window.tinymce.get(this.tinymceId).setContent(this.value || ''))
+          this.$nextTick(() => this.setContent(this.value || ''))
         }
+      },
+      filepath (val) {
+        if (val === '') {
+          this.file = null
+          return
+        }
+        const target = this.$refs.fileInput.$el.querySelector('input')
+        const file = target && target.files && target.files[0]
+        if (file) this.file = file
       }
     },
     mounted () {
@@ -58,6 +74,32 @@
       this.destroyTinymce()
     },
     methods: {
+      word2html () {
+        if (!this.file) return this.$message('请先选择 word 文档')
+        const data = new FormData()
+        data.set('file', this.file)
+        const loading = this.$loading({
+          lock: true,
+          text: '拼命解析中。。。',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        Server({
+          url: 'transform/word2html',
+          method: 'post',
+          data: data
+        }).then(({data} = {}) => {
+          loading.close()
+          this.filepath = ''
+          const htmlStr = data.data && data.data.html
+          const $content = document.createElement('div')
+          $content.innerHTML = htmlStr.replace(/<\/?script[^>]>/i, '').replace(/on(load|error)\s*=\s*["']/i, '$1="')
+          this.setContent($content.innerHTML)
+        }).catch((e) => {
+          loading.close()
+          console.log(e)
+        })
+      },
       getTinymce: function () {
         return window.tinymce.get(this.tinymceId)
       },
@@ -146,7 +188,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="stylus" rel="stylesheet/stylus" type="text/stylus" scoped>
   .tinymce-container {
     position: relative;
   }
@@ -168,5 +210,19 @@
   }
   .editor-upload-btn {
     display: inline-block;
+  }
+  .file-input >>> input {
+    line-height: 1;
+    padding-top: 6px;
+    padding-left: 5px;
+    border-radius: 0;
+    color: #fff;
+  }
+  .file-input >>> input:hover {
+    border-color: #505152
+  }
+  .file-input >>> .el-input-group__append {
+    border-radius: 0
+    color: #fff;
   }
 </style>

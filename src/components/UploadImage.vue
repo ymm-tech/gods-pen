@@ -57,6 +57,10 @@
       showBtn: {
         type: Boolean,
         default: false
+      },
+      skipSizeCheck: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -74,6 +78,7 @@
       accept: function (value) {
         this.uploadObject = new UploadImg({
           id: this.$el,
+          skipSizeCheck: this.skipSizeCheck,
           isAddUploadFile: this.auto,
           filters: this.accept,
           callback: (src) => {
@@ -88,6 +93,7 @@
     mounted: function () {
       this.uploadObject = new UploadImg({
         id: this.$el,
+        skipSizeCheck: this.skipSizeCheck,
         isAddUploadFile: this.auto,
         filters: this.accept,
         callback: (src) => {

@@ -136,7 +136,6 @@
     },
     created: function () {
       this.ema.bind('widgetComponentInfo.selectOne', data => {
-        console.log('this.$parent', this.$parent)
         this.ema.fire('dock.panelActive', 'widgetComponentInfo')
         this.info = data
         this.loadMd(data)

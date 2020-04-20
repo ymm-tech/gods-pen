@@ -3,7 +3,7 @@
     <el-input style="width: 400px;margin-bottom:16px;" class="scriptName" ref="nameinput" size="mini" v-model="name" placeholder="请输入内容">
       <template slot="prepend">名称</template>
     </el-input>
-    <!-- <el-checkbox border size="mini" v-model="runtimeOnly">仅运行时执行</el-checkbox> -->
+    <el-checkbox border size="mini" v-model="runtimeOnly">仅运行时执行</el-checkbox>
     <div class="editScript">
       <code-editor ctype='javascript' :ctrls='true' @ctrls='save' :options="{}" :contents.sync='content'></code-editor>
     </div>

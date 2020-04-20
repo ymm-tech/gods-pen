@@ -24,7 +24,7 @@
           <div class="mask"></div>
           <div class="desc">{{item.desc||'该作者很懒，没有写详细描述。'}}</div>
           <el-button class="btn" type="primary" round size="mini" @click="install(item)">使用</el-button>
-          <el-button class="btn" v-if='isMine(item)' @click.stop="remove(item)" type="danger" round size="mini" @click="install(item)">删除</el-button>
+          <el-button class="btn" v-if='isMine(item)' @click.stop="remove(item)" type="danger" round size="mini">删除</el-button>
         </div>
       </el-card>
       <div style="text-align:center">
@@ -191,7 +191,6 @@
   import BaseComponent from 'src/extend/BaseComponent'
   import Server from '../../extend/Server'
   import AssetsTags from '../AssetsTags'
-  import { mapState } from 'vuex'
 
   export default {
     mixins: [BaseComponent],
@@ -208,9 +207,6 @@
         pageSize: 30,
       }
     },
-    computed: mapState({
-      App: state => state.app
-    }),
     mounted: function () {
       this.loadData()
       this.ema.bind('combinedComponent.refresh', () => {
@@ -262,6 +258,7 @@
         if (!node) return console.log('empty combined com')
         if (!window.$vue) return this.$alert('请先选中页面内的组件，再为其添加子组件')
         window.$vue.copyChild(node, {isJson: 1, keepPos: 1})
+        this.$nextTick(() => this.ema.fire('tree.filter'))
         this.ema.fire('resource.use', item.id)
       },
       isMine (item) {

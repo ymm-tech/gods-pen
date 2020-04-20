@@ -35,29 +35,33 @@
                 </template>
               </el-input>
             </el-form-item>
-            <!-- <el-form-item label="类型">
-            <el-select size="mini" @change="onTypeChange" v-model="selectNode.type" placeholder="请选择活动区域">
-              <el-option-group v-for="group in componentList" :key="group.label" :label="group.label">
-                <el-option v-for="item in group.child" :key="item.name" :label="item.label" :value="item.name">
-                </el-option>
-              </el-option-group>
-            </el-select>
-          </el-form-item> -->
             <el-form-item label="显示">
               <el-switch key="1" size="mini" v-model="selectNode.visible"></el-switch>
             </el-form-item>
-            <el-form-item>
-              <el-tooltip slot='label' content="禁用后，子组件不再堆叠排布，而是按顺序向下扩展" placement="top">
-                <span>堆叠模式</span>
+            <el-form-item v-show="!vm || vm.slots === false">
+              <el-tooltip slot='label' content="控制子组件的位置排布方式" placement="top">
+                <span>布局模式 <i class='el-icon-info' style='font-size: 12px'></i></span>
               </el-tooltip>
-              <el-switch key="1" size="mini" v-model="selectNode.stack"></el-switch>
+              <div>
+                <el-tooltip class="item" content="子组件如楼层般依次向下扩展" placement="top">
+                  <span :style="{color: !selectNode.stack ? '#faad14' : 'inherit'}"><i style='font-size: 12px' class='el-icon-info'></i>楼层模式 </span>
+                </el-tooltip>
+                <el-switch
+                  key="1" size="mini" v-model="selectNode.stack"
+                  active-color="#faad14"
+                  inactive-color="#faad14">
+                </el-switch>
+                <el-tooltip class="item" content="子组件上下堆叠，位置可自由挪动" placement="top">
+                  <span :style="{color: selectNode.stack ? '#faad14' : 'inherit'}"> 自由模式<i style='font-size: 12px' class='el-icon-info'></i></span>
+                </el-tooltip>
+              </div>
             </el-form-item>
           </el-form>
         </el-collapse-item>
         <el-collapse-item title="属性设置" name="attr">
           <div v-if="selectNode" size="mini" label-position="left" label-width="80px" :model="selectNode">
             <component v-if="currEditor" :key="currEditor" :is="currEditor" :component-info="currEditorData"></component>
-            <template v-for="(item,key) in propsInfo">
+            <template v-for="(item) in propsInfo">
               <div class="form-item" :key='item.key' v-if="(!item.work || item.work())&&!item.meta.ignore">
                 <template>
                   <span class="label">
@@ -201,7 +205,6 @@
   import Resource from '../attr/Resource'
   import AttrEvent from '../attr/Event'
   import AttrFunction from '../attr/Function'
-  import {mapState} from 'vuex'
   import Server from 'src/extend/Server'
   import YColorPicker from '../style/ColorPicker'
   import Vue from 'vue'
@@ -236,37 +239,15 @@
         default: 0
       }
     },
-    computed: mapState({
+    computed: {
       newVersion: function () {
         if (this.selectNode && this.newNodeInfo && this.newNodeInfo.name == this.selectNode.type && this.newNodeInfo.version != this.selectNode.version) {
           return true
         } else {
           return false
         }
-      },
-      componentMap: state => state.componentMap,
-      componentList: state => {
-        var array = [{
-          name: 'empty',
-          label: '空节点',
-          child: [{
-            name: 'node',
-            label: '空'
-          }]
-        }]
-        for (const key in state.componentList) {
-          if (state.componentList.hasOwnProperty(key)) {
-            const element = state.componentList[key]
-            array.push({
-              name: key,
-              label: element.label,
-              child: element.child
-            })
-          }
-        }
-        return array
       }
-    }),
+    },
     watch: {
       active: function (params) {
         if (this.active) {
@@ -378,12 +359,6 @@
           })
         }
         return list
-      },
-      onTypeChange (type) {
-        if (!type) return
-        // 类型切换
-        var com = this.componentMap[type]
-        this.selectNode.version = com.version
       },
       /**
        * id变化需要查询是否可以改变，

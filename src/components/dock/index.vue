@@ -2,8 +2,10 @@
   <div class="ui-dock-main" @mouseup="mouseup($event)" @mousemove="mousemove($event)">
     <!-- <div class="mask"></div> -->
     <main-dock :info="info.layout" :level="10"></main-dock>
-    <dialogone v-for="item in info.dialogs" :key="item.component" :info="item"></dialogone>
-    <dialogone v-for="item in onedialogs" :key="item.component" :info="item"></dialogone>
+    <dialogone v-for="(item, key) in info.dialogs" :key="(item.component || 'main') + key" :info="item">
+      <main-dock v-if="item && item.children" :info="item" :level="11"></main-dock>
+    </dialogone>
+    <dialogone v-for="(item, key) in onedialogs" :key="item.component + key" :info="item"></dialogone>
     <div class="dock-mask dock" :style="maskStyle" v-if="showMask"></div>
   </div>
 </template>

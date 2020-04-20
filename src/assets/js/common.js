@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 function parseURL(url) {
   var a = window.document.createElement('a')
   a.href = url
@@ -80,7 +82,7 @@ function modifyNodeId(tree, idCache = [], exclude = [], key = 'id', childKey = '
   function genKey(base) {
     var key
     while (!(key && !isInclude(localIdCache, key))) {
-      key = `${base || ''}${(Math.random() * 1296 | 0).toString(32)}` // 两位32进制数
+      key = `${base || ''}${(Math.random() * 1296 | 0).toString(36).padStart(2, '0')}` // 两位36进制数
     }
     return key
   }
@@ -266,6 +268,56 @@ function fetch(url, {
   })
 }
 
+function componentAddJudge(node, nodevm) {
+  if (!node) return false
+  if (node.leaf) {
+    return {
+      can: false,
+      msg: '不能为当前选中节点添加子组件'
+    }
+  }
+
+  if (node.childLimit && node.child && node.child.length >= node.childLimit) {
+    return {
+      can: false,
+      msg: `当前选中节点最多可添加${node.childLimit}个子组件，已达限额`
+    }
+  }
+  
+  if (nodevm.packed || nodevm.packedChild) {
+    return {
+      can: false,
+      msg: '组件已封装，无法向其添加子组件'
+    }
+  }
+
+  return {
+    can: true
+  }
+}
+
+function confirmWithGoodbye (msg, goodbyeKey) {
+  goodbyeKey = `goodbye_${goodbyeKey}`
+  if (window.localStorage.getItem(goodbyeKey) == 1) return Promise.resolve('confirm')
+  return Vue.prototype.$confirm(`${msg}
+    <div style='position: absolute;left: 14px;bottom: 0;transform: translateY(42px);font-size: 12px;'>
+      不再提醒 <input type="checkbox" onchange="javascript: var val = event.target.checked; localStorage.setItem('${goodbyeKey}', val ? 1 : '')"/>
+    </div>`,
+  {dangerouslyUseHTMLString: true})
+}
+
+function trbl (str = '', key = '') {
+  key = key === '' ? key : key + '-'
+  const arr = String(str).trim().split(/\s+/)
+  const [top, right, bottom, left] = arr.concat({1:[arr[0], arr[0], arr[0]], 2: [arr[0], arr[1]], 3: [arr[1]], 4: []}[arr.length] || [])
+  return {
+    [key + 'top']: top,
+    [key + 'right']: right,
+    [key + 'bottom']: bottom,
+    [key + 'left']: left
+  }
+}
+
 export {
   parseURL,
   dimensionAnyTopx,
@@ -278,7 +330,10 @@ export {
   modifyNodeId,
   toSafeNumber,
   getNoRotateBoundingClientRect,
-  fetch
+  fetch,
+  componentAddJudge,
+  confirmWithGoodbye,
+  trbl
 }
 
 export default {
@@ -293,5 +348,8 @@ export default {
   modifyNodeId,
   toSafeNumber,
   getNoRotateBoundingClientRect,
-  fetch
+  fetch,
+  componentAddJudge,
+  confirmWithGoodbye,
+  trbl
 }

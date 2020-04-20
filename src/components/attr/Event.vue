@@ -73,6 +73,7 @@
           {value: 'change', label: '内容被改变', desc: '域的内容被改变。'},
           {value: 'input', label: '输入', desc: '域的内容被改变。'},
           {value: 'select', label: '选项改变', desc: '选项文本被选中。'},
+          {value: 'keypress', label: '键盘按键', desc: '某个键盘按键被按下并松开。'},
         ],
         activeNames: [0],
         selectEventKey: '',

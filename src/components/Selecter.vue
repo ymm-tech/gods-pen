@@ -10,16 +10,16 @@
       <div class="rotate-line" v-show="show.r && !accessResizeRotate"></div>
       <div class="bar bar-m-line"></div>
       <div class="line-n line resizable">
-        <div class="circle" @mousedown.stop="mousedown($event,'n')" v-show="show.n" style="cursor: ns-resize;"></div>
+        <div class="circle" @mousedown.stop="mousedown($event,'n')" v-show="!packed && show.n" style="cursor: ns-resize;"></div>
       </div>
       <div class="line-e line resizable">
-        <div class="circle" @mousedown.stop="mousedown($event,'e')" v-show="show.e" style="cursor: ew-resize;"></div>
+        <div class="circle" @mousedown.stop="mousedown($event,'e')" v-show="!packed && show.e" style="cursor: ew-resize;"></div>
       </div>
       <div class="line-s line resizable">
-        <div class="circle" @mousedown.stop="mousedown($event,'s')" v-show="show.s" style="cursor: ns-resize;"></div>
+        <div class="circle" @mousedown.stop="mousedown($event,'s')" v-show="!packed && show.s" style="cursor: ns-resize;"></div>
       </div>
       <div class="line-w line resizable">
-        <div class="circle" @mousedown.stop="mousedown($event,'w')" v-show="show.w" style="cursor: ew-resize;"></div>
+        <div class="circle" @mousedown.stop="mousedown($event,'w')" v-show="!packed && show.w" style="cursor: ew-resize;"></div>
       </div>
       <div class="circle-nw circle resizable" @mousedown="mousedown($event,'nw')" v-show="show.nw" style="cursor: nwse-resize;"></div>
       <div class="circle-ne circle resizable" @mousedown="mousedown($event,'ne')" v-show="show.ne" style="cursor: nesw-resize;"></div>
@@ -209,7 +209,21 @@
    */
   import BaseComponent from 'src/extend/BaseComponent'
   import {dimensionAnyTopx, isUnset, getNoRotateBoundingClientRect} from '../assets/js/common'
+  function ratioWH (w, h, r) {
+    var wh = w / r // 宽对应的高
+    var hw = h * r // 高对应的宽
+    return [hw > w ? w : hw, wh > h ? h : wh] // width height
+  }
+  function getRect ($vm) {
+    const id = $vm.nodeInfo.id
+    const rect = $vm.$el.getBoundingClientRect()
+    console.log('1')
+    const children = $vm.$children.filter(v => v.$options.name == 'node')
+    const rects = [{[id]: rect}].concat(children.map(child => getRect(child)))
+    return Object.assign.apply(null, rects)
+  }
 
+  let RECTS = {}
   export default {
     mixins: [BaseComponent],
     name: 'Selecter',
@@ -232,6 +246,10 @@
       isRoot: {
         type: Boolean,
         default: false
+      },
+      packed: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -240,6 +258,7 @@
         isSetArray: [],
         isUnSetArray: [],
         rectangles: null, // 页面元素参考线集合
+        columns: [],
         sorbRectangles: {}, // 页面元素参考线集合
         isMoved: false,
         keyShifted: false,
@@ -261,6 +280,11 @@
         accessResizeRotate: false
       }
     },
+    computed: {
+      noMoving () {
+        return this.warpStyle && this.warpStyle.position === 'relative'
+      }
+    },
     watch: {
       'warpStyle.position': function (newVal) {
         this.changeStatus(newVal)
@@ -268,6 +292,9 @@
       'visible': function (params) {
         if (!params && this.EditorValue) {
           this.ema.fire('dock.onceDialogClose', this.EditorValue)
+        }
+        if (params) {
+          this.columns = this.getColumns()
         }
       }
     },
@@ -280,15 +307,17 @@
         this.keyShifted = false
       })
       this.ema.bind('ui.mouseup', ev => {
-        if (!this.visible) {
+        if (!this.visible || !this.doType) {
           return
         }
+        const doType = this.doType
         this.rectangles = null
         this.doType = ''
         if (!this.isRoot) {
           this.setRectInfo(this.isSetArray, this.isUnSetArray)
         }
         this.ema.fire('AssistLines.hide')
+        if (this.packed) this.resizeChildren(doType)
       })
       this.ema.bind('ui.mousemove', ev => {
         if (!this.visible) {
@@ -338,34 +367,32 @@
         var baseOffset = 15 // 基础偏差
         var current = this.$el.getBoundingClientRect()
         var array = {x1: [], x2: [], x3: [], y1: [], y2: [], y3: []}
-        for (const key in this.rectangles) {
-          if (this.rectangles.hasOwnProperty(key)) {
-            const rect = this.rectangles[key]
+        function judge (rect, current, array, center = true) {
             // 左线
             if (Math.abs(current.left - rect.left) < baseOffset) {
               array.x1.push(parseInt(rect.left))
             }
-            if (Math.abs(current.left - (rect.left + rect.width / 2)) < baseOffset) {
+            if (center && Math.abs(current.left - (rect.left + rect.width / 2)) < baseOffset) {
               array.x1.push(parseInt(rect.left + rect.width / 2))
             }
             if (Math.abs(current.left - rect.right) < baseOffset) {
               array.x1.push(parseInt(rect.right))
             }
             // 横向中线
-            if (Math.abs((current.left + current.width / 2) - rect.left) < baseOffset) {
+            if (center && Math.abs((current.left + current.width / 2) - rect.left) < baseOffset) {
               array.x2.push(parseInt(rect.left))
             }
-            if (Math.abs((current.left + current.width / 2) - (rect.left + rect.width / 2)) < baseOffset) {
+            if (center && Math.abs((current.left + current.width / 2) - (rect.left + rect.width / 2)) < baseOffset) {
               array.x2.push(parseInt(rect.left + rect.width / 2))
             }
-            if (Math.abs((current.left + current.width / 2) - rect.right) < baseOffset) {
+            if (center && Math.abs((current.left + current.width / 2) - rect.right) < baseOffset) {
               array.x2.push(parseInt(rect.right))
             }
             // 右线
             if (Math.abs(current.right - rect.left) < baseOffset) {
               array.x3.push(parseInt(rect.left))
             }
-            if (Math.abs(current.right - (rect.left + rect.width / 2)) < baseOffset) {
+            if (center && Math.abs(current.right - (rect.left + rect.width / 2)) < baseOffset) {
               array.x1.push(parseInt(rect.left + rect.width / 2))
             }
             if (Math.abs(current.right - rect.right) < baseOffset) {
@@ -375,32 +402,40 @@
             if (Math.abs(current.top - rect.top) < baseOffset) {
               array.y1.push(parseInt(rect.top))
             }
-            if (Math.abs(current.top - (rect.top + rect.height / 2)) < baseOffset) {
+            if (center && Math.abs(current.top - (rect.top + rect.height / 2)) < baseOffset) {
               array.y1.push(parseInt(rect.top + rect.height / 2))
             }
             if (Math.abs(current.top - rect.bottom) < baseOffset) {
               array.y1.push(parseInt(rect.bottom))
             }
 
-            if (Math.abs((current.top + current.height / 2) - rect.top) < baseOffset) {
+            if (center && Math.abs((current.top + current.height / 2) - rect.top) < baseOffset) {
               array.y2.push(parseInt(rect.top))
             }
-            if (Math.abs((current.top + current.height / 2) - (rect.top + rect.height / 2)) < baseOffset) {
+            if (center && Math.abs((current.top + current.height / 2) - (rect.top + rect.height / 2)) < baseOffset) {
               array.y2.push(parseInt(rect.top + rect.height / 2))
             }
-            if (Math.abs((current.top + current.height / 2) - rect.bottom) < baseOffset) {
+            if (center && Math.abs((current.top + current.height / 2) - rect.bottom) < baseOffset) {
               array.y2.push(parseInt(rect.bottom))
             }
             if (Math.abs(current.bottom - rect.top) < baseOffset) {
               array.y3.push(parseInt(rect.top))
             }
-            if (Math.abs(current.bottom - (rect.top + rect.height / 2)) < baseOffset) {
+            if (center && Math.abs(current.bottom - (rect.top + rect.height / 2)) < baseOffset) {
               array.y3.push(parseInt(rect.top + rect.height / 2))
             }
             if (Math.abs(current.bottom - rect.bottom) < baseOffset) {
               array.y3.push(parseInt(rect.bottom))
             }
           }
+        for (const key in this.rectangles) {
+          if (this.rectangles.hasOwnProperty(key)) {
+            const rect = this.rectangles[key]
+            judge(rect, current, array)
+          }
+        }
+        for (let col of this.columns) {
+          judge(col, current, array, false)
         }
         for (const key in array) {
           array[key].sort()
@@ -441,7 +476,7 @@
           // 对元素和横向坐标。纵向左边做差值计算，取做小的吸附坐标为参考
           var xarray = []
           for (let key in currPosX) {
-            xarray.push(currPosX[key] - this.sorbRectangles[key][0])
+            this.sorbRectangles[key] && xarray.push(currPosX[key] - this.sorbRectangles[key][0])
           }
           var xindex = this.getMiniNumberIndex(xarray)
           if (xindex >= 0 && this.sorbRectangles[`x${xindex + 1}`].length > 0 && Math.abs(xarray[xindex]) < sorbLenght) {
@@ -450,7 +485,7 @@
 
           var yarray = []
           for (let key in currPosY) {
-            yarray.push(currPosY[key] - this.sorbRectangles[key][0])
+            this.sorbRectangles[key] && yarray.push(currPosY[key] - this.sorbRectangles[key][0])
           }
           var yindex = this.getMiniNumberIndex(yarray)
           if (yindex >= 0 && this.sorbRectangles[`y${yindex + 1}`].length > 0 && Math.abs(yarray[yindex]) < sorbLenght) {
@@ -502,28 +537,28 @@
         }
         switch (type) {
           case 'se':
-            if (this.keyShifted) {
+            if (this.keyShifted || this.packed) {
               [width, height] = ratioWH(width, height, this.startPos.aspect)
               if (bottomControl) bottom = this.startPos.bottom + (this.startPos.h - height)
               if (rightControl) right = this.startPos.right + (this.startPos.w - width)
             }
             break
           case 'sw':
-            if (this.keyShifted) {
+            if (this.keyShifted || this.packed) {
               [width, height] = ratioWH(width, height, this.startPos.aspect)
               if (!rightControl) left = this.startPos.left + (this.startPos.w - width)
               if (bottomControl) bottom = this.startPos.bottom + (this.startPos.h - height)
             }
             break
           case 'nw':
-            if (this.keyShifted) {
+            if (this.keyShifted || this.packed) {
               [width, height] = ratioWH(width, height, this.startPos.aspect)
               if (!bottomControl) top = this.startPos.top + (this.startPos.h - height)
               if (!rightControl) left = this.startPos.left + (this.startPos.w - width)
             }
             break
           case 'ne':
-            if (this.keyShifted) {
+            if (this.keyShifted || this.packed) {
               [width, height] = ratioWH(width, height, this.startPos.aspect)
               if (!bottomControl) top = this.startPos.top + (this.startPos.h - height)
               if (rightControl) right = this.startPos.right + (this.startPos.w - width)
@@ -595,16 +630,16 @@
         }
         let selfRect = getNoRotateBoundingClientRect(window.$vue.$el)
         let parentRect = null
-        if (style.position == 'fixed') {
+        if (style.position == 'fixed' || window.$vue.isRootNode) {
           parentRect = getNoRotateBoundingClientRect(document.querySelector('#stage'))
         } else {
-          if (window.$vue.$parent.nodeInfo) {
-            parentRect = getNoRotateBoundingClientRect(window.$vue.$parent.$el)
+          if (window.$vue.parentNodeVm.nodeInfo) {
+            parentRect = getNoRotateBoundingClientRect(window.$vue.parentNodeVm.$el)
           }
         }
         directions.forEach(direction => {
           if (direction == 'height' || direction == 'width') {
-            this.$set(style, direction, `${Math.abs(selfRect[direction]).toFixed(2)}px`)
+            if (!/%$/.test(style[direction])) this.$set(style, direction, `${Math.abs(selfRect[direction]).toFixed(2)}px`)
           } else {
             let dist = 0
             dist = selfRect[direction] - parentRect[direction]
@@ -658,7 +693,7 @@
         }
         this.doType = type
         var thisNode = this.$parent
-        var parentNode = this.$parent.$parent || {}
+        var parentNode = thisNode.isRootNode ? { $el: document.querySelector('#stage') } : (this.$parent.parentNodeVm || {})
         var size = dimensionAnyTopx(thisNode.$el, parentNode.$el)
 
         this.startPos = {
@@ -682,8 +717,9 @@
           let val = size[dis]
           if (dis == 'left' && size.rightControl) this.$set(thisNode.nodeInfo.style, 'left', null)
           else if (dis == 'top' && size.bottomControl) this.$set(thisNode.nodeInfo.style, 'top', null)
-          else if (!isUnset(val)) this.$set(thisNode.nodeInfo.style, dis, val + 'px')
+          else if (!isUnset(val) && !/%$/.test(thisNode.nodeInfo.style[dis])) this.$set(thisNode.nodeInfo.style, dis, val + 'px')
         })
+        RECTS = getRect(thisNode)
         ev.stopPropagation()
       },
       bindArrowMove () {
@@ -738,10 +774,82 @@
       },
       moveLayer: function (number) {
         var $node = window.$vue
-        if ($node && $node.$parent) {
-          $node.$parent.moveLayer($node.nodeInfo, number)
-        }
+        var $parent = $node && $node.parentNodeVm
+        if (!$parent) return
+        typeof $parent.moveLayer === 'function' && $parent.moveLayer($node.nodeInfo, number)
       },
+      getColumns () {
+        if (!(/desktop/i).test(this.Setting.phoneSize.name)) return []
+        const stage = document.querySelector('#stage')
+        const rect = stage && stage.getBoundingClientRect()
+        const vw = 1140 / 12
+        const delta = (rect.width - 1140) / 2
+        if (!rect) return []
+        return Array.apply(null, {length: 13}).map((_, i) => {
+          return {
+            left: rect.left + delta + vw * i,
+            right: rect.right - delta - vw * i,
+            top: 0,
+            bottom: 0,
+            width: 0,
+            height: 0
+        }
+        })
+      },
+      resizeChildren (type = '', delta) {
+        if (!/^[ewsn]{1,2}$/.test(type)) return
+        console.log('resizeChildren', type)
+        const thisNode = this.$parent
+        const baseId = thisNode.nodeInfo.id
+        const startRects = RECTS
+        const start = startRects[baseId]
+        const end = thisNode.$el.getBoundingClientRect()
+        const size = ratioWH(end.width, end.height, this.startPos.aspect)
+        const ratio = size[0] / start.width
+        const childrenIds = Object.keys(startRects).filter(v => v !== baseId)
+        const relatives = childrenIds.reduce((f, l) => {
+            const rect = startRects[l]
+            f[l] = ['left', 'right', 'bottom', 'top']
+              .reduce((o, k) => {
+                o[k] = (rect[k] - start[k]) * (['right', 'bottom'].includes(k) ? -1 : 1)
+                return o
+              }, {width: rect.width, height: rect.height})
+            return f
+          }, {})
+        const deltas = childrenIds.reduce((f, l) => {
+            const rect = relatives[l]
+            f[l] = ['left', 'right', 'bottom', 'top', 'height', 'width']
+              .reduce((o, k) => {
+                o[k] = (ratio - 1) * rect[k]
+                return o
+              }, {})
+            return f
+          }, {})
+        console.log('deltas', size, ratio, startRects, relatives, deltas)
+        ;(function setRect ({nodeInfo, parentId, isRoot, ratio}) {
+          var id = nodeInfo.id
+          if (!isRoot) {
+            var style = nodeInfo.style
+            ;['left', 'right', 'top', 'bottom', 'width', 'height'].map(v => {
+              var val = style[v]
+              if (!/px$/.test(val)) return
+              var delta
+              if (style['position'] === 'relative') {
+                if (['height', 'width'].includes(v)) {
+                  delta = deltas[id][v]
+                } else {
+                  delta = parseFloat(val) * (ratio - 1)
+                }
+              } else {
+                delta = deltas[id][v] - (parentId in deltas && !['height', 'width'].includes(v) ? deltas[parentId][v] : 0)
+              }
+              style[v] = parseFloat(val) + delta + 'px'
+            })
+          }
+          var children = nodeInfo.child || []
+          if (children.length) children.map(c => setRect({nodeInfo: c, parentId: id, ratio}))
+        })({ nodeInfo: thisNode.nodeInfo, isRoot: true, ratio })
+      }
     }
   }
 </script>

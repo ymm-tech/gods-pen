@@ -10,8 +10,12 @@
       :show-checkbox="false" highlight-current :indent='8' draggable node-key="id"
       :filter-node-method="filterNode" default-expand-all :expand-on-click-node="false"
       :allow-drop='allowDrop' @current-change='onCheckChange' @node-contextmenu='contextmenu' @node-drop='nodeDropEnd'>
-      <span class="custom-tree-node" slot-scope="{ node, data }" @dragstart.stop.prevent="() => {}" :draggable="data.renaming">
-        <span v-show='!data.renaming'><i v-show='data.script && data.script.length > 0' class='iconfont icon-function'></i> {{data.label || data.id}}</span>
+      <span @dblclick='tooglePacked(data)' class="custom-tree-node" :class='{"packed-node": rootNode.id !== data.id && data.packed}' slot-scope="{ node, data }" @dragstart.stop.prevent="() => {}" :draggable="data.renaming">
+        <span v-show='!data.renaming' class='custom-tree-node-left'>
+          <i v-show='rootNode.id !== data.id && data.packed' class='iconfont icon-pack'></i>
+          <i v-show='data.script && data.script.length > 0' class='iconfont icon-function'></i>
+          {{data.label || data.id}}
+        </span>
         <input v-show='data.renaming' @keyup.enter="saveName(node, data)" v-model='data._label'/>
         <span v-if='data.type !== "node" && data.id !== "root"' class="teee-node-action">
           <template v-if="data.renaming">
@@ -61,6 +65,7 @@
       return {
         filterText: '',
         forbidEdit: false,
+        packedNodeStack: [],
         info: window.Editor.nodeInfo,
         currentNode: {}
       }
@@ -76,10 +81,13 @@
     watch: {
       filterText: function (params) {
         this.search()
+      },
+      treeData () {
+        this.$nextTick(this.search)
       }
     },
     methods: {
-      allowDrop (draggingNode, dropNode, type) { // 禁用异常拖动
+      allowDrop (draggingNode, dropNode, type) {
         if (!dropNode || !dropNode.id) return false
         if (!draggingNode || !draggingNode.id) return false
         if (draggingNode.data && draggingNode.data.id == this.rootNode.id) return false
@@ -89,6 +97,7 @@
         var childLimit = parentNode.data && parentNode.data.leaf ? 0 : parentNode.data && parentNode.data.childLimit
         var childLen = parentNode.data && parentNode.data.child && parentNode.data.child.length || 0
         if (childLen >= childLimit) return false
+        if (type == 'inner' && dropNode.data && dropNode.data.packed) return false
         return true
       },
       nodeDropEnd (draggingNode, dropNode, type) {
@@ -104,6 +113,7 @@
           })
         }
         this.ema.fire('select.one', parentNode.data.id)
+        this.search()
       },
       remove (node, data) {
         console.log(node, data)
@@ -143,9 +153,12 @@
           this.ema.fire('select.one', data.id)
         }
       },
-      filterNode (value, data) {
-        if (!value) return true
-        return (data.label || data.id).indexOf(value) !== -1
+      filterNode (keyword = '', data, node) {
+        keyword = String(keyword).trim()
+        const existKeyword = keyword.length ? (data.label || data.id).indexOf(keyword) !== -1 : true
+        const $vm = this.getComponentById(data.id || 'n/a') || {}
+        const packedChild = $vm.packedChild
+        return existKeyword && !packedChild
       },
       contextmenu (e, data, node, context) {
         // this.ema.fire('select.one', data.id)
@@ -155,53 +168,23 @@
         this.$refs['tree'].filter(this.filterText)
       },
       getComponentById (id) {
-        return window.$_nodecomponents[id]
+        return window.$_nodecomponents && window.$_nodecomponents[id]
       },
       bgClick: function () {
         this.ema.fire('hide.contextMenu')
       },
       lock: function (node, data, flag) {
-        console.log(node, data, 'ddd')
-        // if (flag) {
-        //   var $comtree = window.$comtree = this.$refs['tree']
-        //   $comtree.setCurrentKey(this.rootNode.id)
-        // }
         this.ema.fire('lock.node', data.id, flag)
-        // this.ema.fire('node.copy', data)
       },
-      lock2: function (node, data, flag) {
-        console.log(node, data, flag)
-        this.lockNode(data, flag)
-      },
-      lockNode: function (data) {
-        var locks = function (arr) {
-          for (let i = 0; i < arr.length; i++) {
-            arr[i].lock = true
-            if (arr[i].child) {
-              locks(arr[i].child)
-            }
-          }
+      tooglePacked (data) {
+        const nodevm = this.getComponentById(data.id)
+        if (!nodevm) return
+        if (data.packed) {
+          typeof nodevm.openPacked === 'function' && nodevm.openPacked({ scene: 'component_tree' })
+        } else {
+          typeof nodevm.doPack === 'function' && nodevm.doPack({ scene: 'component_tree' })
         }
-        var walk = function (datas) {
-          datas = datas || []
-          for (let index = 0; index < datas.length; index++) {
-            const element = datas[index]
-            console.log(data.id, element.id)
-            if (element.id === data.id) {
-              element.lock = true
-              if (element.child) {
-                locks(element.child)
-              }
-            }
-            if (element.child) {
-              walk(element.child)
-            }
-          }
-        }
-        walk([data])
-        this.$set(this.info, data)
-        console.log('lockNode', data)
-      },
+      }
     },
     created () {
     },
@@ -231,6 +214,19 @@
       this.ema.bind('nodeInfo.change', () => {
         this.info = window.Editor.nodeInfo
       })
+      this.ema.bind('tree.filter', () => {
+        this.search()
+      })
+      this.ema.bind('packedNode.push', (node) => {
+        this.packedNodeStack.push(node)
+        this.info = node
+      })
+      this.ema.bind('packedNode.pop', () => {
+        this.packedNodeStack.pop()
+        const len = this.packedNodeStack.length
+        this.info = len == 0 ? window.Editor.nodeInfo : this.packedNodeStack[len - 1]
+      })
+      this.$nextTick(this.search)
     }
   }
 </script>
@@ -243,7 +239,11 @@
       }
     }
   }
-
+  .el-tree-node.is-current > .el-tree-node__content {
+    .custom-tree-node-left::before {
+      background: #383225 !important
+    }
+  }
   .component-tree {
     position: relative;
     min-height: 100%;
@@ -269,6 +269,20 @@
       &:hover {
         .teee-node-action {
           display: block;
+        }
+        .custom-tree-node-left::before {
+          background: #353535 !important
+        }
+      }
+      &.packed-node {
+        margin-left: -21px;
+        .custom-tree-node-left::before {
+          content: '';
+          width: 20px;
+          display: inline-block;
+          background: #272727;
+          height: 1em;
+          position: relative;
         }
       }
     }

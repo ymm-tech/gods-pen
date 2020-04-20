@@ -9,7 +9,7 @@
     <!-- 弹出框 -->
     <c-dialogs></c-dialogs>
     <div :data-clipboard-text="clipboardContent" style="width:0;height:0;" ref="clipboard"></div>
-    <upload-image :h2c="{scale:1}" ref="screenshot" :key="screenshotKey" v-if="screenshotKey!=null" ></upload-image>
+    <upload-image :h2c="{scale:1}" skip-size-check ref="screenshot" :key="screenshotKey" v-if="screenshotKey!=null" ></upload-image>
     <bughd></bughd>
   </div>
 </template>
@@ -186,9 +186,9 @@
           if (window.$vue && window.$vue.nodeInfo) {
             selectNode = window.$vue.nodeInfo
           }
-          if (selectNode.leaf) return this.$alert('不能为当前选中节点添加子组件')
-          if (selectNode.childLimit && selectNode.child && selectNode.child.length >= selectNode.childLimit) return this.$alert(`当前选中节点最多可添加${selectNode.childLimit}个子组件，已达限额`)
           var nodeInfo = getBaseNode(menu)
+          let judge = common.componentAddJudge(selectNode, window.$vue || this)
+          if (!judge.can) return this.$alert(judge.msg)
           // 如果给page容器添加孩子元素。孩子元素需要占满全屏
           if ((/pageContainer$/i).test(selectNode.type)) {
             nodeInfo.forceStyle = {
@@ -205,34 +205,30 @@
           selectNode.child.push(nodeInfo)
         })
          // psd解析
-        this.ema.bind('pageInfo.psd', (fast) => {
+        this.ema.bind('pageInfo.psd', ({asService = false, url = '', name = '', root} = {}) => {
           console.log('pageInfo.psd', this.nodeInfo)
+          root = root || this.nodeInfo.id
           this.openDialog({
             name: 'd-psd',
             data: {
+              asService,
+              psdUrl: url,
+              psdName: name,
+              root,
               title: 'psd上传'
             },
             methods: {
               changeNode: function (content, psdString) {
                 console.log('changeNode')
-                var node = null
+                var nodes = null
                 try {
-                  node = JSON.parse(content)
+                  nodes = JSON.parse(content)
                 } catch (error) {
                   console.log('error', error)
                 }
-                if (node) {
-                  let tempNode = me.nodeInfo
-                  let psdList = tempNode.psdList || []
-                  psdList.push(JSON.parse(psdString))
-                  tempNode.psdList = psdList
-                  tempNode.child = tempNode.child.concat(node)
-                  console.log('tempNode', tempNode)
-                  let n = common.modifyNodeId(tempNode, Object.keys(window.$_nodecomponents || {}), [])
-                  me.nodeInfo = JSON.parse(JSON.stringify(n))
-                  console.log(me.nodeInfo)
-                  me.ema.fire('nodeInfo.change')
-                } else {}
+                if (!nodes) return console.log('图层解析失败')
+                const $root = window.$_nodecomponents[root]
+                $root.copyChild(nodes, {isJson: false, keepPos: 1})
               }
             }
           })
@@ -355,7 +351,7 @@
           if (process.env.NODE_ENV == 'production') this.$alert('编辑页面缺少key')
           else {
             this.nodeInfo = cloneDeep(emptyPage)
-            this.$store.dispatch('SettingChange', {demoMode: false})
+            this.$store.dispatch('SettingChange', {demoMode: true})
           }
           return
         }
@@ -431,7 +427,6 @@
             this.savePagePreviewImage()
           }
         }).catch((respond) => {
-          debugger
           this.$message({type: 'success', message: '保存失败'})
         })
       },
@@ -490,7 +485,7 @@
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   @require 'assets/style/base.styl';
   @require 'assets/style/m-1px.styl';
-  @import url('//at.alicdn.com/t/font_503463_ot9w6051le.css');
+  @import url('//at.alicdn.com/t/font_503463_iuhwl9258d.css');
 
   normalize();
 
@@ -567,9 +562,9 @@
       }
     }
 
-    .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
-      margin-bottom: 3px;
-    }
+    // .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
+    //   margin-bottom: 3px;
+    // }
   }
 
   .footer {

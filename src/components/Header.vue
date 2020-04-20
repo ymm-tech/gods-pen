@@ -31,23 +31,20 @@
             <el-button type="text" style="margin-left: 20px;" @click="preview">
               <i class="menu-text iconfont el-icon-view"> 预览</i>
             </el-button>
-            <el-button type="text" style="margin-left: 20px;" @click="save">
-              <i class="menu-text iconfont icon-save"> 存草稿</i>
-            </el-button>
             <el-button type="text" style="margin-left: 20px;" v-popover:popover4>
               <i class="menu-text iconfont icon-grid"> 参考线</i>
             </el-button>
              <el-button type="text" style="margin-left: 20px;" @click="psd">
               <i class="menu-text el-icon-picture-outline"> psd</i>
             </el-button>
-            <el-dropdown style="margin-left: 20px;" @command="onToolCommand" trigger="click">
+            <!-- <el-dropdown style="margin-left: 20px;" @command="onToolCommand" trigger="click">
               <el-button type="text">
                 工具<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item class="el-dropdown-item" command="allToPx">应用绝对尺寸转换</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
             <el-button type="text" style="margin-left: 20px;">
               <a href="https://godspen.ymm56.com/doc/" style="color:#faad14;" target="_blank">帮助中心</a>
             </el-button>
@@ -68,18 +65,15 @@
         </div>
       </div>
       <el-popover ref="popover4" placement="right" width="180" trigger="click">
-        <el-form :model="setting" size="mini" label-width="90px">
-          <!-- <el-form-item label="网格开关">
-            <el-switch v-model="setting.open"></el-switch>
-          </el-form-item> -->
+        <el-form :model="Setting" size="mini" label-width="90px">
           <el-form-item label="智能参考线">
-            <el-switch v-model="setting.line"></el-switch>
+            <el-switch @change="onSettingChange($event, 'line')" :value="Setting.line"></el-switch>
           </el-form-item>
           <el-form-item label="参考线颜色">
-            <el-color-picker v-model="setting.color"></el-color-picker>
+            <el-color-picker @change="onSettingChange($event, 'color')" :value="Setting.color"></el-color-picker>
           </el-form-item>
           <el-form-item label="吸附效果">
-            <el-switch v-model="setting.sorb"></el-switch>
+            <el-switch @change="onSettingChange($event, 'sorb')" :value="Setting.sorb"></el-switch>
           </el-form-item>
         </el-form>
       </el-popover>
@@ -206,6 +200,7 @@
 
 <script type="text/ecmascript-6">
   import BaseComponent from 'src/extend/BaseComponent'
+  import Config from 'src/config'
   import common from '../assets/js/common'
   import { mapState } from 'vuex'
   export default {
@@ -259,16 +254,10 @@
     },
     mounted () {
     },
-    watch: {
-      setting: {
-        deep: true,
-        handler: function (newVal) {
-          this.$store.dispatch('SettingChange', newVal)
-          window.localStorage.setItem('EditorSetting', JSON.stringify(newVal))
-        }
-      }
-    },
     methods: {
+      onSettingChange (v, k) {
+        this.$store.dispatch('SettingChange', {[k]: v})
+    },
       onToolCommand (command) {
         switch (command) {
           case 'allToPx':
@@ -329,14 +318,16 @@
       },
       preview: function () {
         var urlInfo = common.parseURL(window.location.href)
-        this.ema.fire('pageInfo.save', true, () => {
-          this.openDialog({
-            name: 'd-Preview',
-            data: {
-              key: urlInfo.params && urlInfo.params.key
-            }
-          })
-        })
+        var key = urlInfo.params && urlInfo.params.key
+        const open = () => {
+          if ((/desktop/i).test(this.Setting.phoneSize.name)) {
+            const win = window.open(`${Config.VIEW_PATH}${this.demoMode ? '__demomode' : key}?preview=1`)
+            return window.setTimeout(() => this.postData(win), 1000)
+          }
+          this.openDialog({ name: 'd-Preview', data: { key } })
+        }
+        if (this.demoMode) open()
+        else this.ema.fire('pageInfo.save', true, open)
       },
       revocation: function () {
         this.ema.fire('history.back')
@@ -349,6 +340,10 @@
       },
       psd: function () {
         this.ema.fire('pageInfo.psd')
+      },
+      postData (previewWindow) {
+        const content = window.localStorage.getItem('EditorautoSave_tmp')
+        previewWindow.postMessage({type: 'preview', content: content, canvas: this.$store.state.setting.phoneSize}, '*')
       }
     }
   }

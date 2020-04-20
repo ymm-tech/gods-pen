@@ -1,9 +1,9 @@
 <template>
   <div class="ui-dock" :class="[info.type,showMask?'showMask':'']" :style="{flex:info.flex||1,'z-index':level}">
     <template v-for="(item,key) in info.children">
-      <panel v-if="item.type=='panel'" :info="item" :level="level+1"></panel>
-      <dock-main v-else :info="item" :level="level+1"></dock-main>
-      <resizer v-if="key!=info.children.length-1" :type="info.type" :class="[info.type]" :level="level+1"></resizer>
+      <panel v-if="item.type=='panel'" :key="'panel' + key" :info="item" :level="level+1"></panel>
+      <dock-main v-else :key="'main' + key" :info="item" :level="level+1"></dock-main>
+      <resizer v-if="key!=info.children.length-1" :key="'resize' + key" :type="info.type" :class="[info.type]" :level="level+1"></resizer>
     </template>
     <div v-if="showMask&&info.children.length!=1" :style="{'z-index':level}" @dragover="dragover($event)" @drop="drop($event)" @dragleave='dragleave($event)' @dragenter='dragenter($event)' class="mask top"></div>
     <div v-if="showMask&&info.children.length!=1" :style="{'z-index':level}" @dragover="dragover($event)" @drop="drop($event)" @dragleave='dragleave($event)' @dragenter='dragenter($event)' class="mask left"></div>
@@ -110,7 +110,7 @@
         if (this.info.children.length > 0) {
           this.info.children[0].flex += info.flex
         } else {
-          this.$parent.removePanel(this.info)
+          this.$parent && this.$parent.removePanel && this.$parent.removePanel(this.info)
         }
       },
       getBrother: function (resizer) {

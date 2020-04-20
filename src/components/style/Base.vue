@@ -9,11 +9,14 @@
           <el-form-item label="高">
             <num :styleAttr.sync="info.height"></num>
           </el-form-item>
-            <editor-position v-if="isShowPosiition" :info="info"></editor-position>
+          <el-form-item v-if="!showPosition" label="居中">
+            <el-switch size="mini" v-model="marginAuto"></el-switch>
+          </el-form-item>
+          <editor-position v-if="showPosition" :info="info"></editor-position>
           <el-form-item label="透明度">
             <div class="sliderWarp">
-            <el-slider class="slider" size="mini" :min="0" :max="1" v-model.number="info.opacity" :step="0.1"></el-slider>
-            <el-input class="input" type='number' :min="0.1" :max="1" :step='0.1' size="mini" v-model.number="info.opacity" placeholder="0-1"></el-input>
+            <el-slider class="slider" size="mini" :min="0" :max="1" v-model.number="opacity" :step="0.1"></el-slider>
+            <el-input class="input" type='number' :min="0.1" :max="1" :step='0.1' size="mini" v-model.number="opacity" placeholder="0-1"></el-input>
             </div>
           </el-form-item>
         </el-form>
@@ -29,26 +32,25 @@
         <el-form size="mini" label-position="left" label-width="80px" :model="info">
           <el-form-item label="样式">
             <div class="sliderWarp">
-            <el-select v-model="style.borderStyle" placeholder="边框类型">
+            <el-select v-model="border.style" placeholder="边框类型">
               <el-option v-for='item in Metadata.style.borderStyle' :key="item.value" :label="item.label || item.value" :value="item.value" :title="item.desc">
                 <span style="float: left">{{ item.label || item.value }}</span>
                 <a style="float: right; font-size: 13px;" class="iconfont icon-info-light" :title="item.desc"></a>
               </el-option>
             </el-select>
-            <y-color-picker v-model="info['border-color']" show-alpha></y-color-picker>
-
+            <el-color-picker v-model="border.color" show-alpha></el-color-picker>
             </div>
           </el-form-item>
           <el-form-item label="宽度">
             <div class="sliderWarp">
-            <el-slider class="slider" size="mini" :min="0" :max="50" v-model.number="style.borderWidth" :step="1"></el-slider>
-            <el-input class="input" type='number' :min="0" :max="50" :step='1' size="mini" v-model.number="style.borderWidth"  placeholder="0-50"></el-input>
+            <el-slider class="slider" size="mini" :min="0" :max="50" v-model.number="border.width" :step="1"></el-slider>
+            <el-input class="input" type='number' :min="0" :max="50" :step='1' size="mini" v-model.number="border.width"  placeholder="0-50"></el-input>
             </div>
           </el-form-item>
           <el-form-item label="圆角">
             <div class="sliderWarp">
-              <el-slider class="slider" size="mini" :min="0" :max="25" v-model.number="style.borderRadius" :step="1"></el-slider>
-              <el-input class="input" type='number' :min="0" :max="25" :step='1' size="mini" v-model.number="style.borderRadius" placeholder="0-25"></el-input>
+              <el-slider class="slider" size="mini" :min="0" :max="50" v-model.number="borderRadius" :step="1"></el-slider>
+              <el-input class="input" type='number' :min="0" :max="50" :step='1' size="mini" v-model.number="borderRadius" placeholder="0-50"></el-input>
             </div>
           </el-form-item>
         </el-form>
@@ -57,41 +59,67 @@
         <el-form size="mini" label-position="left" label-width="80px" :model="info">
           <el-form-item label="阴影大小">
             <div class="sliderWarp">
-            <el-slider class="slider" size="mini" :min="0" :max="150" v-model.number="boxShadow.shadow" :step="1"></el-slider>
-            <el-input class="input" type='number' :min="0" :max="150" :step='1' size="mini" v-model.number="boxShadow.shadow" placeholder="0-25"></el-input>
+            <el-slider class="slider" size="mini" :min="-150" :max="150" v-model.number="boxShadow.spread" :step="1"></el-slider>
+            <el-input class="input" type='number' :min="-150" :max="150" :step='1' size="mini" v-model.number="boxShadow.spread" placeholder="+-150"></el-input>
             </div>
           </el-form-item>
-          <el-form-item label="阴影模糊">
+          <el-form-item label="模糊半径">
             <div class="sliderWarp">
             <el-slider class="slider" size="mini" :min="0" :max="150" v-model.number="boxShadow.blur" :step="1"></el-slider>
-            <el-input class="input" type='number' :min="0" :max="150" :step='1' size="mini" v-model.number="boxShadow.blur" placeholder="0-25"></el-input>
+            <el-input class="input" type='number' :min="0" :max="150" :step='1' size="mini" v-model.number="boxShadow.blur" placeholder="0-150"></el-input>
             </div>
           </el-form-item>
-          <el-form-item label="阴影方向">
+          <el-form-item label="横向偏移">
             <div class="sliderWarp">
-            <el-slider class="slider" size="mini" :min="0" :max="359" v-model.number="boxShadow.angle" :step="10"></el-slider>
-            <el-input class="input" type='number' :min="0" :max="359" :step='1' size="mini" v-model.number="boxShadow.angle" placeholder="0-359"></el-input>
+            <el-slider class="slider" size="mini" :min="-150" :max="150" v-model.number="boxShadow.x" :step="1"></el-slider>
+            <el-input class="input" type='number' :min="-150" :max="150" :step='1' size="mini" v-model.number="boxShadow.x" placeholder="+-150"></el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="纵向偏移">
+            <div class="sliderWarp">
+            <el-slider class="slider" size="mini" :min="-150" :max="150" v-model.number="boxShadow.y" :step="1"></el-slider>
+            <el-input class="input" type='number' :min="-150" :max="150" :step='1' size="mini" v-model.number="boxShadow.y" placeholder="+-150"></el-input>
             </div>
           </el-form-item>
           <el-form-item label="阴影颜色">
-            <y-color-picker v-model="boxShadow.color" show-alpha></y-color-picker>
+            <el-color-picker v-model="boxShadow.color" show-alpha></el-color-picker>
           </el-form-item>
         </el-form>
       </el-collapse-item>
-      <el-collapse-item title="内外边距" name="margin">
+      <el-collapse-item title="边距" name="margin">
         <el-form size="mini" label-position="left" label-width="80px" :model="info">
           <el-form-item label="内边距">
             <div class="sliderWarp">
-            <el-slider class="slider" size="mini" :min="0" :max="25" v-model.number="style.padding" :step="1"></el-slider>
-            <el-input class="input" type='number' :min="0" :max="25" :step='1' size="mini" v-model.number="style.padding" placeholder="0-25"></el-input>
+            <el-slider class="slider" size="mini" :min="0" :max="100" v-model.number="padding" :step="1"></el-slider>
+            <el-input class="input" type='number' :min="0" :max="100" :step='1' size="mini" v-model.number="padding" placeholder="0-25"></el-input>
             </div>
           </el-form-item>
-          <el-form-item label="外边距" v-if="!fixedOrAbsolute">
+          <template v-if="!fixedOrAbsolute">
+            <el-form-item label="上边距">
             <div class="sliderWarp">
-            <el-slider class="slider" size="mini" :min="0" :max="25" v-model.number="style.margin" :step="1"></el-slider>
-            <el-input class="input" type='number' :min="0" :max="25" :step='1' size="mini" v-model.number="style.margin" placeholder="0-25"></el-input>
+              <el-slider class="slider" size="mini" :min="0" :max="250" v-model.number="margin.top" :step="1"></el-slider>
+              <el-input class="input" type='number' :min="0" :max="250" :step='1' size="mini" v-model.number="margin.top" placeholder="0-25"></el-input>
             </div>
           </el-form-item>
+            <el-form-item label="左边距">
+              <div class="sliderWarp">
+              <el-slider class="slider" size="mini" :min="0" :max="250" v-model.number="margin.left" :step="1"></el-slider>
+              <el-input class="input" type='number' :min="0" :max="250" :step='1' size="mini" v-model.number="margin.left" placeholder="0-25"></el-input>
+              </div>
+            </el-form-item>
+            <el-form-item label="右边距">
+              <div class="sliderWarp">
+              <el-slider class="slider" size="mini" :min="0" :max="250" v-model.number="margin.right" :step="1"></el-slider>
+              <el-input class="input" type='number' :min="0" :max="250" :step='1' size="mini" v-model.number="margin.right" placeholder="0-25"></el-input>
+              </div>
+            </el-form-item>
+            <el-form-item label="下边距">
+              <div class="sliderWarp">
+              <el-slider class="slider" size="mini" :min="0" :max="250" v-model.number="margin.bottom" :step="1"></el-slider>
+              <el-input class="input" type='number' :min="0" :max="250" :step='1' size="mini" v-model.number="margin.bottom" placeholder="0-25"></el-input>
+              </div>
+            </el-form-item>
+          </template>
         </el-form>
       </el-collapse-item>
       <el-collapse-item title="文字样式" name="text">
@@ -126,19 +154,17 @@
 <script type="text/ecmascript-6">
 
   import BaseComponent from 'src/extend/BaseComponent'
+  import common from 'src/assets/js/common'
   import EditorBackground from './Background'
   import Align from './Align'
   import Num from './Num'
   import EditorPosition from './Position'
   import EditorText from './Text'
-  import {isNullOrUndefined} from '../../assets/js/common'
-  import YColorPicker from './ColorPicker'
-
 
   export default {
     mixins: [BaseComponent],
     name: 'BaseStyleEditor',
-    components: {Num, EditorBackground, Align, EditorPosition, EditorText, YColorPicker},
+    components: {Num, EditorBackground, Align, EditorPosition, EditorText},
     props: {
       info: {
         required: true,
@@ -150,20 +176,29 @@
     },
     data: function () {
       return {
-        isShowPosiition: false,
+        showPosition: false,
         activeNames: ['size', 'border', 'align', 'background', 'border', 'boxShadow', 'margin', 'text'],
-        style: {
-          borderStyle: 'none',
-          borderWidth: 0,
+        padding: 0,
           borderRadius: 0,
-          margin: 0,
-          padding: 0
+        border: {
+          style: '',
+          width: 0,
+          color: '',
+        },
+        opacity: 1,
+        margin: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0
         },
         boxShadow: {
-          shadow: 0,
+          spread: 0,
           blur: 0,
-          angle: 0,
-          color: 'rgba(0,0,0,1)'
+          x: 0,
+          y: 0,
+          color: 'rgba(0,0,0,1)',
+          inset: ''
         }
       }
     },
@@ -174,101 +209,140 @@
         } else {
           return false
         }
-      }
-    },
-    watch: {
-      style: {
-        deep: true,
-        handler: function (newVal) {
-          if (newVal.borderWidth === '') newVal.borderWidth = 0
-          if (newVal.borderRadius === '') newVal.borderRadius = 0
-          if (newVal.margin === '') newVal.margin = 0
-          if (newVal.padding === '') newVal.padding = 0
-          this.$set(this.info, 'border-width', `${newVal.borderWidth}px`)
-          this.$set(this.info, 'border-style', `${newVal.borderStyle}`)
-          this.$set(this.info, 'border-radius', `${newVal.borderRadius}px`)
-          this.$set(this.info, 'margin', `${newVal.margin}px`)
-          this.$set(this.info, 'padding', `${newVal.padding}px`)
+      },
+      marginAuto: {
+        get () {
+          const style = this.info
+          return /^\s*auto/.test(style['margin-left']) && /^\s*auto/.test(style['margin-right'])
+        },
+        set (val) {
+          if (val) {
+            this.$set(this.info, 'margin-left', 'auto')
+            this.$set(this.info, 'margin-right', 'auto')
+          } else {
+            this.$delete(this.info, 'margin-left')
+            this.$delete(this.info, 'margin-right')
+          }
         }
       },
-      boxShadow: {
-        deep: true,
-        handler: function (newVal) {
-          let shadowH
-          let shadowV
-          let shadow = newVal.shadow
-          let angle = newVal.angle
-          if (angle === '') newVal.angle = 0
-          if (shadow === '') newVal.shadow = 0
-          if (newVal.blur === '') newVal.blur = 0
-          let PIangle = function (num) {
-            return 2 * Math.PI / 360 * num
+      boxShadowStr: {
+        get () {
+          return `${this.boxShadow.x}px ${this.boxShadow.y}px ${this.boxShadow.blur}px ${!this.boxShadow.spread ? '' : this.boxShadow.spread + 'px'} ${this.boxShadow.color || ''} ${this.boxShadow.inset || ''}`.trim()
+        },
+        set (str = '') {
+          const raw = str.replace(/,\s+/g, ',').split(/\s+/)
+          const arr = []
+          let inset = ''
+          let color = ''
+          for (let attr of raw) {
+            if (/^-?[\d.]+/.test(attr)) arr.push(parseFloat(attr))
+            else if (/inset/.test(attr)) inset = 'inset'
+            else if (/^(#|rgb)/.test(attr)) color = attr.replace(/,\s*/g, ', ')
           }
-          if (angle == 0) {
-            shadowH = 0
-            shadowV = shadow
-          } else if (angle > 0 && angle < 90) {
-            shadowH = -parseInt(Math.sin(PIangle(angle)) * shadow)
-            shadowV = parseInt(Math.sin(PIangle(90 - angle)) * shadow)
-          } else if (angle == 90) {
-            shadowH = -shadow
-            shadowV = 0
-          } else if (angle > 90 && angle < 180) {
-            shadowH = -parseInt(Math.sin(PIangle(180 - angle)) * shadow)
-            shadowV = -parseInt(Math.sin(PIangle(angle - 90)) * shadow)
-          } else if (angle == 180) {
-            shadowH = 0
-            shadowV = -shadow
-          } else if (angle > 180 && angle < 270) {
-            shadowH = parseInt(Math.sin(PIangle(angle - 180)) * shadow)
-            shadowV = -parseInt(Math.sin(PIangle(270 - angle)) * shadow)
-          } else if (angle == 270) {
-            shadowH = shadow
-            shadowV = 0
-          } else if (angle > 270 && angle < 360) {
-            shadowH = parseInt(Math.sin(PIangle(360 - angle)) * shadow)
-            shadowV = parseInt(Math.sin(PIangle(angle - 270)) * shadow)
+          const [x = 0, y = 0, blur = 0, spread = 0] = arr
+          this.boxShadow = {
+            x, y, blur, spread, color, inset
           }
-          this.$set(this.info, 'box-shadow', `${newVal.color} ${shadowH}px ${shadowV}px ${newVal.blur}px`)
         }
+      },
+      marginStr: {
+        get () {
+          return ['top', 'right', 'bottom', 'left'].map(v => `${this.margin[v] || 0}px`).join(' ')
+        },
+        set (val) {
+          const info = common.trbl(val, '')
+          this.margin = Object.keys(info).reduce((o, k) => {
+            let val = info[k]
+            o[k] = /px$/.test(val) ? parseFloat(val) : val || 0
+            return o
+          }, {})
+        }
+      },
+      borderStr: {
+        set (val = '') {
+          const raw = val.replace(/,\s+/g, ',').split(/\s+/)
+          let color = ''
+          let width = 0
+          let style = ''
+          for (let attr of raw) {
+            if (/^(rgba|#)/.test(attr)) color = attr.replace(/,\s*/g, ', ')
+            if (/^[\d.]+/.test(attr)) width = parseFloat(attr)
+            if (/^[a-z]+$/.test(attr)) style = attr
+          }
+          this.border = {
+            color, width, style
+      }
+    },
+        get () {
+          return `${this.border.style} ${this.border.width}px ${this.border.color}`
+        }
+      },
+      borderRadiusStr: {
+        get () {
+          return this.borderRadius + 'px'
+        },
+        set (val = '') {
+          this.borderRadius = parseFloat(val) || 0
+          }
+      },
+      paddingStr: {
+        set (val = '') {
+          this.padding = parseFloat(val) || 0
+        },
+        get () {
+          return this.padding + 'px'
+          }
+        }
+      },
+    watch: {
+      boxShadowStr (val = '') {
+        this.$set(this.info, 'box-shadow', val)
+      },
+      marginStr (val = '') {
+        this.$set(this.info, 'margin', val)
+      },
+      borderStr (val = '') {
+        this.$set(this.info, 'border', val)
+      },
+      borderRadiusStr (val = '') {
+        this.$set(this.info, 'border-radius', val)
+      },
+      paddingStr (val = '') {
+        this.$set(this.info, 'padding', val)
+      },
+      opacity (val = 1) {
+        this.$set(this.info, 'opacity', val)
       },
       info: {
         deep: true,
         handler: function (newVal, oldVal) {
-          if (newVal.opacity === '') newVal.opacity = 0
-          this.isShowPosiition = window.$vue && !window.$vue.isRootNode && this.fixedOrAbsolute
-          this.makeCssCode()
+          this.showPosition = window.$vue && !window.$vue.isRootNode && this.fixedOrAbsolute
+          this.boxShadowStr = newVal['box-shadow']
+          this.marginStr = newVal['margin']
+          this.borderStr = newVal['border']
+          this.borderRadiusStr = newVal['border-radius']
+          this.paddingStr = newVal['padding']
+          this.opacity = newVal['opacity'] || 1
         },
         immediate: true
       },
     },
     mounted: function () {
-      this.isShowPosiition = window.$vue && !window.$vue.isRootNode && this.fixedOrAbsolute
-      this.style = {
-        borderWidth: this.info['border-width'] ? parseFloat(this.info['border-width']) : 0,
-        borderRadius: this.info['border-radius'] ? parseFloat(this.info['border-radius']) : 0,
-        borderStyle: this.info['border-style'] ? this.info['border-style'] : 'none',
-        margin: this.info['margin'] ? parseFloat(this.info['margin']) : 0,
-        padding: this.info['padding'] ? parseFloat(this.info['padding']) : 0
-      }
     },
     methods: {
       makeCssCode: function () {
         var style = []
         if (this.info) {
-          // opacity
-          var opacity = isNullOrUndefined(this.info.opacity) ? 1 : Number(this.info.opacity)
-          this.$set(this.info, 'opacity', opacity)
           for (const key in this.info) {
             if (this.info.hasOwnProperty(key) && key != 'bakedPosition') {
               const element = this.info[key]
-              element && style.push(`${key} : ${element};`)
+              element && style.push([key, element])
             }
           }
           style = style.sort(function (a, b) {
-            return a.key > b.key
+            return (a[0] && a[0].length) > (b[0] && b[0].length) ? 1 : -1
           })
-          style = style.join('\n    ')
+          style = style.map(([k, v] = []) => `${k} : ${v};`).join('\n    ')
         } else {
           style = ''
         }
@@ -291,9 +365,6 @@
           }
         })
         this.$emit('update:info', styles)
-      },
-      colorChange: function (e, key) {
-        this.$set(this.info, 'border-color', e)
       },
     }
   }

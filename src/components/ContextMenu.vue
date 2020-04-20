@@ -26,10 +26,20 @@
       <i class="iconfont icon-import"></i>
       导入节点
     </a>
+    <template v-if='node && !isRootNode'>
     <a class="item" @click="itemClick('combinedNode')">
       <i class="iconfont icon-import"></i>
       另存为组合组件
     </a>
+      <a v-if='!node.packed' class="item" @click="itemClick('packNode')">
+        <i class="iconfont icon-pack"></i>
+        封装
+      </a>
+      <a v-else class="item" @click="itemClick('unpackNode')">
+        <i class="iconfont icon-import"></i>
+        解除封装
+      </a>
+    </template>
     <a class="item" @click="itemClick('reloadNode')">
       <i class="iconfont icon-refresh"></i>
       重载节点
@@ -111,6 +121,7 @@
    * 对节点右键弹出的功能菜单
    */
   import BaseComponent from 'src/extend/BaseComponent'
+  import cloneDeep from 'lodash/cloneDeep'
 
   export default {
     mixins: [BaseComponent],
@@ -132,12 +143,14 @@
       isRootNode () {
         var node = this.node
         if (!node) return false
-        return node.nodeInfo && (node.nodeInfo.id === 'root' || node.nodeInfo.type === 'node')
+        return this.node.isRootNode
       },
       stacked () {
+        if (!this.node) return false
         return this.node.stacked
       },
       fixed () {
+        if (!this.node) return false
         return this.node.nodeInfo.style && this.node.nodeInfo.style.position === 'fixed'
       }
     },
@@ -145,13 +158,14 @@
       var maxHeight = document.documentElement.clientHeight
       this.ema.bind('show.contextMenu', (node, e) => {
         var pointerY = e.pageY
-        var menuHeight = 320
-        // var menuWidth = 160
-        this.style.left = (2 + e.pageX) + 'px' // 横向基本不会碰撞
-        this.style.top = (2 + pointerY - Math.max(menuHeight - (maxHeight - pointerY), 0)) + 'px' // 处理底部碰撞
         this.node = node
         this.visible = true
         node.actived('contextMenu')
+        this.$nextTick(() => {
+          var menuHeight = parseInt(getComputedStyle(this.$el).height) || 320
+          this.style.left = (2 + e.pageX) + 'px'
+          this.style.top = (2 + pointerY - Math.max(menuHeight + 10 - (maxHeight - pointerY), 0)) + 'px'
+        })
       })
       this.ema.bind('hide.contextMenu', () => {
         this.visible = false
@@ -165,17 +179,18 @@
         }
       },
       deleteNode: function (node) {
+        if (!node) return
         this.ema.fire('move.node', this.node.nodeInfo.id, null)
       },
       moveLayer: function (number) {
         this.visible = false
-        if (this.node && this.node.$parent) {
-          this.node.$parent.moveLayer(this.node.nodeInfo, number)
+        if (this.node && this.node.parentNodeVm) {
+          this.node.parentNodeVm.moveLayer(this.node.nodeInfo, number)
         }
       },
       copy: function () {
-        if (this.node && this.node.$parent) {
-          this.node.$parent.copyChild(this.node.nodeInfo, {})
+        if (this.node && this.node.parentNodeVm) {
+          this.node.parentNodeVm.copyChild(this.node.nodeInfo, {})
         }
       },
       copyStyle () {
@@ -222,13 +237,21 @@
         var el = this.node.$el
         var elID = `el_${Date.now()}`
         el.setAttribute('el', elID)
+        const nodeInfo = cloneDeep(this.node.nodeInfo)
+        nodeInfo.packed = true
         this.openDialog({
           name: 'd-saveCombinedComponent',
           data: {
             elID,
-            content: JSON.stringify(this.node.nodeInfo),
+            content: JSON.stringify(nodeInfo),
           }
         })
+      },
+      packNode () {
+        typeof (this.node && this.node.doPack) === 'function' && this.node.doPack({ scene: 'context_menu' })
+      },
+      unpackNode () {
+        typeof (this.node && this.node.openPacked) === 'function' && this.node.openPacked({ scene: 'context_menu' })
       }
     }
   }

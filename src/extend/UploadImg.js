@@ -18,7 +18,7 @@ var getUploadConfig = function (callback) {
 
 var UploadImage = function ({
   id,
-  fileName,
+  skipSizeCheck,
   filters,
   isAddUploadFile,
   callback

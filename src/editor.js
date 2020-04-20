@@ -14,6 +14,10 @@ import Util from './extend/Util'
 
 function empty () {}
 
+if (process.env.NODE_ENV === 'development') {
+  window.Vue = Vue
+}
+
 window.Truck = window.$GP = {
   Util,
   ESlog: {pageview: empty, track: empty, getFingerPrint: empty},
@@ -70,3 +74,12 @@ monaco.languages.registerCompletionItemProvider('javascript', {
     return vuelint || []
   }
 })
+// 本地存储清理
+;(function clearStorage () {
+  const storageKeys = Object.keys(localStorage).filter(k => /EditorautoSave/.test(k))
+  const maxsize = 10
+  const kyesToClear = storageKeys.length > maxsize ? storageKeys.slice(maxsize - storageKeys.length) : []
+  for (let key of kyesToClear) {
+    localStorage.removeItem(key)
+  }
+}())

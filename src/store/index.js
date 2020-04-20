@@ -15,7 +15,7 @@ const state = {
   app: {
     userInfo: {}
   },
-  setting: {
+  setting: Object.assign({
     demoMode: false,
     phoneSize: {
       name: 'Mobile S',
@@ -27,7 +27,15 @@ const state = {
     color: '#409EFF', // 参考线颜色
     phoneline: true, // 手机框
     sorb: true // 是否拖拽吸附
-  },
+  }, (() => {
+    let editorSetting = {}
+    try {
+      editorSetting = JSON.parse(window.localStorage.getItem('EditorSetting')) || {}
+    } catch (error) {}
+    delete editorSetting.phoneSize
+    delete editorSetting.demoMode
+    return editorSetting
+  })()),
   RootNodeInfo: nodeInfo,
   componentList: {},
   componentMap: {},
@@ -45,6 +53,10 @@ const state = {
       {
         type: 'default',
         name: '默认布局'
+      },
+      {
+        type: 'desktop',
+        name: 'PC 布局'
       },
       {
         type: 'flutter',

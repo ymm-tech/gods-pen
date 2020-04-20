@@ -128,7 +128,7 @@ function readAsDataURL (file, callback) {
   const reader = new window.FileReader()
   reader.readAsDataURL(file)
   reader.onload = function (e) {
-    callback && callback(this.result) // todo
+    callback && callback(this.result)
   }
 }
 

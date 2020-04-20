@@ -16,6 +16,7 @@ export const initComponentList = function (state, node) {
 }
 export const SettingChange = function (state, node) {
   Object.assign(state.setting, node)
+  window.localStorage.setItem('EditorSetting', JSON.stringify(state.setting))
 }
 
 export const SET_CONFIG = function (state, cfg) {

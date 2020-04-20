@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="preview-app" :title="title" width="405px" :modal="true" :visible.sync="Visible" @close="close">
+  <el-dialog class="preview-app" :title="title" width="448px" :modal="true" :visible.sync="Visible" @close="close">
     <div class="phone-box">
       <iframe ref="previewframe" class='iframe' border="0" :src="preUrl"></iframe>
       <!-- <div class="outLink"></div> -->
@@ -14,17 +14,17 @@
 
   .preview-app {
     > .el-dialog {
-      margin: -378px auto 0 auto !important;
-      width: 405px;
-      top: 50%;
+      margin: 0 auto 0 auto !important;
+      width: 448px;
+      // top: 50%;
       > .el-dialog__header {
         // display none
         background-color: #0e0e0e;
       }
     }
     .phone-box {
-      width: 405px;
-      height: 703px;
+      width: 448px;
+      height: 915px;
     }
 
     .el-dialog {
@@ -36,8 +36,8 @@
 
     .iframe {
       border: 0;
-      width: 405px;
-      height: 720px;
+      width: 448px;
+      height: 915px;
       display: block;
       margin: 0 auto;
       overflow: hidden;

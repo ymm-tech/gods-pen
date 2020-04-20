@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="right-slider" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove">
+    <div class="right-slider" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove" @mouseleave="mouseleave">
       <div class="cursor"  @mousedown="timelineStart" :style="{left:((time/1000)*((timeSpace.length)*timeSpace.num)-scrollLeft)+'px'}">
         <div class="cum" >
           <svg width="24px" height="24px" viewBox="0 0 24 24"><g><path fill="#faad14" d="M9,4 L16,4 C17.1045695,4 18,4.8954305 18,6 L18,13.0070582 C18,14.3526183 17.4576726,15.6413868 16.4955882,16.5820916 L13,20 L12,20 L8.50441184,16.5820916 C7.5423274,15.6413868 7,14.3526183 7,13.0070582 L7,6 C7,4.8954305 7.8954305,4 9,4 Z"></path><g transform="translate(12.000000, 7.000000)" fill="#FFFFFF" fill-opacity="0.2"><rect id="Rectangle" x="0" y="0" width="1" height="1"></rect><rect id="Rectangle" x="0" y="3" width="1" height="1"></rect><rect id="Rectangle" x="0" y="6" width="1" height="1"></rect></g></g></svg>
@@ -114,7 +114,7 @@
           display: flex;
           font-weight: bold;
           font-size: 12px;
-          height: 55px;
+          flex 0 0 37px;
           justify-content: space-between;
           padding: 0 6px;
           text-transform: uppercase;
@@ -193,10 +193,10 @@
         .timeline {
           overflow: hidden;
           user-select: none;
-          height: 49px;
+          height: 37px;
 
           .aig {
-            height: 49px;
+            height: 37px;
             position: relative;
             overflow: auto;
 
@@ -274,7 +274,7 @@
 
   export default {
     mixins: [BaseComponent],
-    name: 'control',
+    name: 'animate',
     components: {AnimateLayerNode, TimeLineNode},
     props: {
       active: {
@@ -351,6 +351,10 @@
       mouseup (ev) {
         this.ema.fire('animate.rightslider.moveup', ev)
         this.timelineEnd(ev)
+      },
+      mouseleave (ev) {
+        if (this.cursorPos.time === null) return
+        this.mouseup(ev)
       },
       timelineStart (ev) {
         this.cursorPos.startX = ev.clientX

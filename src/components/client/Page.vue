@@ -42,7 +42,9 @@
         window.addEventListener('message', (e) => {
           var data = e.data
           if (data && data.type == 'preview') {
-            this.setViewPort(data.canvas && data.canvas.width)
+            const canvas = data.canvas || {}
+            const forDesktop = (/desktop/i).test(canvas.name)
+            this.setViewPort(canvas.width, forDesktop)
             var content
             try {
               content = JSON.parse(data.content)
@@ -87,20 +89,35 @@
             info = JSON.parse(content)
           } catch (error) {
           }
-          this.setViewPort(info && info.canvas && info.canvas.width)
+          const canvas = info && info.canvas || {}
+          const forDesktop = (/desktop/i).test(canvas.name)
+          this.setViewPort(canvas.width, forDesktop)
           this.nodeInfo = info
           this.setPageTitle(data.name)
         })
       },
-      setViewPort (width = 320) {
+      setViewPort (width = 320, forDesktop = false) {
         width = parseInt(width) || 320
+        document.documentElement.classList.add(forDesktop ? 'for-desktop' : 'for-mobile')
+        const query = document.querySelector.bind(document)
         if (window.isDesktop) {
-          var $appFixed = document.getElementById('app-fixed')
-          $appFixed.style.width = width + 'px'
-          $appFixed.style.height = width / 0.564373897707231 + 'px'
-          $appFixed.style.transform = `translate3D(0,0,0) scale(${320 / width})`
-          $appFixed.style.webkitTransform = `-webkit-translate3D(0,0,0) scale(${320 / width})`
-        } else {
+          if (forDesktop) {
+            query('#desktop-bg').remove()
+            query('body').replaceChild(query('#app'), query('#app-wrapper'))
+          } else {
+            var $appFixed = query('#app-fixed')
+            var $appWrapper = query('#app-wrapper')
+            var scale = 320 / width
+            $appWrapper.style.width = $appWrapper.clientWidth / scale + 'px'
+            $appWrapper.style.height = $appWrapper.clientHeight / scale + 'px'
+            $appFixed.style.width = width + 'px'
+            $appFixed.style.height = width / 0.564373897707231 + 'px'
+            $appFixed.style.left = parseFloat(window.getComputedStyle($appFixed).left) / scale + 'px'
+            $appFixed.style.top = parseFloat(window.getComputedStyle($appFixed).top) / scale + 'px'
+            $appWrapper.style.marginLeft = parseFloat($appWrapper.style.width) / -2 + 'px'
+            $appWrapper.style.marginTop = parseFloat($appWrapper.style.height) / -2 + 'px'
+          }
+        } else if (!forDesktop) {
           // 设置画布宽度，并缩放视口至画布等大
           var i = window.__clientWidth__ = window.__clientWidth__ || document.documentElement.clientWidth || 320
           var e = i / width

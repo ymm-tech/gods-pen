@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" id="app">
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
@@ -114,8 +114,6 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    overflow-x: hidden;
-    max-width: 600px;
     -webkit-overflow-scrolling: touch;
   }
 </style>

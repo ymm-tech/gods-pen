@@ -50,10 +50,8 @@
       this.info = window.$vue && window.$vue.nodeInfo.style
       this.nodeId = window.$vue && window.$vue.nodeInfo.id
       this.ema.bind('select.oneInfo', ({vm}) => {
-        if (me.active) {
-          me.info = vm.nodeInfo.style
-          me.nodeId = vm.nodeInfo.id
-        }
+        me.info = vm.nodeInfo.style
+        me.nodeId = vm.nodeInfo.id
       })
       this.ema.bind('edit-type.change', type => {
         this.forbidEdit = type !== 'EDITOR'

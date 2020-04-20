@@ -2,7 +2,7 @@
   <div class="code-panel ns65536">
     <template v-if="codes && codes.length || showSearchPanel">
       <el-tabs closable v-model="currentCode" type="card"  @tab-remove="onTabRemove">
-        <el-tab-pane v-for="(item, index) in codes" :key="item.key" :label="item.name" :name="item.key">
+        <el-tab-pane v-for="(item) in codes" :key="item.key" :label="item.name" :name="item.key">
           <span style="display:inline-block;height:28px;" slot="label" :title="item.comId + '_' + item.name + '_' + item.id">{{item.name}} <i v-show='item.dirty'>*</i></span>
           <code-editor ctype='javascript' :highlight='item.highlight' :dirty.sync="item.dirty" :ctrls='true' @ctrls='item.onSave' :options="{}" :contents='item.content'></code-editor>
         </el-tab-pane>
@@ -11,7 +11,7 @@
           <div class="search-section">
             <el-input v-model="keyword" size="small" style="width: 40%" @keyup.enter.native="doSearch">
               <el-checkbox-group slot="append" v-model="pickedSearchRules" size="mini">
-                <el-checkbox-button v-for="(rule, index) in searchRules" :label="rule.type" :key="rule.type">{{rule.name}}</el-checkbox-button>
+                <el-checkbox-button v-for="(rule) in searchRules" :label="rule.type" :key="rule.type">{{rule.name}}</el-checkbox-button>
               </el-checkbox-group>
             </el-input>
             <div class="search-result">
@@ -181,6 +181,9 @@
       }
       .el-checkbox-button__inner {
         padding 8px
+      }
+      .el-input > input {
+        padding-left 30px;
       }
     }
 

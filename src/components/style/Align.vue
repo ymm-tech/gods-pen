@@ -155,7 +155,7 @@
     methods: {
       handleClick (data) {
         var el = window.$vue && window.$vue.$el
-        var parentEl = window.$vue && window.$vue.$parent.$el
+        var parentEl = window.$vue && window.$vue.parentNodeVm.$el
         var {width, height} = this.getRect(el, parentEl)
         var info = {...this.info}
         if (!this.isPositionEl(el)) {
@@ -223,8 +223,8 @@
       },
       moveLayer: function (number) {
         var $node = window.$vue
-        if ($node && $node.$parent) {
-          $node.$parent.moveLayer($node.nodeInfo, number)
+        if ($node && $node.parentNodeVm) {
+          $node.parentNodeVm.moveLayer($node.nodeInfo, number)
         }
       },
     }
