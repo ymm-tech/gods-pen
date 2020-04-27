@@ -422,8 +422,14 @@
         let type = this.nodeInfo.type
         // 如果有label（用户设置 || getbasenode设置 || 这里设置）保留，否则从component配置对象获取，否则用id
         that.$set(that.info, 'label', that.info.label ? that.info.label : that.info.id.replace(type, (component && component.label) || type))
-        // stack 模式 显式设置为false才是false
-        that.$set(that.info, 'stack', typeof that.info.stack === 'boolean' ? that.info.stack : component.stack !== false)
+        that.$set(that.info, 'stack', (() => {
+          // 设置过了
+          if (typeof that.info.stack === 'boolean') return that.info.stack
+          // 布局组件 显式设置为 true 才是 true
+          if (this.slots) return component.stack === true
+          // 非布局组件 显式设置为 false 才是 false, 楼层模式
+          else return component.stack !== false
+        })())
         // 子组件限额
         that.$set(that.info, 'childLimit', typeof that.info.childLimit === 'number' ? that.info.childLimit : toSafeNumber(component.childLimit, 9999))
         // 叶子节点

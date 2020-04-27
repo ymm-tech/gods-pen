@@ -15,3 +15,4 @@ ymm_build/
 yarn-error.log
 distzip/
 src/config/docker.js
+verify.md
