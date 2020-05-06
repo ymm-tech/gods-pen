@@ -223,7 +223,7 @@
             return targetmethods
           }
           // 获取当前元素的所有可调用方法列表
-          var editorMethods = targetVm.$options.editorMethods || targetVm.$options.editerMethods || {}
+          var editorMethods = Object.assign({}, targetVm.$options.editorMethods, targetVm.$options.editerMethods)
           for (const key in editorMethods) {
             var data = {
               name: target.nodeInfo.id + '.' + key,
