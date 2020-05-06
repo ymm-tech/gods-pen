@@ -102,11 +102,12 @@
         const query = document.querySelector.bind(document)
         if (window.isDesktop) {
           if (forDesktop) {
-            query('#desktop-bg').remove()
-            query('body').replaceChild(query('#app'), query('#app-wrapper'))
+            Promise.resolve(query('#desktop-bg')).then(t => t && t.remove())
+            Promise.all([query('#app'), query('#app-wrapper')]).then(([app, wrapper]) => app && wrapper && query('body').replaceChild(app, wrapper))
           } else {
             var $appFixed = query('#app-fixed')
             var $appWrapper = query('#app-wrapper')
+            if (!$appFixed || !$appWrapper) return
             var scale = 320 / width
             $appWrapper.style.width = $appWrapper.clientWidth / scale + 'px'
             $appWrapper.style.height = $appWrapper.clientHeight / scale + 'px'
