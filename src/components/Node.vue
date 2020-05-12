@@ -442,7 +442,7 @@
           style = that.info.style
         } else {
           // merge 默认样式 组件样式 拖动样式 父组件强制样式 unstacked样式
-          style = Object.assign({position: 'absolute', width: '80px', height: '80px', left: '0px', top: '0px'}, component.style || {}, that.info.forceStyle || {}, !this.stacked ? {
+          style = Object.assign({position: 'absolute', width: '80px', height: '80px', left: '0px', top: '0px'}, component.style || {}, that.info.forceStyle || {}, !this.stacked && (!component.style || component.style.position !== 'fixed') ? {
             position: 'relative',
             left: null,
             top: null,
