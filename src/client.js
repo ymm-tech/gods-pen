@@ -19,6 +19,7 @@ window.Truck = window.$GP = {
 }
 window.Truck.Maliang = clientlib
 window.$GP.VueExtend = clientlib
+window.Vue = Vue
 /**
  * 定义编辑配置属性的混合策略
  */

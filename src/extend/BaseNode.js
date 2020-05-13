@@ -248,9 +248,9 @@ export default {
         this.$set(this.nodeInfo, 'hasSlot', true)
         return i => slots[i]
       }
-      if (slots && slots.style) {
+      if (slots && typeof slots === 'object' && ('name' in slots || 'style' in slots)) {
         this.$set(this.nodeInfo, 'hasSlot', true)
-        return i => ({name: `slot${i}`, style: slots.style})
+        return i => ({name: slots.name || `slot${i}`, style: slots.style})
       }
       this.$delete(this.nodeInfo, 'hasSlot')
       return false
