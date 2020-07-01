@@ -276,7 +276,7 @@
         })
       },
       selectImage: function () {
-        this.$refs.UploadImage.selectFile()
+        this.$refs.UploadImage.$el.click()
       },
       handleSizeChange: function (index) {
         this.form.pagination.size = index
