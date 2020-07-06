@@ -170,7 +170,7 @@ npm run client:build
 
 ### 你可以打赏我们 :coffee: 来杯咖啡 :coffee:
 
-<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1572852703575.jpeg" width="350px">
+<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1572852703575.jpeg" width="360px">
 
 ### 也可以点个 Star
 开源项目需要的是持续地坚持，而我们坚持的动力当然也来自于你们的支持，希望你 :point_right: `来都来了，加个关注再走吧` :point_left:
