@@ -27,7 +27,7 @@
     "js-cookie": "^2.2.0",
     "loader-utils": "^1.1.0",
     "lodash": "^4.17.4",
-    "marked": "^0.4.0",
+    "marked": "^0.7.0",
     "mint-ui": "2.2.0",
     "monaco-editor": "0.15.2",
     "monaco-editor-webpack-plugin": "1.5.3",
