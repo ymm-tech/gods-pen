@@ -163,7 +163,7 @@ npm run client:build
 
 | 钉钉 | 微信  |
 | ------------- | ------------- |
-|<img src="https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1570850399387.JPG" width="350px"><div align="center"> 优先加钉钉群 </div>|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=3" width="300px"><div align="center"> 如果上面微信二维码过期，[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg) 添加的时候备注上 `码良` 我再邀请你进入群聊 </div>|
+|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/WechatIMG40.jpeg" width="350px"><div align="center"> 优先加钉钉群 </div>|<img src="https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg?t=3" width="300px"><div align="center"> 如果上面微信二维码过期，[点击我查看最新二维码](https://godspen.oss-cn-shanghai.aliyuncs.com/godspen/qrcode/qrcode.jpeg) 添加的时候备注上 `码良` 我再邀请你进入群聊 </div>|
 
 
 ## 支持我们
