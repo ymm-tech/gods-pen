@@ -5,6 +5,13 @@
   <a href="https://godspen.ymm56.com/"><img src="https://img.shields.io/github/package-json/v/ymm-tech/gods-pen"></a>
 </p>
 
+ <p
+    style="
+color: red;
+font-size: 12px;
+"
+  >满帮大前端营销团队招人了，一起来做码良，一起玩转营销，目前组内加上我5个人 ，3个女生哟，团队氛围非常好，计划新增6人，欢迎技术强，有担当的兄弟姐妹加入，坐标南京 主要技术栈vue，有兴趣的可将简历发给到 kunming.wangkm@amh-group.com 。谢谢！</p>
+
 ## :house: 官网
 
   官网： https://godspen.ymm56.com/
