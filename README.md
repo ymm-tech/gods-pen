@@ -92,7 +92,7 @@ font-size: 12px;
 
 ## 组件动画展示
 运营活动对一些简单的动画提供支持，方便做一些入场和出场的动画，提升活动的交互感，我们使用了 Animate.css 提供的一套 CSS 动画。并提供逐帧设置预览，方便使用。下面提供简单的展示
-![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1577935881750.gif?t=1)
+![](https://ymm-maliang.oss-cn-hangzhou.aliyuncs.com/ymm-maliang/resource/ymm_1577935881750.gif)
 
 ## 合成组件展示
 合成组件就是选择已有的节点保存为一个通用的组件，方便下次直接使用
