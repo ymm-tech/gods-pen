@@ -124,7 +124,7 @@
       qrUrl: function () {
         var temp = new Image()
         temp.src = this.preUrl
-        return 'https://www.liantu.com/api.php?text=' + encodeURIComponent(temp.src)
+        return `https://www.lofter.com/genBitmaxImage?url=${encodeURIComponent(temp.src)}&h=200&w=200`
       },
     },
     methods: {
