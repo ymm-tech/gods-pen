@@ -44,6 +44,7 @@
   /**
    * 脚本编辑管理
    */
+  import QRCode from 'qrcode'
   import BaseComponent from 'src/extend/BaseComponent'
   import common from 'src/assets/js/common'
   import Config from 'src/config'
@@ -54,18 +55,12 @@
     components: {},
     data: function () {
       return {
+        qrUrl: '',
         pageInfo: null,
         outShortUrl: ''
       }
     },
     computed: {
-      qrUrl: function () {
-        var urlInfo = common.parseURL(window.location.href)
-        var temp = new Image()
-        temp.src = `${Config.VIEW_PATH}` + urlInfo.params.key
-        console.log('src', temp.src)
-        return `https://www.lofter.com/genBitmaxImage?url=${encodeURIComponent(temp.src)}&h=200&w=200`
-      },
       outUrl: function () {
         var urlInfo = common.parseURL(window.location.href)
         var temp = new Image()
@@ -81,8 +76,18 @@
     },
     mounted: function () {
       this.pageInfo = window.Editor.pageInfo
+      this.setQRUrl()
     },
     methods: {
+      setQRUrl: function () {
+        const urlInfo = common.parseURL(window.location.href)
+        const url = `${Config.VIEW_PATH}` + urlInfo.params.key
+        try {
+          QRCode.toDataURL(url).then(value => { this.qrUrl = value })
+        } catch (e) {
+          console.error('生成二维码出错：', e.message)
+        }
+      },
       copy: function (params) {
         this.ema.fire('clipboard.copy', params)
       },
@@ -95,4 +100,3 @@
     }
   }
 </script>
-

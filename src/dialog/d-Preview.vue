@@ -100,6 +100,7 @@
   }
 </style>
 <script type="text/ecmascript-6">
+  import QRCode from 'qrcode'
   import BaseDialog from 'src/extend/BaseDialog'
   import Config from 'src/config'
   export default {
@@ -107,6 +108,7 @@
     name: 'd-preview',
     data: function () {
       return {
+        qrUrl: '',
         qrOpen: false,
         title: '预览',
         key: ''
@@ -121,11 +123,18 @@
       preUrl: function () {
         return `${Config.VIEW_PATH}${this.demoMode ? '__demomode' : this.key}?preview=1`
       },
-      qrUrl: function () {
-        var temp = new Image()
-        temp.src = this.preUrl
-        return `https://www.lofter.com/genBitmaxImage?url=${encodeURIComponent(temp.src)}&h=200&w=200`
-      },
+    },
+    watch: {
+      preUrl: {
+        handler: function (newVal) {
+          try {
+            QRCode.toDataURL(newVal).then(value => { this.qrUrl = value })
+          } catch (e) {
+            console.error('生成二维码出错：', e.message)
+          }
+        },
+        immediate: true
+      }
     },
     methods: {
       postData () {
@@ -138,4 +147,3 @@
     }
   }
 </script>
-
