@@ -430,6 +430,10 @@
           // 非布局组件 显式设置为 false 才是 false, 楼层模式
           else return component.stack !== false
         })())
+        // 没有子组件的组件，预先放置一个空数组，以解决 el-tree 鼠标拖放导致的数据不更新的问题
+        if (!that.info.child) {
+          that.$set(that.info, 'child', [])
+        }
         // 子组件限额
         that.$set(that.info, 'childLimit', typeof that.info.childLimit === 'number' ? that.info.childLimit : toSafeNumber(component.childLimit, 9999))
         // 叶子节点
