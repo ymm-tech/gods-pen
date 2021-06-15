@@ -421,7 +421,7 @@
         this.slots = this.calcSlots(component, this.nodeInfo.props)
         let type = this.nodeInfo.type
         // 如果有label（用户设置 || getbasenode设置 || 这里设置）保留，否则从component配置对象获取，否则用id
-        that.$set(that.info, 'label', that.info.label ? that.info.label : that.info.id.replace(type, (component && component.label) || type))
+        that.$set(that.info, 'label', that.info.label ? that.info.label : that.info.id.replace(`ymm-${type.replace(/\//g, '-')}`, (component && component.label) || type))
         that.$set(that.info, 'stack', (() => {
           // 设置过了
           if (typeof that.info.stack === 'boolean') return that.info.stack
