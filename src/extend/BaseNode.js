@@ -4,21 +4,86 @@ import common from '../assets/js/common'
 import {
   mapState
 } from 'vuex'
-function styleParser (style = {}) {
-  styleParser.$div = styleParser.$div || document.createElement('div')
-  const sortedStyle = Object.keys(style).sort((a = '', b = '') => a.length > b.length ? 1 : -1).reduce((o, k) => {
-    o += `${k}: ${style[k]};`
-    return o
-  }, '')
-  styleParser.$div.style = sortedStyle
-  return styleParser.$div.style.cssText
-    .split(/;\s*/)
-    .reduce((o, v = '') => {
-      const arr = v.match(/^\s*([^:]+):\s*(.+)\s*$/)
-      const info = arr ? {[arr[1]]: arr[2]} : {}
-      return Object.assign(o, info)
-    }, {})
+
+const camelCase = (string) =>
+  string.replace(/-(\w|$)/g, (m, p1) => p1.toUpperCase());
+
+const convertPropertyName = (prop) => {
+  prop = prop.toLowerCase();
+
+  // Always return 'float' as 'cssFloat'
+  if (prop === 'float') {
+    return 'cssFloat';
+  }
+
+  // Skip CSS variables
+  if (prop.startsWith('--')) {
+    return prop;
+  }
+
+  // Handle `-ms-` prefix to camelCase as msPropertyName, not MsPropertyName
+  if (prop.startsWith('-ms-')) {
+    prop = prop.substr(1);
+  }
+
+  return camelCase(prop);
+};
+
+
+// 用于检测 Safari 10 浏览器的一个直接给 dom 设置 style 报错的 BUG
+// 此 BUG 确认是 Safari 10 Webkit 内核的问题 https://bugs.webkit.org/show_bug.cgi?id=49739
+// 此函数还可以检测某些移动端浏览器设置 style 无效的 BUG
+const haveStyleBug = () => {
+  const div = document.createElement('div')
+
+  try {
+    div.style = 'display: none'
+    if (div.style.display !== 'none') {
+      return true
+    }
+  }
+  catch (e) {
+    return true
+  }
+
+  return false
 }
+
+const styleParser = haveStyleBug() ?
+  (style = {}) => {
+    const div = document.createElement('div')
+
+    Object.keys(style).forEach(key => {
+      div.style[convertPropertyName(key)] = style[key]
+    })
+
+    return div.style.cssText
+      .split(/;\s*/)
+      .reduce((o, v = '') => {
+        const arr = v.match(/^\s*([^:]+):\s*(.+)\s*$/)
+        const info = arr ? {[arr[1]]: arr[2]} : {}
+        return Object.assign(o, info)
+      }, {})
+  }
+  :
+  (style = {}) => {
+    styleParser.$div = styleParser.$div || document.createElement('div')
+
+    const sortedStyle = Object.keys(style).sort((a = '', b = '') => a.length > b.length ? 1 : -1).reduce((o, k) => {
+      o += `${k}: ${style[k]};`
+      return o
+    }, '')
+
+    styleParser.$div.style = sortedStyle
+
+    return styleParser.$div.style.cssText
+      .split(/;\s*/)
+      .reduce((o, v = '') => {
+        const arr = v.match(/^\s*([^:]+):\s*(.+)\s*$/)
+        const info = arr ? {[arr[1]]: arr[2]} : {}
+        return Object.assign(o, info)
+      }, {})
+  }
 export default {
   name: 'node',
   props: {
