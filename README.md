@@ -5,12 +5,12 @@
   <a href="https://godspen.ymm56.com/"><img src="https://img.shields.io/github/package-json/v/ymm-tech/gods-pen"></a>
 </p>
 
- <p
-    style="
-color: red;
-font-size: 12px;
-"
-  >满帮大前端营销团队招人了，一起来做码良，一起玩转营销，欢迎技术强，有担当的兄弟姐妹加入，坐标南京 主要技术栈vue，有兴趣的可将简历发给到 kunming.wangkm@amh-group.com 。谢谢！</p>
+
+## 说明
+
+该项目已经不再进行维护，主要用来学习参考。为了更好提供搭建方面的解决方案，我们在这个项目基础上做了升级，提供了一个更好的版本。详情见   https://saas.mlml.design/home.html
+
+
 
 ## :house: 官网
 
