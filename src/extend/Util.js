@@ -1,4 +1,5 @@
 import {modifyNodeId} from '../assets/js/common'
+import {loadCSS} from '../assets/js/loadCSS'
 import Server from './Server'
 import htmlToCanvas from 'html2canvas'
 let config = require('../config/index')
@@ -55,6 +56,48 @@ function loadJs (url = '') {
     script.onload = fn
     script.onerror = fail
     ;(document.body || document.head).appendChild(script)
+  }
+}
+
+function loadCss (url = '') {
+  if (!url) return
+  if (!loadCss.cache) loadCss.cache = {}
+
+  if (loadCss.cache[url]) return Promise.resolve()
+
+  return new Promise((resolve) => {
+    var stylesheet = loadCSS(url)
+
+    onloadCSS(stylesheet, () => {
+      loadCss.cache[url] = 'cached'
+      resolve()
+    })
+  })
+
+  // https://github.com/filamentgroup/loadCSS/blob/master/src/onloadCSS.js
+  function onloadCSS (ss, callback) {
+    var called
+    function newcb() {
+        if (!called && callback) {
+          called = true
+          callback.call(ss)
+        }
+    }
+    if (ss.addEventListener) {
+      ss.addEventListener('load', newcb)
+    }
+    if (ss.attachEvent) {
+      ss.attachEvent('onload', newcb)
+    }
+    // This code is for browsers that don’t support onload
+    // No support for onload (it'll bind but never fire):
+    // * Android 4.3 (Samsung Galaxy S4, Browserstack)
+    // * Android 4.2 Browser (Samsung Galaxy SIII Mini GT-I8200L)
+    // * Android 2.3 (Pantech Burst P9070)
+    // Weak inference targets Android < 4.4
+     if ('isApplicationInstalled' in navigator && 'onloadcssdefined' in ss) {
+      ss.onloadcssdefined(newcb)
+    }
   }
 }
 
@@ -156,6 +199,7 @@ export default {
   html2canvas,
   removeAttr,
   loadJs,
+  loadCss,
   getBaseNode,
   useComponent,
   getNumber,
@@ -168,6 +212,7 @@ export {
   html2canvas,
   removeAttr,
   loadJs,
+  loadCss,
   getBaseNode,
   useComponent,
   getNumber,
