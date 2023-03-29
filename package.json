@@ -25,7 +25,7 @@
     "element-ui": "2.4.11",
     "inversify": "^5.0.1",
     "js-cookie": "^2.2.0",
-    "loader-utils": "^1.1.0",
+    "loader-utils": "^1.4.2",
     "lodash": "^4.17.4",
     "marked": "^0.4.0",
     "mint-ui": "2.2.0",
