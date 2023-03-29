@@ -62,7 +62,7 @@ function getBaseNode (node) {
   if (!node.id) return
   useComponent(node.id)
   var info = {
-    id: node.name,
+    id: `ymm-${node.name.replace(/\//g, '-')}`,
     type: node.name,
     label: node.label,
     version: node.version,
@@ -83,7 +83,7 @@ function getBaseNode (node) {
       top: '0px'
     }, node.style)
   }
-  var idCache = Object.keys(window.$_nodecomponents || {}).concat([node.name])
+  var idCache = Object.keys(window.$_nodecomponents || {}).concat([info.id])
   info = modifyNodeId(info, idCache)
   if (info.label) info.label = info.id.replace(node.id, info.label) // 给label添加id
   return info

@@ -11,7 +11,7 @@
     },
     "props": {},
     "child": [{
-      "id": "truck/richtextj0n4g65h",
+      "id": "ymm-truck-richtextj0n4g65h",
       "type": "truck/richtext",
       "label": "初次见面，请移除我",
       "visible": true,
